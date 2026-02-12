@@ -1,0 +1,48 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- seo -%}
+  {%- comment -%} Preconnect to external domains used in posts (GitHub, user-images) and CDNs {%- endcomment -%}
+  <link rel="preconnect" href="https://github.com" crossorigin>
+  <link rel="preconnect" href="https://user-images.githubusercontent.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  {%- comment -%} Single CSS: style.scss already imports minima theme, main.css is redundant {%- endcomment -%}
+  <link rel="preload" href="{{ "/assets/css/style.css" | relative_url }}" as="style">
+  <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+  {%- feed_meta -%}
+  {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+  {%- endif -%}
+  {%- comment -%} MathJax for math formula rendering - optimized for speed and typography {%- endcomment -%}
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      },
+      chtml: {
+        fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+        adaptiveCSS: true,
+        matchFontHeight: true,
+        mtextInheritFont: true,
+        merrorInheritFont: true
+      },
+      startup: {
+        typeset: false,
+        ready: () => {
+          MathJax.startup.defaultReady();
+          MathJax.typesetPromise();
+        }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>

@@ -1,0 +1,21 @@
+<header class="site-header" role="banner">
+  <div class="wrapper site-header-inner">
+    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+    <nav class="site-nav-links">
+      <a class="nav-link" href="{{ "/" | relative_url }}">Posts</a>
+      <a class="nav-link" href="{{ "/about/" | relative_url }}">About</a>
+    </nav>
+    <div class="search-header-wrap">
+      <input
+        type="search"
+        id="search-header-input"
+        class="search-header-input"
+        placeholder="Search posts..."
+        autocomplete="off"
+        aria-label="Search (⌘K)"
+        readonly
+      />
+      <kbd class="search-header-kbd">⌘ + K</kbd>
+    </div>
+  </div>
+</header>

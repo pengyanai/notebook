@@ -1,0 +1,804 @@
+<!-- Global search modal: open with Cmd+K or header button -->
+<div id="search-modal" class="search-modal" role="dialog" aria-label="Search posts" aria-hidden="true">
+  <div class="search-modal-backdrop" id="search-modal-backdrop"></div>
+  <div class="search-modal-box">
+    <div class="search-modal-header">
+      <input
+        type="search"
+        id="search-input"
+        class="search-input"
+        placeholder="Search posts..."
+        autocomplete="off"
+        aria-label="Search"
+      />
+      <kbd class="search-kbd">⌘K</kbd>
+    </div>
+    <div id="search-results" class="search-results" role="listbox"></div>
+    <div id="search-empty" class="search-empty hidden">No posts found.</div>
+    <div id="search-hint" class="search-hint">Search by title, full post content, author, date, or labels. <kbd>↑</kbd><kbd>↓</kbd> to move, <kbd>Enter</kbd> to open. Esc to close. <kbd>/</kbd> or <kbd>⌘K</kbd> to open.</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var modal = document.getElementById('search-modal');
+  var backdrop = document.getElementById('search-modal-backdrop');
+  var input = document.getElementById('search-input');
+  var resultsEl = document.getElementById('search-results');
+  var emptyEl = document.getElementById('search-empty');
+  var hintEl = document.getElementById('search-hint');
+
+  var index = null;
+  var fuse = null;
+  var selectedIndex = 0;
+
+  function getResultItems() {
+    return resultsEl.querySelectorAll('.search-result-item');
+  }
+
+  function setSelectedIndex(i) {
+    var items = getResultItems();
+    var count = items.length;
+    if (count === 0) return;
+    selectedIndex = ((i % count) + count) % count;
+    items.forEach(function(item, idx) {
+      if (idx === selectedIndex) {
+        item.classList.add('search-result-item-selected');
+        item.setAttribute('aria-selected', 'true');
+        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } else {
+        item.classList.remove('search-result-item-selected');
+        item.setAttribute('aria-selected', 'false');
+      }
+    });
+  }
+
+  function loadFuseJS() {
+    return new Promise(function(resolve, reject) {
+      if (window.Fuse) {
+        resolve();
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js';
+      script.async = true;
+      script.onload = function() { resolve(); };
+      script.onerror = function() { reject(new Error('Failed to load Fuse.js')); };
+      document.head.appendChild(script);
+    });
+  }
+
+  function processSearchData(data) {
+    // Use requestIdleCallback or setTimeout to avoid blocking main thread
+    return new Promise(function(resolve) {
+      function process() {
+        // Preprocess data: normalize and clean content for better search
+        // Inspired by Lunr.js tokenization approach for mixed Chinese-English content
+        var processedData = data.map(function(item) {
+          var normalizedContent = (item.content || '').replace(/\s+/g, ' ').trim();
+          var title = item.title || '';
+          var excerpt = item.excerpt || '';
+          var metadata = item.metadata || '';
+          
+          // Create tokenized searchable text (better for Chinese-English mixed content)
+          var titleTokens = createSearchableText(title);
+          var excerptTokens = createSearchableText(excerpt);
+          var metadataTokens = createSearchableText(metadata);
+          var contentTokens = createSearchableText(normalizedContent.substring(0, 2000)); // Reduced from 3000 for performance
+          
+          return {
+            title: title,
+            url: item.url || '',
+            excerpt: excerpt,
+            content: normalizedContent, // Keep full content for snippet extraction
+            metadata: metadata,
+            // Tokenized fields for better Chinese-English matching
+            titleTokens: titleTokens,
+            excerptTokens: excerptTokens,
+            metadataTokens: metadataTokens,
+            contentTokens: contentTokens,
+            // Combined searchable text (tokenized)
+            searchableText: [
+              titleTokens,
+              excerptTokens,
+              metadataTokens,
+              contentTokens
+            ].join(' ').replace(/\s+/g, ' ').trim(),
+            // Keep original item reference for rendering
+            _original: item
+          };
+        });
+        
+        fuse = new Fuse(processedData, {
+          keys: [
+            { name: 'title', weight: 3 },
+            { name: 'titleTokens', weight: 2.5 }, // Tokenized title for better Chinese matching
+            { name: 'searchableText', weight: 1.8 }, // Combined tokenized text
+            { name: 'contentTokens', weight: 1.5 }, // Tokenized content
+            { name: 'content', weight: 1.2 },
+            { name: 'metadataTokens', weight: 1 },
+            { name: 'metadata', weight: 1 },
+            { name: 'excerptTokens', weight: 0.9 },
+            { name: 'excerpt', weight: 0.8 }
+          ],
+          threshold: 0.35, // Lower threshold for better recall with tokenized content
+          ignoreLocation: true,
+          findAllMatches: true,
+          minMatchCharLength: 1,
+          includeScore: true,
+          includeMatches: true,
+          distance: 1000
+        });
+        resolve();
+      }
+      
+      // Use requestIdleCallback if available, otherwise use setTimeout
+      if (window.requestIdleCallback) {
+        requestIdleCallback(process, { timeout: 2000 });
+      } else {
+        setTimeout(process, 0);
+      }
+    });
+  }
+
+  function openSearch() {
+    modal.classList.add('search-modal-open');
+    modal.setAttribute('aria-hidden', 'false');
+    input.value = '';
+    // Focus input after modal animation starts (use requestAnimationFrame for better timing)
+    requestAnimationFrame(function() {
+      setTimeout(function() {
+        input.focus();
+      }, 50);
+    });
+    if (index && fuse) {
+      renderResults(index);
+    } else {
+      resultsEl.innerHTML = '';
+      emptyEl.classList.add('hidden');
+      hintEl.classList.remove('hidden');
+      
+      // Show loading state
+      resultsEl.innerHTML = '<div class="search-loading">Loading search index...</div>';
+      
+      Promise.all([
+        loadFuseJS(),
+        fetch('{{ "/search.json" | relative_url }}').then(function(r) { return r.json(); })
+      ]).then(function(results) {
+        var data = results[1];
+        index = data;
+        return processSearchData(data);
+      }).then(function() {
+        renderResults(index);
+        // Ensure focus after data loads
+        input.focus();
+      }).catch(function(err) {
+        resultsEl.innerHTML = '<div class="search-error">Failed to load search index: ' + (err.message || 'Unknown error') + '</div>';
+        input.focus();
+      });
+    }
+  }
+
+  function closeSearch() {
+    modal.classList.remove('search-modal-open');
+    modal.setAttribute('aria-hidden', 'true');
+    hintEl.classList.remove('hidden');
+  }
+
+  // Get meaningful highlight terms from a query for display purposes.
+  // Unlike tokenizeText (used for search indexing), this preserves the user's
+  // original query terms to avoid noisy single-character highlights.
+  function getHighlightTerms(query) {
+    if (!query) return [];
+    var trimmed = query.trim();
+    // Split by whitespace to get user's original search terms
+    var parts = trimmed.split(/\s+/).filter(function(p) { return p.length > 0; });
+    var terms = [];
+    parts.forEach(function(part) {
+      if (terms.indexOf(part) === -1) {
+        terms.push(part);
+      }
+    });
+    // Sort by length descending so longer matches take precedence when merging ranges
+    terms.sort(function(a, b) { return b.length - a.length; });
+    return terms;
+  }
+
+  function highlightMatches(text, matchObj, query) {
+    if (!text) return '';
+    if (!query) return escapeHtml(text);
+
+    // Collect highlight ranges on the RAW text (before HTML escaping).
+    // Previous code escaped first then applied indices, causing misalignment
+    // when text contained &, <, > (escaped to &amp; etc., shifting positions).
+    var ranges = [];
+    var usedFuseIndices = false;
+
+    // 1. Try Fuse.js match indices (they reference the raw, unescaped text)
+    if (matchObj && matchObj.indices && matchObj.indices.length > 0) {
+      var allValid = true;
+      for (var i = 0; i < matchObj.indices.length; i++) {
+        var s = matchObj.indices[i][0];
+        var e = matchObj.indices[i][1] + 1; // Fuse.js inclusive end -> exclusive
+        if (s < 0 || e > text.length || s >= e) {
+          allValid = false;
+          break;
+        }
+        ranges.push([s, e]);
+      }
+      if (!allValid) {
+        ranges = [];
+      } else {
+        usedFuseIndices = true;
+      }
+    }
+
+    // 2. Fallback: query-term-based matching on raw text.
+    //    Uses original query terms (not tokenized single chars) for accurate highlights.
+    if (!usedFuseIndices) {
+      var terms = getHighlightTerms(query);
+      terms.forEach(function(term) {
+        if (term.length === 0) return;
+        // Case-insensitive for non-Chinese text
+        var flags = /[\u4e00-\u9fa5]/.test(term) ? 'g' : 'gi';
+        var regex = new RegExp(escapeRegex(term), flags);
+        var m;
+        while ((m = regex.exec(text)) !== null) {
+          ranges.push([m.index, m.index + m[0].length]);
+          if (m[0].length === 0) break; // prevent infinite loop on zero-length match
+        }
+      });
+    }
+
+    if (ranges.length === 0) return escapeHtml(text);
+
+    // Merge overlapping / adjacent ranges
+    ranges.sort(function(a, b) { return a[0] - b[0] || b[1] - a[1]; });
+    var merged = [ranges[0].slice()];
+    for (var i = 1; i < ranges.length; i++) {
+      var last = merged[merged.length - 1];
+      if (ranges[i][0] <= last[1]) {
+        last[1] = Math.max(last[1], ranges[i][1]);
+      } else {
+        merged.push(ranges[i].slice());
+      }
+    }
+
+    // Build result: escape each segment individually, wrap matches in <mark>.
+    // This avoids the old bug where regex replacements on already-highlighted HTML
+    // could corrupt <mark> tags (e.g. matching "class" or "search" inside the tag).
+    var result = '';
+    var pos = 0;
+    for (var i = 0; i < merged.length; i++) {
+      if (merged[i][0] > pos) {
+        result += escapeHtml(text.substring(pos, merged[i][0]));
+      }
+      result += '<mark class="search-highlight">' + escapeHtml(text.substring(merged[i][0], merged[i][1])) + '</mark>';
+      pos = merged[i][1];
+    }
+    if (pos < text.length) {
+      result += escapeHtml(text.substring(pos));
+    }
+
+    return result;
+  }
+
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function extractContentSnippet(content, matchObj, query) {
+    if (!content) return null;
+    
+    var snippet = '';
+    var adjustedMatch = null;
+    var hasPrefix = false;
+    var hasSuffix = false;
+    
+    if (matchObj && matchObj.indices && matchObj.indices.length > 0) {
+      // Use Fuse.js match indices
+      var firstMatch = matchObj.indices[0];
+      var matchStart = firstMatch[0];
+      var matchEnd = firstMatch[1] + 1;
+      
+      // Extract snippet around the match (about 60 chars before and after)
+      var start = Math.max(0, matchStart - 60);
+      var end = Math.min(content.length, matchEnd + 60);
+      
+      // Try to extend to word boundaries for better readability
+      var boundaryChars = [' ', '\n', '\t', '。', '，', '；', '：', '.', ',', ';', ':'];
+      while (start > 0 && start < matchStart && boundaryChars.indexOf(content[start]) === -1) {
+        start--;
+      }
+      while (end < content.length && end > matchEnd && boundaryChars.indexOf(content[end]) === -1) {
+        end++;
+      }
+      
+      snippet = content.substring(start, end);
+      hasPrefix = start > 0;
+      hasSuffix = end < content.length;
+      
+      if (hasPrefix) snippet = '...' + snippet;
+      if (hasSuffix) snippet = snippet + '...';
+      
+      // Collect ALL Fuse.js match ranges that fall within the snippet window,
+      // not just the first one. This improves highlighting when multiple match
+      // fragments exist in the visible snippet.
+      var prefixOffset = hasPrefix ? 3 : 0;
+      var adjustedIndices = [];
+      for (var ri = 0; ri < matchObj.indices.length; ri++) {
+        var rStart = matchObj.indices[ri][0];
+        var rEnd = matchObj.indices[ri][1] + 1; // inclusive -> exclusive
+        // Only include ranges that overlap with the snippet window [start, end)
+        if (rEnd > start && rStart < end) {
+          var aStart = Math.max(rStart, start) - start + prefixOffset;
+          var aEnd = Math.min(rEnd, end) - start + prefixOffset - 1; // back to inclusive
+          if (aStart <= aEnd) {
+            adjustedIndices.push([aStart, aEnd]);
+          }
+        }
+      }
+      // Fallback to first match if no ranges survived clipping
+      if (adjustedIndices.length === 0) {
+        var adjStart = matchStart - start + prefixOffset;
+        var adjEnd = matchEnd - start + prefixOffset - 1;
+        adjustedIndices.push([adjStart, adjEnd]);
+      }
+      adjustedMatch = {
+        indices: adjustedIndices
+      };
+    } else if (query) {
+      // Fallback: find first occurrence of query in content.
+      // Use getHighlightTerms (user's original terms) instead of tokenizeText
+      // to avoid centering the snippet on irrelevant single-character matches.
+      var words = getHighlightTerms(query);
+      if (words.length > 0) {
+        var hasChinese = /[\u4e00-\u9fa5]/.test(query);
+        var contentSearch = hasChinese ? content : content.toLowerCase();
+        var matchPos = -1;
+        var matchLength = 0;
+        
+        // Try full query first
+        var qNorm = hasChinese ? query : query.toLowerCase();
+        var pos = contentSearch.indexOf(qNorm);
+        if (pos !== -1) {
+          matchPos = pos;
+          matchLength = qNorm.length;
+        }
+        
+        // Try longest word/phrase
+        if (matchPos === -1 && words.length > 1) {
+          words.sort(function(a, b) { return b.length - a.length; });
+          for (var i = 0; i < words.length; i++) {
+            var w = hasChinese ? words[i] : words[i].toLowerCase();
+            var p = contentSearch.indexOf(w);
+            if (p !== -1) {
+              matchPos = p;
+              matchLength = w.length;
+              break;
+            }
+          }
+        }
+        
+        // Try individual words
+        if (matchPos === -1) {
+          for (var j = 0; j < words.length; j++) {
+            var word = hasChinese ? words[j] : words[j].toLowerCase();
+            var p = contentSearch.indexOf(word);
+            if (p !== -1) {
+              matchPos = p;
+              matchLength = word.length;
+              break;
+            }
+          }
+        }
+        
+        if (matchPos !== -1) {
+          var matchStart = matchPos;
+          var matchEnd = matchPos + matchLength;
+          
+          var start = Math.max(0, matchStart - 60);
+          var end = Math.min(content.length, matchEnd + 60);
+          
+          var boundaryChars = [' ', '\n', '\t', '。', '，', '；', '：', '.', ',', ';', ':'];
+          while (start > 0 && start < matchStart && boundaryChars.indexOf(content[start]) === -1) {
+            start--;
+          }
+          while (end < content.length && end > matchEnd && boundaryChars.indexOf(content[end]) === -1) {
+            end++;
+          }
+          
+          snippet = content.substring(start, end);
+          hasPrefix = start > 0;
+          hasSuffix = end < content.length;
+          
+          if (hasPrefix) snippet = '...' + snippet;
+          if (hasSuffix) snippet = snippet + '...';
+          
+          var prefixOffset = hasPrefix ? 3 : 0;
+          var adjStart = matchStart - start + prefixOffset;
+          var adjEnd = matchEnd - start + prefixOffset - 1; // inclusive end
+          adjustedMatch = {
+            indices: [[adjStart, adjEnd]]
+          };
+        }
+      }
+    }
+    
+    if (!snippet) return null;
+    
+    return {
+      text: snippet,
+      match: adjustedMatch
+    };
+  }
+
+  function renderResults(items, query) {
+    if (!items || items.length === 0) {
+      resultsEl.innerHTML = '';
+      emptyEl.classList.remove('hidden');
+      hintEl.classList.add('hidden');
+      return;
+    }
+    emptyEl.classList.add('hidden');
+    hintEl.classList.add('hidden');
+    var html = '';
+    
+    if (Array.isArray(items) && items[0].item !== undefined) {
+      // Fuse.js search results with matches
+      items.slice(0, 12).forEach(function(result) {
+        var post = result.item;
+        // Use original data if available (for full content), otherwise use processed data
+        var originalPost = post._original || post;
+        // Find matches from Fuse.js matches array
+        // Only use indices from exact field (title/content) - indices from *Tokens fields are for different text
+        var titleMatch = result.matches && Array.isArray(result.matches)
+          ? result.matches.find(function(m) { return m.key === 'title'; })
+          : null;
+        var contentMatch = result.matches && Array.isArray(result.matches)
+          ? result.matches.find(function(m) { return m.key === 'content'; })
+          : null;
+        
+        var title = highlightMatches(post.title, titleMatch, query);
+        var url = escapeHtml(post.url);
+        
+        html += '<a href="' + url + '" class="search-result-item" role="option">';
+        html += '<div class="search-result-title">' + title + '</div>';
+        
+        // Show content snippet if content matched or if we have content to search
+        var snippetData = null;
+        if (contentMatch && post.content) {
+          // When using Fuse.js content match indices, use the normalized content
+          // (post.content) that Fuse.js actually indexed. Using originalPost.content
+          // would cause index misalignment if whitespace normalization shifted positions.
+          snippetData = extractContentSnippet(post.content, contentMatch, query);
+        } else {
+          var contentToSearch = originalPost.content || post.content;
+          if (contentToSearch && query) {
+            // Match was in contentTokens/searchableText, or from simple search - use fallback
+            snippetData = extractContentSnippet(contentToSearch, null, query);
+          }
+        }
+        
+        if (snippetData && snippetData.text) {
+          var highlightedSnippet = highlightMatches(snippetData.text, snippetData.match, query);
+          html += '<div class="search-result-snippet">' + highlightedSnippet + '</div>';
+        } else if (post.excerpt) {
+          // Show excerpt if no content match
+          var excerpt = escapeHtml(post.excerpt);
+          if (excerpt.length > 150) {
+            excerpt = excerpt.substring(0, 150) + '...';
+          }
+          html += '<div class="search-result-snippet">' + excerpt + '</div>';
+        }
+        
+        html += '</a>';
+      });
+    } else {
+      // Plain list (no query)
+      items.slice(0, 12).forEach(function(post) {
+        var title = escapeHtml(post.title);
+        var url = escapeHtml(post.url);
+        html += '<a href="' + url + '" class="search-result-item" role="option">';
+        html += '<div class="search-result-title">' + title + '</div>';
+        if (post.excerpt) {
+          var excerpt = escapeHtml(post.excerpt);
+          if (excerpt.length > 150) {
+            excerpt = excerpt.substring(0, 150) + '...';
+          }
+          html += '<div class="search-result-snippet">' + excerpt + '</div>';
+        }
+        html += '</a>';
+      });
+    }
+    
+    resultsEl.innerHTML = html;
+    selectedIndex = 0;
+    setSelectedIndex(0);
+  }
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  // Simple Chinese tokenizer - splits Chinese text into characters and common words
+  // This is a lightweight approach inspired by Lunr.js's tokenization strategy
+  function tokenizeChinese(text) {
+    if (!text) return [];
+    var tokens = [];
+    var currentToken = '';
+    var isChinese = false;
+    
+    for (var i = 0; i < text.length; i++) {
+      var char = text[i];
+      var charCode = char.charCodeAt(0);
+      var isChineseChar = (charCode >= 0x4e00 && charCode <= 0x9fa5);
+      
+      if (isChineseChar) {
+        if (!isChinese && currentToken) {
+          // Save previous English token
+          tokens.push(currentToken.toLowerCase());
+          currentToken = '';
+        }
+        isChinese = true;
+        // Add individual Chinese character
+        tokens.push(char);
+        // Also add as part of potential multi-character word (for 2-char combinations)
+        if (i > 0 && text[i-1].charCodeAt(0) >= 0x4e00 && text[i-1].charCodeAt(0) <= 0x9fa5) {
+          tokens.push(text[i-1] + char);
+        }
+      } else {
+        if (isChinese && currentToken) {
+          // Save previous Chinese token
+          tokens.push(currentToken);
+          currentToken = '';
+        }
+        isChinese = false;
+        if (/[\w\u00c0-\u024f]/.test(char)) {
+          currentToken += char;
+        } else {
+          if (currentToken) {
+            tokens.push(currentToken.toLowerCase());
+            currentToken = '';
+          }
+        }
+      }
+    }
+    
+    if (currentToken) {
+      tokens.push(isChinese ? currentToken : currentToken.toLowerCase());
+    }
+    
+    return tokens;
+  }
+  
+  // Tokenize text for indexing/searching - handles both Chinese and English
+  function tokenizeText(text) {
+    if (!text) return [];
+    var tokens = [];
+    var normalized = text.replace(/\s+/g, ' ').trim();
+    
+    // Split by spaces first (for English words)
+    var parts = normalized.split(/\s+/);
+    
+    parts.forEach(function(part) {
+      if (!part) return;
+      
+      // Check if contains Chinese
+      if (/[\u4e00-\u9fa5]/.test(part)) {
+        // Tokenize Chinese part
+        var chineseTokens = tokenizeChinese(part);
+        tokens = tokens.concat(chineseTokens);
+      } else {
+        // English word - add as-is (lowercase)
+        if (part.length > 0) {
+          tokens.push(part.toLowerCase());
+        }
+      }
+    });
+    
+    return tokens;
+  }
+  
+  function normalizeQuery(q) {
+    if (!q) return '';
+    // Normalize whitespace, remove extra spaces
+    return q.trim().replace(/\s+/g, ' ');
+  }
+  
+  function prepareQuery(query) {
+    // Normalize query for better matching
+    var normalized = normalizeQuery(query);
+    // For Chinese text, don't lowercase (preserves meaning)
+    // For English, lowercase for case-insensitive search
+    var hasChinese = /[\u4e00-\u9fa5]/.test(normalized);
+    if (!hasChinese) {
+      normalized = normalized.toLowerCase();
+    }
+    return normalized;
+  }
+  
+  // Create searchable tokens from text (for better matching)
+  function createSearchableText(text) {
+    if (!text) return '';
+    var tokens = tokenizeText(text);
+    // Join tokens with space for Fuse.js to search
+    return tokens.join(' ');
+  }
+
+  function simpleTextSearch(query, items) {
+    if (!query || query.length === 0) return items;
+    var qNormalized = prepareQuery(query);
+    
+    // Tokenize query for better Chinese-English matching
+    var queryTokens = tokenizeText(qNormalized);
+    if (queryTokens.length === 0) return items;
+    
+    var hasChinese = /[\u4e00-\u9fa5]/.test(qNormalized);
+    
+    return items.filter(function(item) {
+      var title = item.title || '';
+      var content = (item.content || '').substring(0, 2000); // Limit for performance
+      var excerpt = item.excerpt || '';
+      var metadata = item.metadata || '';
+      
+      // Create tokenized searchable text
+      var searchableText = createSearchableText(title + ' ' + content + ' ' + excerpt + ' ' + metadata);
+      
+      // Check if all query tokens are found in the searchable text
+      return queryTokens.every(function(token) {
+        // For Chinese characters, check both individual and combined matches
+        if (/[\u4e00-\u9fa5]/.test(token)) {
+          return searchableText.indexOf(token) !== -1;
+        } else {
+          // For English, case-insensitive match
+          return searchableText.toLowerCase().indexOf(token.toLowerCase()) !== -1;
+        }
+      });
+    }).map(function(item) {
+      return { item: item, score: 0.7 };
+    });
+  }
+
+  function onInput() {
+    var q = (input.value || '').trim();
+    if (!index || !fuse) return;
+    if (q.length === 0) {
+      renderResults(index);
+      return;
+    }
+    
+    var preparedQuery = prepareQuery(q);
+    // Tokenize query for better Chinese-English matching (similar to Lunr.js approach)
+    var tokenizedQuery = createSearchableText(preparedQuery);
+    // Try both original query and tokenized query, use the one with better results
+    var found1 = fuse.search(preparedQuery);
+    var found2 = tokenizedQuery !== preparedQuery ? fuse.search(tokenizedQuery) : [];
+    
+    // Merge results, prioritizing exact matches
+    var found = found1;
+    if (found2.length > 0) {
+      var found1Urls = new Set(found1.map(function(r) { return r.item.url; }));
+      var additional = found2.filter(function(r) {
+        return !found1Urls.has(r.item.url);
+      });
+      found = found.concat(additional);
+      // Sort by score
+      found.sort(function(a, b) {
+        return (a.score || 0) - (b.score || 0);
+      });
+    }
+    
+    // If Fuse.js finds few results or query is very short, try simple text search as fallback
+    if (found.length < 8 || q.length <= 2) {
+      // Use original index data for simple search
+      var simpleResults = simpleTextSearch(q, index);
+      if (simpleResults.length > 0) {
+        // Merge results, prioritizing Fuse.js results but adding simple matches
+        var fuseUrls = new Set(found.map(function(r) { return r.item.url; }));
+        var additional = simpleResults.filter(function(r) {
+          return !fuseUrls.has(r.item.url);
+        });
+        // Add simple matches with lower priority
+        found = found.concat(additional);
+        // Sort by score (lower is better), then limit to top results
+        found.sort(function(a, b) {
+          var scoreA = a.score !== undefined ? a.score : 0.8;
+          var scoreB = b.score !== undefined ? b.score : 0.8;
+          return scoreA - scoreB;
+        });
+        // Limit to top 20 results for performance
+        found = found.slice(0, 20);
+      }
+    }
+    
+    renderResults(found, q);
+  }
+
+  var headerInput = document.getElementById('search-header-input');
+  if (headerInput) {
+    headerInput.addEventListener('focus', function(e) {
+      e.preventDefault();
+      headerInput.blur();
+      openSearch();
+    });
+    headerInput.addEventListener('click', function(e) {
+      e.preventDefault();
+      openSearch();
+    });
+  }
+
+  function isEditableElement(element) {
+    if (!element) return false;
+    var tagName = element.tagName && element.tagName.toLowerCase();
+    var isInput = tagName === 'input' && element.type !== 'button' && element.type !== 'submit' && element.type !== 'reset';
+    var isTextarea = tagName === 'textarea';
+    var isContentEditable = element.contentEditable === 'true';
+    return isInput || isTextarea || isContentEditable;
+  }
+
+  document.addEventListener('keydown', function(e) {
+    // Cmd/Ctrl + K shortcut
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      if (modal.classList.contains('search-modal-open')) {
+        closeSearch();
+      } else {
+        openSearch();
+        setTimeout(function() {
+          input.focus();
+        }, 100);
+      }
+      return;
+    }
+    
+    // `/` shortcut (GitHub-style) - only trigger when not in editable element
+    if (e.key === '/' && !isEditableElement(e.target) && !modal.classList.contains('search-modal-open')) {
+      e.preventDefault();
+      openSearch();
+      setTimeout(function() {
+        input.focus();
+      }, 100);
+    }
+  });
+
+  backdrop.addEventListener('click', closeSearch);
+  input.addEventListener('input', onInput);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeSearch();
+      return;
+    }
+    var items = getResultItems();
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(selectedIndex + 1);
+      return;
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(selectedIndex - 1);
+      return;
+    }
+    if (e.key === 'Enter') {
+      if (items.length > 0 && items[selectedIndex]) {
+        e.preventDefault();
+        var href = items[selectedIndex].getAttribute('href');
+        if (href) {
+          closeSearch();
+          window.location.href = href;
+        }
+      }
+    }
+  });
+
+  resultsEl.addEventListener('click', function(e) {
+    if (e.target.classList.contains('search-result-item')) {
+      closeSearch();
+    }
+  });
+})();
+</script>

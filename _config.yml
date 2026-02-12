@@ -1,0 +1,41 @@
+# Jekyll configuration for GitHub Pages
+# This file configures Jekyll settings for the blog
+
+# Site settings
+title: "Joseph's Notebook"
+description: "Joseph's Blog"
+url: "https://pengyanai.github.io"
+baseurl: "/"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Kramdown settings for math formula support
+kramdown:
+  math_engine: mathjax
+  math_engine_opts:
+    preview: true
+    preview_as_code: false
+  # Disable table parsing for lines containing math delimiters
+  parse_block_html: true
+  parse_span_html: true
+
+# SASS: compress output for smaller CSS
+sass:
+  style: compressed
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Exclude files from processing
+exclude:
+  - run.py
+  - scripts
+  - .github
+
+# Custom settings
+show_excerpts: false

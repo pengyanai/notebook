@@ -1,0 +1,10 @@
+---
+layout: default
+---
+{% capture readme %}{% include_relative README.md %}{% endcapture %}
+{% comment %}
+Convert .md links to .html for Jekyll site (README.md uses .md links for GitHub compatibility)
+This handles markdown link format: [text](posts/xxx.md)
+{% endcomment %}
+{% assign readme_html = readme | replace: '.md)', '.html)' | replace: '.md"', '.html"' | replace: '.md#', '.html#' %}
+{{ readme_html | markdownify }}
