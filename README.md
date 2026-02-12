@@ -1,5 +1,6 @@
 <!-- Blog content is generated from GitHub issues. Tooling: `python run.py` for help. -->
 
+- #157 2026-02-12 [Cursor 模型与 Pro 额度的实战调研记录](posts/157.md)
 - #156 2026-02-11 [Transformer 前向流程与自注意力机制简述](posts/156.md)
 - #155 2026-02-11 [深度学习中的矩阵运算与线性代数基础](posts/155.md)
 - #154 2026-02-05 [OpenClaw 思考](posts/154.md)
