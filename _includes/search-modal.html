@@ -60,7 +60,7 @@
         return;
       }
       var script = document.createElement('script');
-      script.src = 'https://unpkg.com/fuse.js@7.0.0/dist/fuse.min.js';
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js';
       script.async = true;
       script.onload = function() { resolve(); };
       script.onerror = function() { reject(new Error('Failed to load Fuse.js')); };
