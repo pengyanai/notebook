@@ -21,7 +21,7 @@ This is **Joseph's Notebook** — a place to document ideas, experiments, and le
 
 ## About this blog
 
-This site is forked from the blog of **ninehills**（九原客）, an AI Infra practitioner I came across on X/Twitter whose work background aligns closely with mine. I’m a fan of his writing on LLM training and his minimal **GitHub Issues–driven blog** setup. I kept his posts in the deep-learning / LLM / GPU / inference space, and built on that foundation with several improvements: **configurability**, **shadcn/ui-inspired styling**, **CJK font rendering**, **full-text search**, **LaTeX math**, **Mermaid diagrams**, **syntax highlighting**, and related tooling. Articles whose original author is ninehills carry a short repost notice at the top and link back to his [GitHub Issues blog](https://github.com/ninehills/blog).
+This site is forked from the blog of **ninehills**（九原客）, an AI Infra practitioner I came across on X/Twitter whose work background aligns closely with mine. I’m a fan of his writing on LLM training and his minimal **GitHub Issues–driven blog** setup. I kept his posts in the deep-learning / LLM / GPU / inference space, and built on that foundation with several improvements: **configurability**, **shadcn/ui-inspired styling**, **CJK font rendering**, **full-text search**, **LaTeX math**, **Mermaid diagrams**, **syntax highlighting**, **on-demand JavaScript loading** (MathJax, Mermaid, and Fuse.js are only loaded when needed), and related tooling. Articles whose original author is ninehills carry a short repost notice at the top and link back to his [GitHub Issues blog](https://github.com/ninehills/blog).
 
 ---
 *"Nine hills" — a small corner of the web for scattered thoughts. This site continues that spirit.*
