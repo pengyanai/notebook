@@ -644,7 +644,7 @@ article blockquote {
 
 /* Semi-transparent quote mark as background decoration */
 article blockquote::before {
-  content: '"';
+  content: '“';
   position: absolute;
   left: 0.75rem;
   top: 0.25rem;

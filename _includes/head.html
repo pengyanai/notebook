@@ -5,8 +5,8 @@
   {%- comment -%} Preconnect to external domains used in posts (GitHub, user-images) and CDNs {%- endcomment -%}
   <link rel="preconnect" href="https://github.com" crossorigin>
   <link rel="preconnect" href="https://user-images.githubusercontent.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="dns-prefetch" href="https://unpkg.com">
   {%- comment -%} Single CSS: style.scss already imports minima theme, main.css is redundant {%- endcomment -%}
   <link rel="preload" href="{{ "/assets/css/style.css" | relative_url }}" as="style">
   <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
@@ -29,7 +29,7 @@
         processHtmlClass: 'tex2jax_process'
       },
       chtml: {
-        fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+        fontURL: 'https://unpkg.com/mathjax@3/es5/output/chtml/fonts/woff-v2',
         adaptiveCSS: true,
         matchFontHeight: true,
         mtextInheritFont: true,
@@ -44,5 +44,5 @@
       }
     };
   </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script id="MathJax-script" async src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
