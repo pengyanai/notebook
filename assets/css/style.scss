@@ -624,24 +624,43 @@ article p {
   color: var(--foreground);
 }
 
-/* Blockquote: GitHub-style tip callout (light green) */
+/* Blockquote: Notion-style with semi-transparent quote mark background */
 /* Note: No italic for CJK - synthetic italic causes blurry Chinese text */
 article blockquote {
   position: relative;
   margin: 1rem 0;
-  padding: 0.5rem 1rem;
-  background: hsl(142, 65%, 95%);
-  color: var(--foreground);
+  padding: 0.5rem 1rem 0.5rem 3rem;
+  background: rgba(55, 53, 47, 0.09);
+  color: rgba(55, 53, 47, 0.7);
   font-size: 0.9375rem;
   font-style: normal;
   line-height: 1.65;
-  border: 1px solid hsl(142, 45%, 85%);
-  border-left: 3px solid hsl(142, 71%, 45%);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-left: 4px solid rgba(55, 53, 47, 0.16);
+  border-radius: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Semi-transparent quote mark as background decoration */
+article blockquote::before {
+  content: '"';
+  position: absolute;
+  left: 0.75rem;
+  top: 0.25rem;
+  font-size: 3.5rem;
+  font-family: Georgia, "Times New Roman", serif;
+  color: rgba(55, 53, 47, 0.13);
+  line-height: 1;
+  font-weight: 400;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content appears above the quote mark */
+article blockquote > * {
+  position: relative;
+  z-index: 1;
 }
 
 article blockquote p:first-child {
@@ -811,13 +830,15 @@ article > blockquote:first-of-type {
 
 @media (prefers-color-scheme: dark) {
   article blockquote {
-    background: hsl(142, 30%, 18%);
-    border-color: hsl(142, 30%, 25%);
-    border-left-color: hsl(142, 55%, 45%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.055);
+    color: rgba(255, 255, 255, 0.7);
+    border-left-color: rgba(255, 255, 255, 0.2);
+  }
+  article blockquote::before {
+    color: rgba(255, 255, 255, 0.13);
   }
   article > blockquote:first-of-type {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
   }
 }
 
