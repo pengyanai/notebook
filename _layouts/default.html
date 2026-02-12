@@ -61,6 +61,82 @@
       </div>
     </main>
 
+    {%- comment -%} MathJax for math formula rendering - conditionally loaded only when math detected {%- endcomment -%}
+    <script>
+      (function() {
+        function loadMathJax() {
+          // Configure MathJax before loading
+          window.MathJax = {
+            tex: {
+              inlineMath: [['$', '$'], ['\\(', '\\)']],
+              displayMath: [['$$', '$$'], ['\\[', '\\]']],
+              processEscapes: true,
+              processEnvironments: true
+            },
+            options: {
+              skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+              ignoreHtmlClass: 'tex2jax_ignore',
+              processHtmlClass: 'tex2jax_process'
+            },
+            chtml: {
+              fontURL: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/output/chtml/fonts/woff-v2',
+              adaptiveCSS: true,
+              matchFontHeight: true,
+              mtextInheritFont: true,
+              merrorInheritFont: true
+            },
+            startup: {
+              typeset: false,
+              ready: function() {
+                MathJax.startup.defaultReady();
+                MathJax.typesetPromise();
+              }
+            }
+          };
+
+          // Load MathJax script
+          var script = document.createElement('script');
+          script.id = 'MathJax-script';
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js';
+          script.async = true;
+          script.crossOrigin = 'anonymous';
+          document.head.appendChild(script);
+        }
+
+        // Detect if page contains math formulas (inline $...$ or display $$...$$)
+        function hasMathFormulas() {
+          // Check post content area first (more reliable)
+          var postContent = document.querySelector('.post-content');
+          var content = postContent ? postContent.textContent || postContent.innerText : '';
+          
+          // Fallback to body content if no post-content found
+          if (!content) {
+            content = document.body.textContent || document.body.innerText || '';
+          }
+          
+          // Check for inline math: $...$ (but not $$ which is display math)
+          var hasInlineMath = /[^$]\$[^$]/.test(content) || /\\\(/.test(content);
+          // Check for display math: $$...$$ or \[...\]
+          var hasDisplayMath = /\$\$[\s\S]*?\$\$/.test(content) || /\\\[/.test(content);
+          return hasInlineMath || hasDisplayMath;
+        }
+
+        // Wait for DOM to be ready before checking
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+            if (hasMathFormulas()) {
+              loadMathJax();
+            }
+          });
+        } else {
+          // DOM already loaded
+          if (hasMathFormulas()) {
+            loadMathJax();
+          }
+        }
+      })();
+    </script>
+
     {%- comment -%} Mermaid.js for flowchart, sequence diagram, etc. - lazy loaded {%- endcomment -%}
     <script>
       (function() {
@@ -69,6 +145,7 @@
           var script = document.createElement('script');
           script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.12.0/mermaid.min.js';
           script.async = true;
+          script.crossOrigin = 'anonymous';
           script.onload = function() {
             mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
             document.querySelectorAll('pre code.language-mermaid').forEach(function(code) {
