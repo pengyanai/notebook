@@ -672,7 +672,6 @@ article blockquote p:last-child {
 }
 
 /* Inline code: shadcn style - bg-muted (page-content has no article wrapper) */
-// #region agent log
 .page-content code,
 .page-content code.highlighter-rouge,
 .page-content code.language-plaintext,
@@ -686,10 +685,8 @@ article blockquote p:last-child {
   font-weight: 600;
   border: none !important;
 }
-// #endregion agent log
 
 /* Code block: shadcn style - clean minimal background */
-// #region agent log
 .page-content pre,
 .page-content pre.highlight,
 .page-content .highlight pre,
@@ -712,7 +709,6 @@ article blockquote p:last-child {
 .page-content .highlighter-rouge .highlight {
   background: hsl(0, 0%, 98%) !important; /* Override minima #eef */
 }
-// #endregion agent log
 
 @media (prefers-color-scheme: dark) {
   .page-content pre,
@@ -763,9 +759,6 @@ article table tr:nth-child(even) {
 
 /* Lists in article content */
 .page-content .wrapper ul:not(:first-of-type),
-.page-content .wrapper h1 ~ ul,
-.page-content .wrapper h2 ~ ul,
-.page-content .wrapper p ~ ul,
 article ul,
 article ol {
   list-style: disc;
@@ -790,9 +783,6 @@ article ul ul ul {
 
 .page-content .wrapper ul:not(:first-of-type) li,
 .page-content .wrapper ul ul li,
-.page-content .wrapper h1 ~ ul li,
-.page-content .wrapper h2 ~ ul li,
-.page-content .wrapper p ~ ul li,
 article li {
   margin-bottom: 0.25rem;
   display: list-item;
@@ -805,9 +795,7 @@ article li {
 
 .page-content .wrapper ul:not(:first-of-type) li a,
 .page-content .wrapper ul ul li a,
-.page-content .wrapper h1 ~ ul li a,
-.page-content .wrapper h2 ~ ul li a,
-.page-content .wrapper p ~ ul li a {
+article li a {
   font-size: inherit;
   font-weight: normal;
   margin-right: 0;
@@ -888,14 +876,6 @@ a:hover {
   .post-content a:visited:hover {
     background-color: hsl(221, 60%, 18%);
   }
-}
-
-/* External links: add icon hint */
-.post-content a[href^="http"]:not([href*="http"])::after {
-  content: " ↗";
-  font-size: 0.8em;
-  opacity: 0.8;
-  text-decoration: none;
 }
 
 /* --- No footer (layout already excludes it) --- */
