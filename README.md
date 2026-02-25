@@ -1,5 +1,6 @@
 <!-- Blog content is generated from GitHub issues. Tooling: `python run.py` for help. -->
 
+- #159 2026-02-25 [中国营销中的央视平台投放：ROI分析、文化心理与洞察](posts/159.md)
 - #158 2026-02-25 [让 GPT 帮你从零梳理需求，最后产出一份高质量 Context Prompt 的实践笔记](posts/158.md)
 - #157 2026-02-12 [Cursor 模型与 Pro 额度的实战调研记录](posts/157.md)
 - #156 2026-02-11 [Transformer 前向流程与自注意力机制简述](posts/156.md)
