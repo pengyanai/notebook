@@ -11,6 +11,8 @@ author: Joseph
 
 ---
 
+![DeepSpeed ZeRO 论文配图](https://www.microsoft.com/en-us/research/wp-content/uploads/2020/02/DeepSpeed-Image-1.png)
+
 ## 一、基础：ZeRO 的 16 bytes/param 从何而来
 
 ZeRO 论文的核心研究问题是：**Model States 为什么无法放进单卡，以及如何切分它？**

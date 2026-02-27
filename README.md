@@ -1,5 +1,6 @@
 <!-- Blog content is generated from GitHub issues. Tooling: `python run.py` for help. -->
 
+- #165 2026-02-27 [大模型训推高质量社区、技术博客与资源索引](posts/2026-02-27-llm-train-infer-communities-blogs.md)
 - #164 2026-02-26 [LLM 训练显存估算全指南：从 ZeRO 到 MoE](posts/2026-02-26-llm-training-memory-estimation.md)
 - #163 2026-02-26 [训练大模型时，优化器状态到底在吃多少显存](posts/2026-01-15-optimizer-states-in-llm-training.md)
 - #162 2026-02-26 [PyTorch Profiler 显存瓶颈分析全指南（实战版）](posts/162.md)
