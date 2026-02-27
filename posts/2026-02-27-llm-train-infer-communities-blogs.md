@@ -80,6 +80,7 @@ author: Joseph
 | Visualize and understand GPU memory in PyTorch | [huggingface.co/blog/train_memory](https://huggingface.co/blog/train_memory) |
 | Automated trace collection and analysis – PyTorch | [pytorch.org/blog/automated-trace-collection-and-analysis/](https://pytorch.org/blog/automated-trace-collection/) |
 | Slaying OOMs with PyTorch FSDP and torchao | [parlance-labs.com/education/fine_tuning/slaying_ooms.html](https://parlance-labs.com/education/fine_tuning/slaying_ooms.html) |
+| Out of Memory (OOM) — Oumi AI | [oumi.ai/docs/en/latest/faq/oom.html](https://www.oumi.ai/docs/en/latest/faq/oom.html) |
 | Inside vLLM: Anatomy of Inference System | [blog.vllm.ai](https://blog.vllm.ai/2025/09/05/anatomy-of-vllm.html) |
 | Mastering LLM Inference Optimization (NVIDIA) | [developer.nvidia.com](https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization) |
 
