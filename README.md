@@ -1,5 +1,6 @@
 <!-- Blog content is generated from GitHub issues. Tooling: `python run.py` for help. -->
 
+- #171 2026-03-03 [Tailscale 家庭多设备与 VPS 组网：GPT 访问、出口节点与文件共享](posts/2026-03-03-tailscale-home-multidevice-vps-gpt.md)
 - #170 2026-03-02 [配置驱动的训练框架：从 YAML 到模块实例化的设计与实践](posts/2026-03-02-training-framework-config-driven-instantiation.md)
 - #165 2026-02-27 [大模型训推高质量社区、技术博客与资源索引](posts/2026-02-27-llm-train-infer-communities-blogs.md)
 - #164 2026-02-26 [LLM 训练显存估算全指南：从 ZeRO 到 MoE](posts/2026-02-26-llm-training-memory-estimation.md)
