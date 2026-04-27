@@ -87,6 +87,9 @@ python3 run.py add-image-attrs
 
 # 3. Start server (with watch)
 bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch
+
+# quick start
+nohup bundle exec jekyll serve --livereload --drafts > /tmp/jekyll.log 2>&1 &
 ```
 
 ---
