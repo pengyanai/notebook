@@ -498,6 +498,17 @@ body {
   border-bottom: none;
 }
 
+.post-list-num {
+  display: inline-block;
+  min-width: 2.5em;
+  margin-right: 0.5em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
 .page-content .wrapper > ul:first-of-type li a {
   font-size: 1rem;
   font-weight: 600;
