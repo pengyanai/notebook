@@ -82,21 +82,36 @@ body {
 }
 
 /* Wide container: shadcn-style max width + padding */
+/* Wide container: 80% width = 10% margin each side */
 .wrapper {
-  width: 100%;
+  width: 80%;
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 1024px) {
   .wrapper {
-    padding-left: 2rem;
-    padding-right: 2rem;
+    width: 90%;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* --- Header: single line, no top bar --- */
 .site-header {
@@ -886,9 +901,12 @@ a:hover {
 /* --- Responsive --- */
 @media (max-width: 640px) {
   .wrapper {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    width: 92%;
   }
+
+
+
+
 
   .post-title,
   article h1 {
