@@ -1,6 +1,5 @@
 <!-- Blog content is generated from GitHub issues. Tooling: `python run.py` for help. -->
 - #173 2026-04-27 [大陆高速访问 GitHub 资源：jsDelivr CDN 拼接技巧与镜像实测](posts/2026-04-27-github-cdn-china-jsdelivr.md)
-
 - #172 2026-04-27 [Apple 子域名功能梳理与代理规则配置指南](posts/2026-04-27-apple-domains-proxy-rules.md)
 - #171 2026-03-03 [Tailscale 家庭多设备与 VPS 组网：GPT 访问、出口节点与文件共享](posts/2026-03-03-tailscale-home-multidevice-vps-gpt.md)
 - #170 2026-03-02 [配置驱动的训练框架：从 YAML 到模块实例化的设计与实践](posts/2026-03-02-training-framework-config-driven-instantiation.md)
