@@ -2,7 +2,7 @@
 layout: null
 ---
 [
-{% assign post_pages = site.pages | where: "layout", "default" | where_exp: "p", "p.path contains 'posts/'" %}
+{% assign post_pages = site.pages | where_exp: "p", "p.path contains 'posts/'" %}
 {% for post in post_pages %}
 {% capture meta_str %}{% if post.author %}{{ post.author }} {% endif %}{% if post.date %}{{ post.date | date: "%Y-%m-%d" }} {% endif %}{% if post.labels %}{{ post.labels }} {% endif %}{% endcapture %}
 {
