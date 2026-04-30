@@ -1,3 +1,4 @@
+<div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
 <header class="site-header" role="banner">
   <div class="wrapper site-header-inner">
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
@@ -17,5 +18,169 @@
       />
       <kbd class="search-header-kbd">⌘ + K</kbd>
     </div>
+    <!-- Mobile: search icon + hamburger -->
+    <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="4.8"/><line x1="11.5" y1="11.5" x2="15.5" y2="15.5"/></svg>
+    </button>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/>
+        <line x1="3" y1="10" x2="17" y2="10"/>
+        <line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
   </div>
 </header>
+
+<!-- Mobile slide-in menu -->
+<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+<aside class="mobile-menu-panel" id="mobile-menu-panel" aria-hidden="true">
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-title">Menu</span>
+    <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="4" x2="14" y2="14"/>
+        <line x1="14" y1="4" x2="4" y2="14"/>
+      </svg>
+    </button>
+  </div>
+  <div class="mobile-menu-search">
+    <input
+      type="search"
+      id="mobile-search-input"
+      class="mobile-search-input"
+      placeholder="Search posts..."
+      autocomplete="off"
+      aria-label="Search"
+      readonly
+    />
+  </div>
+  <nav class="mobile-menu-nav">
+    <a class="mobile-menu-link" href="{{ "/" | relative_url }}">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h12M2 8h12M2 4h12"/></svg>
+      Posts
+    </a>
+    <a class="mobile-menu-link" href="{{ "/about/" | relative_url }}">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+      About
+    </a>
+  </nav>
+  <div class="mobile-menu-footer">
+    <kbd>⌘K</kbd> to search
+  </div>
+</aside>
+
+<script>
+(function() {
+  /* --- Wrap post list date text in <span> for mobile styling --- */
+  function extractDates() {
+    var postList = document.querySelector('.page-content .wrapper > ul:first-of-type');
+    if (!postList) return;
+    postList.querySelectorAll('li').forEach(function(li) {
+      if (li.querySelector('.post-list-date')) return;
+      for (var i = 0; i < li.childNodes.length; i++) {
+        var node = li.childNodes[i];
+        if (node.nodeType !== 3 || !node.textContent.trim()) continue;
+        var text = node.textContent.trim();
+        var m = text.match(/^(\d{4}-\d{2}-\d{2})\s*/);
+        if (!m) break;
+        var span = document.createElement('span');
+        span.className = 'post-list-date';
+        span.textContent = m[1];
+        li.insertBefore(span, node);
+        node.textContent = text.slice(m[0].length);
+        break;
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', extractDates);
+  } else {
+    extractDates();
+  }
+})();
+</script>
+
+<script>
+(function() {
+  var btn = document.getElementById('mobile-menu-btn');
+  var panel = document.getElementById('mobile-menu-panel');
+  var overlay = document.getElementById('mobile-menu-overlay');
+  var closeBtn = document.getElementById('mobile-menu-close');
+  var mobileSearch = document.getElementById('mobile-search-input');
+
+  function openMenu() {
+    panel.classList.add('mobile-menu-open');
+    overlay.classList.add('mobile-menu-overlay-visible');
+    panel.setAttribute('aria-hidden', 'false');
+    btn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    panel.classList.remove('mobile-menu-open');
+    overlay.classList.remove('mobile-menu-overlay-visible');
+    panel.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+
+  // Mobile search input opens the global search modal
+  if (mobileSearch) {
+    mobileSearch.addEventListener('click', function() {
+      closeMenu();
+      // Small delay for panel close animation
+      setTimeout(function() {
+        var headerInput = document.getElementById('search-header-input');
+        if (headerInput) headerInput.click();
+      }, 200);
+    });
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && panel.classList.contains('mobile-menu-open')) {
+      closeMenu();
+    }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  /* --- Mobile search button → open search modal directly --- */
+  var mobileSearchBtn = document.getElementById('mobile-search-btn');
+  if (mobileSearchBtn) {
+    mobileSearchBtn.addEventListener('click', function() {
+      var headerInput = document.getElementById('search-header-input');
+      if (headerInput) headerInput.click();
+    });
+  }
+
+  /* --- Reading progress bar for article pages --- */
+  var bar = document.getElementById('reading-progress');
+  if (!bar) return;
+  function updateProgress() {
+    if (!document.querySelector('.post-content')) {
+      bar.style.opacity = '0';
+      return;
+    }
+    var scrolled = window.pageYOffset || document.documentElement.scrollTop;
+    var total = document.documentElement.scrollHeight - window.innerHeight;
+    if (total <= 0) return;
+    var pct = Math.min(1, scrolled / total);
+    bar.style.transform = 'scaleX(' + pct + ')';
+    bar.style.opacity = pct > 0 ? '1' : '0';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateProgress);
+  } else {
+    updateProgress();
+  }
+})();
+</script>
