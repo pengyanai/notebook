@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-04-30 [Hermes Agent 完全 YOLO 模式：彻底关掉「approve this command?」确认框](posts/2026-04-30-hermes-yolo-mode-approval-bypass.md)
 - 2026-04-30 [vLLM v0.20 显存优化与推理加速实战指南](posts/2026-04-30-vllm-v020-optimization-guide.md)
 - 2026-04-30 [vLLM v0.20 架构深度解析：双引擎、调度器、KV Cache 与分布式推理](posts/2026-04-30-vllm-v020-architecture.md)
 - 2026-04-29 [AI Coding Agent 的多 Agent 协作架构深度调研：从 Claude Code 到 Hermes Agent](posts/2026-04-29-multi-agent-orchestration-deep-dive.md)
