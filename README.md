@@ -1,5 +1,7 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-04-30 [vLLM v0.20 架构深度解析：双引擎、调度器、KV Cache 与分布式推理](posts/2026-04-30-vllm-v020-architecture.md)
+- 2026-04-29 [AI Coding Agent 的多 Agent 协作架构深度调研：从 Claude Code 到 Hermes Agent](posts/2026-04-29-multi-agent-orchestration-deep-dive.md)
 - 2026-04-27 [Stash Availability Check Tiles：一键检测 AI 与流媒体服务可用性](posts/2026-04-27-stash-availability-check-tiles.md)
 - 2026-04-27 [大陆高速访问 GitHub 资源：jsDelivr CDN 拼接技巧与镜像实测](posts/2026-04-27-github-cdn-china-jsdelivr.md)
 - 2026-04-27 [Apple 子域名功能梳理与代理规则配置指南](posts/2026-04-27-apple-domains-proxy-rules.md)
