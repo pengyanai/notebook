@@ -19,15 +19,15 @@ tags: [Hermes, YOLO, 自动化, CLI, 配置, Agent]
 
 ```mermaid
 graph LR
-    CMD["危险命令请求"]
-    CMD --> L1["① approvals.mode\nmanual / smart / off"]
-    CMD --> L2["② command_allowlist\n已批准的命令模式"]
-    CMD --> L3["③ approvals.cron_mode\ncron 任务放行策略"]
-    CMD --> L4["④ mcp_reload_confirm\nreload-mcp 确认"]
-    CMD --> L5["⑤ hooks_auto_accept\nHook 自动通过"]
-    CMD --> L6["⑥ security.tirith_enabled\n安全扫描"]
-    CMD --> L7["⑦ HERMES_YOLO_MODE=1\n运行时环境变量（最高优先）"]
-    CMD --> L8["⑧ --yolo CLI flag\n启动时一次性开启"]
+    CMD["危险命令请求"] --> L1["① approvals.mode<br/>manual / smart / off"]
+    L1 --> L2["② command_allowlist<br/>已批准命令模式"]
+    L2 --> L3["③ approvals.cron_mode<br/>cron 放行策略"]
+    L3 --> L4["④ mcp_reload_confirm<br/>reload-mcp 确认"]
+    L4 --> L5["⑤ hooks_auto_accept<br/>Hook 自动通过"]
+    L5 --> L6["⑥ tirith_enabled<br/>安全扫描"]
+    L6 --> L7["⑦ HERMES_YOLO_MODE=1<br/>环境变量（最高优先）"]
+    L7 --> L8["⑧ --yolo flag<br/>启动时一次性"]
+    L8 --> PASS["✅ 执行"]
 ```
 
 | 层级 | 配置项 | 默认值 | 说明 |
