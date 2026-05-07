@@ -11,6 +11,19 @@ tags: [Claude, Claude Desktop, 第三方网关, BlueRouter, 自建代理, Anthro
 
 Claude Desktop for Mac（v1.4758.0 起）**支持接入任意 Anthropic Messages 兼容的网关**，通过 Developer Mode 下的 "Configure Third-Party Inference" 窗口配置即可。全程不需要 Anthropic 官方账号。本文以接入本地自建网关 BlueRouter（`http://127.0.0.1:18966`）为例，记录完整配置步骤、底层机制、以及实际踩过的坑。
 
+### 整体拓扑
+
+```mermaid
+flowchart LR
+    A[Claude Desktop for Mac<br/>Cowork / Claude Code] -->|/v1/messages<br/>x-api-key: sk-bp-xxx| B[本地网关<br/>BlueRouter :18966]
+    B -->|mapping rewrite<br/>+ sanitize payload| C[企业 AI 网关<br/>aicode-api.example.com]
+    C --> D1[Anthropic Bedrock<br/>Claude Opus/Sonnet]
+    C --> D2[DeepSeek / Kimi<br/>GLM / Qwen / MiniMax]
+    style A fill:#f9e79f
+    style B fill:#aed6f1
+    style C fill:#d5f5e3
+```
+
 ---
 
 ## 一、前置验证：先确认你的网关协议兼容
@@ -30,6 +43,24 @@ curl -X POST http://127.0.0.1:18966/v1/messages \
 ```
 
 **期望返回**：HTTP 200 + 形如 `{"id":"msg_...", "content":[{"type":"text","text":"OK"}], ...}` 的 Anthropic 格式 JSON。
+
+两种协议格式的差异直接决定能不能用：
+
+```mermaid
+sequenceDiagram
+    participant Client as curl / Claude Desktop
+    participant GW as 你的网关 :18966
+    participant UP as 上游 LLM
+
+    Client->>GW: POST /v1/messages<br/>(Anthropic format)
+    GW->>UP: 转发 / 转换
+    UP-->>GW: 响应
+    alt 网关保持 Anthropic 格式
+        GW-->>Client: event:message_start<br/>event:content_block_delta<br/>...<br/>✅ Claude Desktop 正常识别
+    else 网关吐 OpenAI 格式
+        GW-->>Client: data:{"choices":[{"delta":...}]}<br/>❌ Claude Desktop 解析空<br/>报 "empty or malformed"
+    end
+```
 
 如果返回的是 OpenAI 格式（`{"choices":[{"delta":...}]}`），说明网关只做 OpenAI 协议透传，Claude Desktop 会报：
 
@@ -57,9 +88,26 @@ API Error: API returned an empty or malformed response (HTTP 200)
 
 **关键点**：因为 API key 是 `safeStorage` 加密存储的（Electron 通过系统 Keychain 加密），**必须从 GUI 一次性输入**，不能直接改配置文件。
 
+实际网关管理页（BlueRouter Models 标签）看起来是这样 —— 可以清晰看到**每个模型的 ID / 别名 / Provider 归属**，本文后面的"三套命名体系"章节就是从这张表延伸出来的：
+
+![BlueRouter Models 管理页](/assets/images/claude-desktop-3p/bluerouter-models.png)
+
 ---
 
 ## 三、完整配置步骤
+
+六步流程概览：
+
+```mermaid
+flowchart TD
+    A[1 退出 Claude Desktop<br/>pkill -x Claude] --> B[2 重新打开 Claude.app<br/>⚠️ 不要登录]
+    B --> C[3 启用 Developer Mode<br/>Help → Troubleshooting]
+    C --> D[4 菜单 Developer →<br/>Configure Third-Party Inference]
+    D --> E[5 Setup 窗口填写:<br/>Provider=Gateway<br/>Base URL / API Key / Auth Scheme]
+    E --> F[6 保存, 自动 GET /v1/models<br/>discovery OK 即可用]
+    style A fill:#fadbd8
+    style F fill:#d5f5e3
+```
 
 ### 1. 退出 Claude Desktop
 
@@ -97,7 +145,9 @@ pkill -x Claude
 
 ### 6. 重启 / 进入主界面即可使用
 
-左下角会显示 **"Cowork 3P \| Gateway"**，说明当前处于第三方模式。
+左下角会显示 **"Cowork 3P \| Gateway"**，说明当前处于第三方模式。**Claude Code 标签**此时就完全可用了：
+
+![Claude Code 标签通过网关正常工作](/assets/images/claude-desktop-3p/coding-success.png)
 
 ---
 
@@ -117,13 +167,44 @@ Claude Desktop 展示出来的模型名和网关实际的 id 可能完全不同�
 
 配置完后 Claude Desktop 下拉框显示 `Opus 4.6` 其实对应网关 `claude-opus-4-20250514`，**客户端请求 body 里传的是第 ② 层 id**，网关再映射到第 ① 层路由到上游。
 
+三层转换的全链路：
+
+```mermaid
+flowchart LR
+    subgraph UI["③ UI 美化层<br/>(Claude Desktop 内置)"]
+      U1["Opus 4"]
+      U2["Sonnet 4.5"]
+      U3["deepseek-chat"]
+    end
+    subgraph PUB["② /v1/models 对外 id<br/>(Mappings from 列)"]
+      P1["claude-opus-4-20250514"]
+      P2["claude-sonnet-4-5-20250929"]
+      P3["deepseek-chat"]
+    end
+    subgraph INT["① 网关内部真实 id<br/>(上游 catalog)"]
+      I1["Claude-4.6-Opus"]
+      I2["claude-4.6-sonnet"]
+      I3["Baidu-DeepSeek-V3.2"]
+    end
+    U1 --> P1 --> I1
+    U2 --> P2 --> I2
+    U3 --> P3 --> I3
+    style UI fill:#fef9e7
+    style PUB fill:#eaf2f8
+    style INT fill:#eafaf1
+```
+
+**请求方向**：客户端拿 UI 显示名选了 `Opus 4`，实际请求 body 里传的是 ② 的 `claude-opus-4-20250514`，网关内 `resolveModel()` 查 Mappings 改写成 ① 的 `Claude-4.6-Opus`，转发给上游。
+
 ---
 
 ## 五、常见坑
 
 ### 坑 1：Cowork Chat 页面报 "empty or malformed response"
 
-症状：`/v1/messages` 返回 HTTP 200 但 Claude Desktop 说响应为空。
+症状：`/v1/messages` 返回 HTTP 200 但 Claude Desktop 说响应为空。UI 上长这样：
+
+![Cowork 页面 empty or malformed response 报错](/assets/images/claude-desktop-3p/cowork-error.png)
 
 **真因**（我自己踩过的最坑）：不是协议问题，而是 Cowork 发的请求里 `cache_control.ttl` 顺序违反 Anthropic 规则：
 
@@ -134,6 +215,29 @@ Note that blocks are processed in the following order: tools, system, messages.
 ```
 
 Anthropic API 要求：所有 `ttl='1h'` 的 cache_control block 必须出现在 `ttl='5m'` 块**之前**（按 tools → system → messages 扫描顺序）。Cowork 的 SDK 在 system 和最后一个 user message 都打了 `ttl='1h'` 标记，而内部 SDK 在中间插入了 `ttl='5m'` 的块，导致顺序违反。
+
+顺序问题与修复示意：
+
+```mermaid
+sequenceDiagram
+    participant CW as Cowork (Claude Desktop)
+    participant GW as BlueRouter
+    participant UP as Anthropic Bedrock
+
+    Note over CW,UP: ❌ 原始行为（失败）
+    CW->>GW: system[ttl=1h] + tools[ttl=5m] + user[ttl=1h]
+    GW->>UP: 原样转发
+    UP-->>GW: HTTP 200 + SSE event:error<br/>"1h must not come after 5m"
+    GW-->>CW: 转发错误流
+    Note right of CW: UI 显示<br/>"empty or malformed"
+
+    Note over CW,UP: ✅ 网关插入 downgrade 后
+    CW->>GW: 同样的 payload
+    GW->>GW: isCoworkUA(UA)? → 扫描 tools/system/messages<br/>把所有 ttl='1h' 降为 '5m'
+    GW->>UP: system[ttl=5m] + tools[ttl=5m] + user[ttl=5m]
+    UP-->>GW: HTTP 200 + 正常 SSE 流
+    GW-->>CW: 正常响应
+```
 
 **解决**：在网关侧做请求改写，把 Cowork 请求里的 `ttl='1h'` 全部降级为 `ttl='5m'`。Claude Code CLI 的 UA 是 `claude-code`，不受此问题影响，**保留其 1h 缓存可以显著降低长会话的 token 成本**。
 
