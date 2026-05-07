@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Codex CLI 接入第三方 API Key 和 Base URL 实战指南"
+title: "Codex App & CLI 接入第三方 API Key 和 Base URL 实战指南"
 date: 2026-05-07
 author: Austin
 categories: [工具, LLM]
@@ -9,9 +9,32 @@ tags: [Codex, CLI, OpenAI, 第三方网关, 代理, config.toml]
 
 ## TL;DR
 
-**OpenAI Codex CLI 支持任意 OpenAI Responses API 兼容的网关**，通过 `~/.codex/config.toml` 的 `[model_providers.<id>]` 自定义即可。最简场景只改一行 `openai_base_url` 就能把 built-in openai provider 指向代理；复杂场景可以自定义多个 provider、env header、命令式动态 token、profile 多账号切换。
+**OpenAI Codex CLI + Codex 桌面 App 都支持任意 OpenAI Responses API 兼容的网关**，通过 `~/.codex/config.toml` 的 `[model_providers.<id>]` 自定义即可。最简场景只改一行 `openai_base_url` 就能把 built-in openai provider 指向代理；复杂场景可以自定义多个 provider、env header、命令式动态 token、profile 多账号切换。
 
-> 配 **Claude Code CLI** 看 [这篇](/posts/2026-05-07-claude-code-cli-third-party-gateway.html)；**Claude Desktop App** 看 [这篇](/posts/2026-05-07-claude-desktop-third-party-inference.html)。本文专讲 Codex CLI。
+> 配 **Claude Code CLI** 看 [这篇](/posts/2026-05-07-claude-code-cli-third-party-gateway.html)；**Claude Desktop App** 看 [这篇](/posts/2026-05-07-claude-desktop-third-party-inference.html)。本文覆盖 Codex CLI 和 Codex App。
+
+### App 与 CLI 共享配置（反编译验证）
+
+和 Claude Desktop 有独立 "Configure Third-Party Inference" 窗口不同，**Codex 桌面 App 没有自己的 provider 配置 GUI** —— 它直接读 CLI 的 `~/.codex/config.toml`。
+
+反编译 `Codex.app/Contents/Resources/app.asar` 能看到路径解析和 CLI 完全一致：
+
+```js
+// 来自 app.asar：Codex 桌面 App 解析 config 目录的逻辑
+function Am(e) {
+  let t = e ?? (typeof process < "u" ? {} : void 0);
+  return t?.CODEX_HOME && t.CODEX_HOME.length > 0
+    ? normalize(t.CODEX_HOME)
+    : t?.HOME && t.HOME.length > 0
+      ? normalize(join(t.HOME, ".codex"))
+      : "/.codex";
+}
+```
+
+且 App 内部初始化 provider 用的是同一套 `model_providers.<id>.{name, base_url, experimental_bearer_token, wire_api}` schema。所以**本文所有配置对 App 和 CLI 都通用**，唯一差别是：
+
+- **CLI 用户**：直接编辑 `~/.codex/config.toml`，或用 `-c key=value` 一次性覆盖
+- **App 用户**：同样编辑 `~/.codex/config.toml`，然后重启 App。`-c` CLI flag 在 `codex app` 启动时也支持，会透传给 App
 
 ---
 
@@ -362,4 +385,4 @@ codex --profile work ...                     # 切 profile
 
 ---
 
-**本文基于 Codex CLI 0.121.0 + OpenAI developers 官方文档整理。**
+**本文基于 Codex CLI 0.121.0 + Codex.app 26.422.62136 + OpenAI developers 官方文档整理。**
