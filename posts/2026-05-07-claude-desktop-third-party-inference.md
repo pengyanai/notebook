@@ -248,9 +248,13 @@ func isCoworkUA(ua string) bool {
 
 两个 UA 标记都是 Cowork 的（旧版用 `claude-desktop-3p`，新版用 `local-agent`）。
 
+> **调试小坑**：我第一次只匹配了 `claude-desktop-3p`，上线后 Cowork 还在报错。查 `~/.config/bluecode-proxy/errors.log` 才发现新版 Cowork UA 已变成 `(external, local-agent)`。**UA 标记会随 Claude Desktop 版本演进**，匹配多个 token 比单值匹配稳健。完整代码见文末附录。
+
 ### 坑 2：每次启动默认都是第一个模型（而且是非 Claude 的）
 
 Claude Desktop 第三方模式**不跨 session 持久化模型选择**。新 session 默认是 `/v1/models` 返回数组的第一个元素，按字母序排。
+
+> **怎么确认的**：在 `~/Library/Application Support/Claude/Local Storage/leveldb/` + `IndexedDB/` 全文 grep 过 `selectedModel` / `lastModel` / `currentModel` / `preferredModel`，一条都没有。官方账号模式的模型偏好存在 Anthropic 账号云端配置里；走 gateway 就没有这条路径了，每次启动重新从 discovery 数组取第 0 个。
 
 **解决方案 A**：在 Setup 窗口的 `inferenceModels` 字段填白名单，只放你想用的 Claude 模型。
 
@@ -326,3 +330,124 @@ sort.SliceStable(list, func(i, j int) bool {
 ---
 
 **本文基于 Claude Desktop v1.4758.0 + Anthropic support 官方文档（2026-04 版本）整理。**
+
+---
+
+## 附录：BlueRouter 完整兼容性补丁
+
+本文提到的三个网关侧修复都在 BlueRouter `main.go` 一个文件里完成。整合到这里方便自建代理直接照抄。
+
+### A. `/v1/models` 透明化 + Claude 优先排序
+
+只暴露 mappings `from` 列（客户端看到的都是标准 id），Claude 系排首：
+
+```go
+func handleModels(w http.ResponseWriter, r *http.Request) {
+    state.mu.RLock()
+    models, mappings := state.models, state.mappings
+    state.mu.RUnlock()
+
+    type entry struct {
+        ID      string `json:"id"`
+        Object  string `json:"object"`
+        Created int64  `json:"created"`
+        OwnedBy string `json:"owned_by"`
+        Name    string `json:"name,omitempty"`
+    }
+    now := time.Now().Unix()
+    list := make([]entry, 0, len(mappings))
+    seen := map[string]bool{}
+
+    // Expose only mapping `from` ids whose `to` is a live upstream model.
+    for _, mp := range mappings {
+        if _, ok := models[mp.To]; !ok { continue }
+        if seen[mp.From] { continue }
+        seen[mp.From] = true
+        list = append(list, entry{
+            ID: mp.From, Object: "model", Created: now,
+            OwnedBy: "bluecode-ai", Name: mp.To,
+        })
+    }
+
+    // Claude family first, then alphabetical within each group.
+    isClaude := func(id, name string) bool {
+        s := strings.ToLower(id + " " + name)
+        return strings.Contains(s, "claude") ||
+            strings.Contains(s, "opus") ||
+            strings.Contains(s, "sonnet") ||
+            strings.Contains(s, "haiku")
+    }
+    sort.SliceStable(list, func(i, j int) bool {
+        ci, cj := isClaude(list[i].ID, list[i].Name),
+                  isClaude(list[j].ID, list[j].Name)
+        if ci != cj { return ci }
+        return list[i].ID < list[j].ID
+    })
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "object": "list", "data": list,
+    })
+}
+```
+
+### B. Cowork UA 识别
+
+```go
+// Observed Cowork UA signatures — match any to survive version drift:
+//   claude-cli/X.Y.Z (external, claude-desktop-3p, agent-sdk/...)   — old Cowork
+//   claude-cli/X.Y.Z (external, local-agent)                        — new Cowork
+// Claude Code CLI uses `(external, claude-code, ...)` and is intentionally NOT matched.
+func isCoworkUA(ua string) bool {
+    return strings.Contains(ua, "claude-desktop-3p") ||
+        strings.Contains(ua, "local-agent")
+}
+```
+
+### C. `cache_control.ttl='1h' → '5m'` 降级
+
+```go
+// Recursively walk tools/system/messages and rewrite every cache_control.ttl
+// from "1h" to "5m". Only called for Cowork — Claude Code keeps its 1h caches.
+func downgradeCacheControlTTL(raw map[string]json.RawMessage) {
+    var walk func(v interface{}) interface{}
+    walk = func(v interface{}) interface{} {
+        switch x := v.(type) {
+        case map[string]interface{}:
+            if cc, ok := x["cache_control"].(map[string]interface{}); ok {
+                if ttl, _ := cc["ttl"].(string); ttl == "1h" {
+                    cc["ttl"] = "5m"
+                }
+            }
+            for k, vv := range x { x[k] = walk(vv) }
+            return x
+        case []interface{}:
+            for i, vv := range x { x[i] = walk(vv) }
+            return x
+        }
+        return v
+    }
+    for _, field := range []string{"tools", "system", "messages"} {
+        b, ok := raw[field]
+        if !ok { continue }
+        var decoded interface{}
+        if json.Unmarshal(b, &decoded) != nil { continue }
+        decoded = walk(decoded)
+        if out, err := json.Marshal(decoded); err == nil {
+            raw[field] = out
+        }
+    }
+}
+```
+
+### D. 调用点（在请求处理器里）
+
+```go
+if isClaude {
+    delete(raw, "temperature")
+    if isCoworkUA(r.Header.Get("User-Agent")) {
+        downgradeCacheControlTTL(raw)
+    }
+}
+```
+
+完整 diff 见 BlueRouter commit [`ea994e3`](https://github.com/iqiancheng/bluecode-proxy/commit/ea994e3)。
