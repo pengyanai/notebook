@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-07 [工程师的 Downloads 目录整理方法论：PARA + 时间线 + 工程实践](posts/2026-05-07-engineer-file-organization-para.md)
 - 2026-05-07 [Codex App & CLI 接入第三方 API Key 和 Base URL 实战指南](posts/2026-05-07-codex-cli-third-party-gateway.md)
 - 2026-05-07 [Claude Code CLI 接入第三方 API Key 和 Base URL 实战指南](posts/2026-05-07-claude-code-cli-third-party-gateway.md)
 - 2026-05-07 [Claude Desktop for Mac 配置第三方 API Key 和 Base URL 完整指南](posts/2026-05-07-claude-desktop-third-party-inference.md)
