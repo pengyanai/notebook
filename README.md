@@ -1,5 +1,7 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-07 [语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR](posts/2026-05-07-speech-recognition-architecture-evolution.md)
+- 2026-05-07 [语音模型预处理流程及常用术语详解：从声波到 Log-Mel 到 Audio-LLM](posts/2026-05-07-speech-model-preprocessing-glossary.md)
 - 2026-05-07 [Cursor Free Plan 接入第三方 BlueRouter 网关调研（WIP）](posts/2026-05-07-cursor-free-plan-bluerouter-gateway-wip.md)
 - 2026-05-07 [工程师的 Downloads 目录整理方法论：PARA + 时间线 + 工程实践](posts/2026-05-07-engineer-file-organization-para.md)
 - 2026-05-07 [Codex App & CLI 接入第三方 API Key 和 Base URL 实战指南](posts/2026-05-07-codex-cli-third-party-gateway.md)
