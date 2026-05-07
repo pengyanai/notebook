@@ -15,9 +15,9 @@ Claude Desktop for Mac（v1.4758.0 起）**支持接入任意 Anthropic Messages
 
 ```mermaid
 flowchart LR
-    A[Claude Desktop for Mac<br/>Cowork / Claude Code] -->|/v1/messages<br/>x-api-key: sk-bp-xxx| B[本地网关<br/>BlueRouter :18966]
-    B -->|mapping rewrite<br/>+ sanitize payload| C[企业 AI 网关<br/>*.internal]
-    C --> D1[Anthropic Bedrock<br/>Claude Opus/Sonnet]
+    A[Claude Desktop<br/>Cowork / Code tab] -->|POST /v1/messages<br/>x-api-key: sk-bp-xxx| B[Local Gateway<br/>BlueRouter :18966]
+    B -->|mapping rewrite<br/>+ sanitize payload| C[Upstream AI Gateway<br/>*.internal]
+    C --> D1[Anthropic Bedrock<br/>Claude Opus / Sonnet]
     C --> D2[DeepSeek / Kimi<br/>GLM / Qwen / MiniMax]
     style A fill:#f9e79f
     style B fill:#aed6f1
@@ -49,16 +49,16 @@ curl -X POST http://127.0.0.1:18966/v1/messages \
 ```mermaid
 sequenceDiagram
     participant Client as curl / Claude Desktop
-    participant GW as 你的网关 :18966
-    participant UP as 上游 LLM
+    participant GW as Your Gateway :18966
+    participant UP as Upstream LLM
 
     Client->>GW: POST /v1/messages<br/>(Anthropic format)
-    GW->>UP: 转发 / 转换
-    UP-->>GW: 响应
-    alt 网关保持 Anthropic 格式
-        GW-->>Client: event:message_start<br/>event:content_block_delta<br/>...<br/>✅ Claude Desktop 正常识别
-    else 网关吐 OpenAI 格式
-        GW-->>Client: data:{"choices":[{"delta":...}]}<br/>❌ Claude Desktop 解析空<br/>报 "empty or malformed"
+    GW->>UP: forward / translate
+    UP-->>GW: response
+    alt Gateway keeps Anthropic format
+        GW-->>Client: event:message_start<br/>event:content_block_delta<br/>...<br/>✅ parsed correctly
+    else Gateway emits OpenAI format
+        GW-->>Client: data:{"choices":[{"delta":...}]}<br/>❌ Claude Desktop parses empty<br/>→ "empty or malformed"
     end
 ```
 
@@ -100,11 +100,11 @@ API Error: API returned an empty or malformed response (HTTP 200)
 
 ```mermaid
 flowchart TD
-    A[1 退出 Claude Desktop<br/>pkill -x Claude] --> B[2 重新打开 Claude.app<br/>⚠️ 不要登录]
-    B --> C[3 启用 Developer Mode<br/>Help → Troubleshooting]
-    C --> D[4 菜单 Developer →<br/>Configure Third-Party Inference]
-    D --> E[5 Setup 窗口填写:<br/>Provider=Gateway<br/>Base URL / API Key / Auth Scheme]
-    E --> F[6 保存, 自动 GET /v1/models<br/>discovery OK 即可用]
+    A[1. Quit Claude Desktop<br/>pkill -x Claude] --> B[2. Reopen Claude.app<br/>⚠️ do NOT log in]
+    B --> C[3. Enable Developer Mode<br/>Help → Troubleshooting]
+    C --> D[4. Menu Developer →<br/>Configure Third-Party Inference]
+    D --> E[5. Fill setup form:<br/>Provider=Gateway<br/>Base URL / API Key / Auth Scheme]
+    E --> F[6. Save — auto GET /v1/models<br/>discovery OK → ready]
     style A fill:#fadbd8
     style F fill:#d5f5e3
 ```
@@ -171,13 +171,13 @@ Claude Desktop 展示出来的模型名和网关实际的 id 可能完全不同�
 
 ```mermaid
 flowchart TD
-    U["③ UI 下拉框显示<br/><b>Opus 4</b>"]
-    P["② Claude Desktop 请求体里的 model 字段<br/><code>claude-opus-4-20250514</code>"]
-    G["网关 resolveModel() 查 Mappings"]
-    I["① 网关转发到上游的真实 id<br/><code>Claude-4.6-Opus</code>"]
-    B["Anthropic Bedrock 后端"]
+    U["③ UI display name<br/><b>Opus 4</b>"]
+    P["② Model field in request body<br/><code>claude-opus-4-20250514</code>"]
+    G["Gateway resolveModel() looks up Mappings"]
+    I["① Upstream catalog id<br/><code>Claude-4.6-Opus</code>"]
+    B["Anthropic Bedrock backend"]
 
-    U -->|"客户端白名单映射<br/>(Claude Desktop 内置)"| P
+    U -->|"Claude Desktop<br/>built-in alias map"| P
     P -->|"POST /v1/messages"| G
     G -->|"rewrite from → to"| I
     I --> B
@@ -220,19 +220,19 @@ sequenceDiagram
     participant GW as BlueRouter
     participant UP as Anthropic Bedrock
 
-    Note over CW,UP: ❌ 原始行为（失败）
+    Note over CW,UP: ❌ Original behavior (fails)
     CW->>GW: system[ttl=1h] + tools[ttl=5m] + user[ttl=1h]
-    GW->>UP: 原样转发
+    GW->>UP: forward as-is
     UP-->>GW: HTTP 200 + SSE event:error<br/>"1h must not come after 5m"
-    GW-->>CW: 转发错误流
-    Note right of CW: UI 显示<br/>"empty or malformed"
+    GW-->>CW: error stream relayed
+    Note right of CW: UI shows<br/>"empty or malformed"
 
-    Note over CW,UP: ✅ 网关插入 downgrade 后
-    CW->>GW: 同样的 payload
-    GW->>GW: isCoworkUA(UA)? → 扫描 tools/system/messages<br/>把所有 ttl='1h' 降为 '5m'
+    Note over CW,UP: ✅ After downgrade hook
+    CW->>GW: same payload
+    GW->>GW: isCoworkUA(UA)? → scan tools/system/messages<br/>rewrite every ttl='1h' to '5m'
     GW->>UP: system[ttl=5m] + tools[ttl=5m] + user[ttl=5m]
-    UP-->>GW: HTTP 200 + 正常 SSE 流
-    GW-->>CW: 正常响应
+    UP-->>GW: HTTP 200 + normal SSE
+    GW-->>CW: normal response
 ```
 
 **解决**：在网关侧做请求改写，把 Cowork 请求里的 `ttl='1h'` 全部降级为 `ttl='5m'`。Claude Code CLI 的 UA 是 `claude-code`，不受此问题影响，**保留其 1h 缓存可以显著降低长会话的 token 成本**。
@@ -294,15 +294,35 @@ sort.SliceStable(list, func(i, j int) bool {
 - `vertex` — Google Vertex AI
 - `foundry` — Azure AI Foundry
 
+配置完 Setup UI 后，**点右上角 Export 按钮**即可直接导出 `.mobileconfig`（macOS）或 `.reg`（Windows），交给 Jamf / Kandji / Mosyle / Intune / Group Policy 分发。Windows 注册表键位于 `HKCU\SOFTWARE\Policies\Claude`，macOS domain 是 `com.anthropic.claudefordesktop`。
+
+插件目录（第三方部署下 plugin 以本地目录 mount 方式分发，而非 Web 市场）：
+- macOS：`/Library/Application Support/Claude/org-plugins/`
+- Windows：`C:\ProgramData\Claude\org-plugins\`
+
+> **官方说明**：Chat 标签在第三方部署下**故意不提供**（Anthropic 官方文档原话："No Chat tab — chat isn't available in this deployment"）。可用的就是 Cowork + Code。
+
 ---
 
 ## 参考
 
-- Claude Desktop 配置目录：`~/Library/Application Support/Claude/`
-- 已启用的 Developer flag：`~/Library/Application Support/Claude/developer_settings.json`
-- 官方 Cowork 第三方文档：[support.claude.com](https://support.claude.com)
-- BlueRouter 源码（本文调试用）：[iqiancheng/bluecode-proxy](https://github.com/iqiancheng/bluecode-proxy)
+### 官方文档（Anthropic support）
+
+- [Use Claude Cowork with third-party platforms](https://support.claude.com/en/articles/14680729-use-claude-cowork-with-third-party-platforms) — 功能总览、FAQ，说明哪些功能在 3p 模式可用／不可用
+- [Install and configure Claude Cowork with third-party platforms](https://support.claude.com/en/articles/14680741-install-and-configure-claude-cowork-with-third-party-platforms) — 完整部署手册，含全部 MDM 键位（`inferenceProvider` / `inferenceGatewayBaseUrl` / `inferenceGatewayApiKey` 等）和 VDI 部署说明
+- [Use Claude for Excel, PowerPoint, and Word with third-party platforms](https://support.claude.com/en/articles/13945233-use-claude-for-excel-powerpoint-and-word-with-third-party-platforms) — Office 插件走相同四种 provider
+- Anthropic support 检索：[support.claude.com/?q=3p](https://support.claude.com/en/?q=3p)
+
+### 本地配置路径
+
+- Claude Desktop 用户数据目录：`~/Library/Application Support/Claude/`
+- Developer flag 持久化文件：`~/Library/Application Support/Claude/developer_settings.json`
+- 插件目录（3p 模式）：`/Library/Application Support/Claude/org-plugins/`
+
+### 本文调试用的开源网关
+
+- BlueRouter 源码：[iqiancheng/bluecode-proxy](https://github.com/iqiancheng/bluecode-proxy)（本文涉及的 `/v1/models` 透明化、Cowork cache_control 修复在 commit `ea994e3`）
 
 ---
 
-**本文基于 Claude Desktop v1.4758.0 实测整理。**
+**本文基于 Claude Desktop v1.4758.0 + Anthropic support 官方文档（2026-04 版本）整理。**
