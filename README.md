@@ -1,5 +1,7 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-07 [训推加速问题定位 SOP 与 Know-how：从 GPU 低利用率到 NCCL hang 到推理吞吐](posts/2026-05-07-training-inference-acceleration-troubleshooting-sop.md)
+- 2026-05-07 [训推工程师 & AI Agent 时代的高效 CLI 工具栈：从 zoxide 到 nvitop 到 Claude Code](posts/2026-05-07-training-inference-engineer-cli-toolkit.md)
 - 2026-05-07 [语音模型基础篇：用预训练 ASR 模型搞定语音识别（从 Wav2Vec2 到 Whisper 实战）](posts/2026-05-07-speech-models-fundamentals-pretrained-asr.md)
 - 2026-05-07 [语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR](posts/2026-05-07-speech-recognition-architecture-evolution.md)
 - 2026-05-07 [语音模型预处理流程及常用术语详解：从声波到 Log-Mel 到 Audio-LLM](posts/2026-05-07-speech-model-preprocessing-glossary.md)
