@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-07 [Claude Desktop for Mac 配置第三方 API Key 和 Base URL 完整指南](posts/2026-05-07-claude-desktop-third-party-inference.md)
 - 2026-04-30 [Hermes Update 冲突排查：本地 Xiaomi MIMO 补丁的保全与重放](posts/2026-04-30-hermes-mimo-update-conflict.md)
 - 2026-04-30 [Hermes Agent 完全 YOLO 模式：彻底关掉「approve this command?」确认框](posts/2026-04-30-hermes-yolo-mode-approval-bypass.md)
 - 2026-04-30 [vLLM v0.20 显存优化与推理加速实战指南](posts/2026-04-30-vllm-v020-optimization-guide.md)
