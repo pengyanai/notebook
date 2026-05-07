@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-07 [Claude Code CLI 接入第三方 API Key 和 Base URL 实战指南](posts/2026-05-07-claude-code-cli-third-party-gateway.md)
 - 2026-05-07 [Claude Desktop for Mac 配置第三方 API Key 和 Base URL 完整指南](posts/2026-05-07-claude-desktop-third-party-inference.md)
 - 2026-04-30 [Hermes Update 冲突排查：本地 Xiaomi MIMO 补丁的保全与重放](posts/2026-04-30-hermes-mimo-update-conflict.md)
 - 2026-04-30 [Hermes Agent 完全 YOLO 模式：彻底关掉「approve this command?」确认框](posts/2026-04-30-hermes-yolo-mode-approval-bypass.md)
