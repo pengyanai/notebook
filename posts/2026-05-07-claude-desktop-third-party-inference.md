@@ -90,7 +90,7 @@ API Error: API returned an empty or malformed response (HTTP 200)
 
 实际网关管理页（BlueRouter Models 标签）看起来是这样 —— 可以清晰看到**每个模型的 ID / 别名 / Provider 归属**，本文后面的"三套命名体系"章节就是从这张表延伸出来的：
 
-![BlueRouter Models 管理页](/assets/images/claude-desktop-3p/bluerouter-models.png)
+![BlueRouter Models 管理页](/assets/images/claude-desktop-3p/bluerouter-models.webp)
 
 ---
 
@@ -147,7 +147,7 @@ pkill -x Claude
 
 左下角会显示 **"Cowork 3P \| Gateway"**，说明当前处于第三方模式。**Claude Code 标签**此时就完全可用了：
 
-![Claude Code 标签通过网关正常工作](/assets/images/claude-desktop-3p/coding-success.png)
+![Claude Code 标签通过网关正常工作](/assets/images/claude-desktop-3p/coding-success.webp)
 
 ---
 
@@ -167,32 +167,28 @@ Claude Desktop 展示出来的模型名和网关实际的 id 可能完全不同�
 
 配置完后 Claude Desktop 下拉框显示 `Opus 4.6` 其实对应网关 `claude-opus-4-20250514`，**客户端请求 body 里传的是第 ② 层 id**，网关再映射到第 ① 层路由到上游。
 
-三层转换的全链路：
+以 Claude Opus 为例走一遍完整链路：
 
 ```mermaid
-flowchart LR
-    subgraph UI["③ UI 美化层<br/>(Claude Desktop 内置)"]
-      U1["Opus 4"]
-      U2["Sonnet 4.5"]
-      U3["deepseek-chat"]
-    end
-    subgraph PUB["② /v1/models 对外 id<br/>(Mappings from 列)"]
-      P1["claude-opus-4-20250514"]
-      P2["claude-sonnet-4-5-20250929"]
-      P3["deepseek-chat"]
-    end
-    subgraph INT["① 网关内部真实 id<br/>(上游 catalog)"]
-      I1["Claude-4.6-Opus"]
-      I2["claude-4.6-sonnet"]
-      I3["Baidu-DeepSeek-V3.2"]
-    end
-    U1 --> P1 --> I1
-    U2 --> P2 --> I2
-    U3 --> P3 --> I3
-    style UI fill:#fef9e7
-    style PUB fill:#eaf2f8
-    style INT fill:#eafaf1
+flowchart TD
+    U["③ UI 下拉框显示<br/><b>Opus 4</b>"]
+    P["② Claude Desktop 请求体里的 model 字段<br/><code>claude-opus-4-20250514</code>"]
+    G["网关 resolveModel() 查 Mappings"]
+    I["① 网关转发到上游的真实 id<br/><code>Claude-4.6-Opus</code>"]
+    B["Anthropic Bedrock 后端"]
+
+    U -->|"客户端白名单映射<br/>(Claude Desktop 内置)"| P
+    P -->|"POST /v1/messages"| G
+    G -->|"rewrite from → to"| I
+    I --> B
+
+    style U fill:#fef9e7,stroke:#f1c40f
+    style P fill:#eaf2f8,stroke:#3498db
+    style I fill:#eafaf1,stroke:#27ae60
+    style G fill:#fff,stroke:#999,stroke-dasharray:3
 ```
+
+`deepseek-chat`、`glm-4-plus` 等非 Claude 模型同理：UI 层没美化（不在 Claude Desktop 白名单里），所以 ③ 和 ② 长得一样；到了 ① 才映射成上游真实 id（如 `Baidu-DeepSeek-V3.2`）。
 
 **请求方向**：客户端拿 UI 显示名选了 `Opus 4`，实际请求 body 里传的是 ② 的 `claude-opus-4-20250514`，网关内 `resolveModel()` 查 Mappings 改写成 ① 的 `Claude-4.6-Opus`，转发给上游。
 
@@ -204,7 +200,7 @@ flowchart LR
 
 症状：`/v1/messages` 返回 HTTP 200 但 Claude Desktop 说响应为空。UI 上长这样：
 
-![Cowork 页面 empty or malformed response 报错](/assets/images/claude-desktop-3p/cowork-error.png)
+![Cowork 页面 empty or malformed response 报错](/assets/images/claude-desktop-3p/cowork-error.webp)
 
 **真因**（我自己踩过的最坑）：不是协议问题，而是 Cowork 发的请求里 `cache_control.ttl` 顺序违反 Anthropic 规则：
 
