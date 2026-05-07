@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-07 [语音模型基础篇：用预训练 ASR 模型搞定语音识别（从 Wav2Vec2 到 Whisper 实战）](posts/2026-05-07-speech-models-fundamentals-pretrained-asr.md)
 - 2026-05-07 [语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR](posts/2026-05-07-speech-recognition-architecture-evolution.md)
 - 2026-05-07 [语音模型预处理流程及常用术语详解：从声波到 Log-Mel 到 Audio-LLM](posts/2026-05-07-speech-model-preprocessing-glossary.md)
 - 2026-05-07 [Cursor Free Plan 接入第三方 BlueRouter 网关调研（WIP）](posts/2026-05-07-cursor-free-plan-bluerouter-gateway-wip.md)

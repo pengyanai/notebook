@@ -283,6 +283,42 @@ Audio Encoder (通常复用 Whisper encoder)
 >
 > AuT 做到**真·离散**后，LLM 就能在语音上做 next-token prediction——这是 GPT-4o 实时语音对话、Moshi、Qwen2.5-Omni-Speech 背后的关键。
 
+> **❓ Codebook（码本）是什么？它是 ASR 用的还是 TTS 用的？**
+>
+> **Codebook 是"离散音频 token 的词表"**——一张可学习的查找表（lookup table），形状 `[K, D]`：`K` 个 entry（典型 1024 或 4096），每个是 `D` 维向量（典型 256）。
+>
+> **离散化流程**：
+>
+> ```
+> 连续向量 z ──→ argmin_k ‖z − codebook[k]‖ ──→ 输出 index k (int)
+>                           ↑
+>                    （最近邻查码本）
+> ```
+>
+> 解码时：`z_hat = codebook[k]` 查表还原向量 → 经 decoder 网络合成回波形。
+>
+> **RVQ (Residual Vector Quantization)** 是多层 codebook 递归编码**残差**：第 1 层量化后，把误差 `z − z_hat` 喂给第 2 层再量化，以此类推。典型 8 层 × 1024 entries 就能把 24 kHz 音频压到 6 kbps 还基本听不出失真——这是 EnCodec / SoundStream 的核心。
+>
+> **主要给谁用？**
+>
+> | 场景 | 用 codebook 吗 | 理由 |
+> |---|---|---|
+> | **TTS / 语音克隆** | ✅ 必需 | 要做 autoregressive 生成，必须先离散化（VALL-E、CosyVoice、F5-TTS） |
+> | **音乐 / 歌曲生成** | ✅ 必需 | Suno、MusicGen 底层就是 EnCodec codebook |
+> | **端到端 speech-in → speech-out** | ✅ 必需 | Moshi / GPT-4o Realtime / Qwen2.5-Omni-Speech 都靠 codebook |
+> | **纯 ASR（转录）** | ❌ 不用 | 输出是文本，连续 embedding 直接拼给 LLM decoder 即可，无需离散音频 token |
+> | **自监督预训练** (Wav2Vec2 / HuBERT) | ⚠️ 内部隐含 | Wav2Vec2 的 quantizer、HuBERT 的 k-means pseudo-label 本质是 codebook，但只用于 pretext 任务，对下游用户透明 |
+>
+> **一句话判题**：**codebook 是"生成侧（TTS / 对话）"的核心基础设施，ASR 侧除了预训练阶段以外基本不直接用。**
+>
+> **两种 codebook 的分化**（在上面"AuT 主流实现"表里已经出现过）：
+>
+> - **声学 codebook** (acoustic)：EnCodec / SoundStream——优先保留"怎么发音、谁说的、有什么背景音"，码率高，信息丰富
+> - **语义 codebook** (semantic)：HuBERT discrete / S3 tokenizer——优先保留"说了什么"，码率低，适合理解类任务
+> - **双流 codebook**：Mimi (Moshi)、CosyVoice 2——把语义流和声学流拆开，LLM 只看语义流省算力，合成侧再用声学流补回音色
+>
+> 这也是为什么 2024 年以后一个 audio codec 论文的核心贡献往往是"**更低码率 + 更少 codebook 层数 + 更好语义保留**"——它直接决定了上层 LLM 能不能用合理的序列长度生成高保真音频。
+
 ### 7.2 代表作
 
 | 模型 | 组织 | Audio Encoder | LLM | 特色 |
