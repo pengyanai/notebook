@@ -118,21 +118,40 @@ codex "hello"
 
 ## 四、方式 B：自定义 `[model_providers.<id>]`（完整方案）
 
+下面是我自己正在用的真实配置（本地起了个 BlueRouter 网关在 `127.0.0.1:18966`，后面所有 Codex 请求都走它）：
+
 ```toml
 # ~/.codex/config.toml
-model = "gpt-5.4"
-model_provider = "proxy"
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+profile = "bluerouter"                  # 顶层 profile：默认启用下面的 [profiles.bluerouter]
 
-[model_providers.proxy]
-name = "My LLM Proxy"
-base_url = "https://gateway.example.com/v1"
-env_key = "PROXY_API_KEY"          # 从环境变量读 key
-wire_api = "responses"              # 目前只能是 responses
-request_max_retries = 4
+[model_providers.bluerouter]
+name = "BlueRouter"
+base_url = "http://127.0.0.1:18966/v1"
+env_key = "BLUEROUTER_API_KEY"          # 从环境变量读 key
+wire_api = "responses"                  # 目前只能是 responses
+request_max_retries = 2
 stream_idle_timeout_ms = 300000
+supports_websockets = false
+notification_condition = "always"
 ```
 
-Shell 里 `export PROXY_API_KEY=...`，`codex` 启动时就会带上 `Authorization: Bearer $PROXY_API_KEY`。
+Shell 里 `export BLUEROUTER_API_KEY=...`，`codex` 启动时就会带上 `Authorization: Bearer $BLUEROUTER_API_KEY` 并把所有请求打到 `127.0.0.1:18966/v1/responses`。
+
+> macOS 下要额外注意：Codex App 是 GUI 进程，可能拿不到你 shell 里的临时 `export`。如果 App 侧出现 `401 invalid api key`，可把变量注入到 launchd 会话环境：
+>
+> ```bash
+> launchctl setenv BLUEROUTER_API_KEY "$BLUEROUTER_API_KEY"
+> # 可选：如果你临时走 built-in openai provider，也同步一份
+> launchctl setenv OPENAI_API_KEY "$BLUEROUTER_API_KEY"
+> ```
+
+几个这份配置里值得单独说的字段：
+
+- `supports_websockets = false`：本地简易网关通常不实现 WebSocket，显式关掉，省得 Codex 尝试升级协议后报错。
+- `notification_condition = "always"`：配合 `notify` 钩子，每一轮 turn 结束都触发桌面通知，对 `approval_policy = "never"` 的长跑任务特别有用。
+- `request_max_retries = 2`：本地网关重试 4 次没意义，失败就失败，降到 2 减少调试时的噪声。
 
 **为什么推荐用 `env_key` 而不是 `experimental_bearer_token`**：后者把 key 硬编码在 config 里，config 有机会被 backup / 同步 / 共享，泄露风险高。官方文档也明确标 `experimental_bearer_token` 为 *"discouraged; use env_key"*。
 
@@ -198,54 +217,88 @@ op read "op://Private/codex-gateway/credential"
 
 ---
 
-## 七、多账号：Profiles
+## 七、`shell_environment_policy`：让 sandbox 里的命令也能看到你的 API key
 
-给不同网关起不同名字，用 `--profile` 切换：
+这是一个**很容易被忽略、但配错 100% 中招**的配置。`env_key = "BLUEROUTER_API_KEY"` 读的是 **Codex 进程自己**的环境变量；但当 Codex 执行 shell 工具（比如你让它跑 `curl`、`claude`、`git` 或任何 bash 命令）时，**子进程能看到哪些 env var** 由 `[shell_environment_policy]` 决定，默认策略相当严格。
+
+我的实际配置：
+
+```toml
+[shell_environment_policy]
+inherit = "core"                 # 只继承 PATH / HOME / USER / LANG 等核心变量
+include_only = [
+    "BLUEROUTER_API_KEY",        # Codex 自己要 + 子进程里跑的工具也要
+    "ANTHROPIC_API_KEY",         # 子进程里调 Claude Code CLI 时要
+    "ANTHROPIC_BASE_URL",
+    "OPENAI_API_KEY",
+]
+
+[shell_environment_policy.set]
+# 直接在 config 里写死 —— 等价于为每个子进程预置 export
+ANTHROPIC_API_KEY = "sk-bp-xxxxxxxxxxxxxxxxxxxxxxxx"
+ANTHROPIC_BASE_URL = "http://127.0.0.1:18966"
+CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS = "1"
+hasCompletedOnboarding = "true"
+```
+
+几条规则记牢：
+
+| 字段 | 含义 |
+|---|---|
+| `inherit` | 从哪个基准拿变量。`all` 全继承、`core` 只继承核心、`none` 全不继承 |
+| `include_only` | 白名单：只有列在这里的变量会被透传到子进程 |
+| `exclude` | 黑名单：列在这里的变量会被剔除（和 `include_only` 互斥使用） |
+| `set` | 直接在 config 里设置固定值，优先级高于继承 |
+
+⚠️ 把 key 写进 `[shell_environment_policy.set]` 等于**把明文 key 硬编码进 config.toml** —— 和 `experimental_bearer_token` 一样有泄漏风险。如果你的 config 会被 git / 同步，请只在 `include_only` 里列名字，让 shell 的 `export` 来提供实际值，不要走 `set`。
+
+---
+
+## 八、多账号：Profiles
+
+给不同网关起不同名字，用 `--profile` 切换。我本机的 profile 就只定义了一个 `bluerouter`，但把它设为顶层默认：
 
 ```toml
 # ~/.codex/config.toml
-model = "gpt-5.4"
-model_provider = "openai"   # 默认走官方
+model = "gpt-5.5"                 # 顶层兜底
+profile = "bluerouter"            # 顶层默认 profile，不传 --profile 时也用这个
 
-[model_providers.proxy-work]
-name = "Work Proxy"
-base_url = "https://work-gw.example.com/v1"
-env_key = "WORK_PROXY_KEY"
+[profiles.bluerouter]
+approval_policy = "never"
+model = "gpt-5.4"                 # profile 内覆盖顶层
+model_provider = "bluerouter"     # 绑定到上面定义的 [model_providers.bluerouter]
+model_reasoning_effort = "medium"
 
-[model_providers.proxy-personal]
-name = "Personal Proxy"
-base_url = "https://personal-gw.example.com/v1"
-env_key = "PERSONAL_PROXY_KEY"
+# profile 还可以嵌套 features 子表，按 profile 打开/关闭功能
+[profiles.bluerouter.features]
+external_migration = false
+memories = false
+prevent_idle_sleep = false
+terminal_resize_reflow = true
+```
 
-[profiles.work]
-model_provider = "proxy-work"
-model = "gpt-5.4"
-approval_policy = "on-request"
+想再加一个「官方账号 + 高推理强度」的 profile 做对照：
 
-[profiles.personal]
-model_provider = "proxy-personal"
+```toml
+[profiles.official]
+model_provider = "openai"
 model = "gpt-5-pro"
 model_reasoning_effort = "high"
-approval_policy = "never"
+approval_policy = "on-request"
 ```
 
 用：
 
 ```bash
-codex --profile work "refactor this"
-codex --profile personal "quick question"
-codex "use default"   # 不指定 profile 就用顶层 model_provider
+codex "use default"             # 不指定 profile 就用顶层 profile = "bluerouter"
+codex --profile official "..."  # 临时切回官方账号
 ```
 
-或者直接把某个 profile 设为默认：
-
-```toml
-profile = "work"   # 顶层，作为默认 profile
-```
+关键点：`[profiles.X.features]` 是 **profile 级 feature flag**，和顶层 `[features]` 合并，profile 的值优先。比如全局开了 `memories = true`，但某个 profile 里 `memories = false`，进这个 profile 就自动关掉记忆。
 
 ---
 
-## 八、单次一次性覆盖：`-c/--config`
+## 九、单次一次性覆盖：`-c/--config`
 
 临时拿别的网关或别的 key 跑一次，不想写 profile：
 
@@ -270,7 +323,7 @@ codex -c 'sandbox_workspace_write.network_access=true'
 
 ---
 
-## 九、验证连通
+## 十、验证连通
 
 ```bash
 codex login status           # 看当前认证来源
@@ -287,7 +340,7 @@ RUST_LOG=codex=trace codex exec "hi" 2>&1 | grep -E "base_url|provider|POST"
 
 ---
 
-## 十、常见坑
+## 十一、常见坑
 
 ### 坑 1：`unknown endpoint /v1/responses`
 
@@ -299,9 +352,37 @@ RUST_LOG=codex=trace codex exec "hi" 2>&1 | grep -E "base_url|provider|POST"
 ### 坑 2：`401 Unauthorized`，但 env var 看起来是对的
 
 检查：
-1. Shell 是不是没 source 新的 rc 文件 → `echo $PROXY_API_KEY` 验证
-2. `env_key` 写的是不是 **env var 名**（`"PROXY_API_KEY"`），不是 **值**
-3. 网关用 `Authorization: Bearer <key>` 还是自定义 header？Codex 默认发 Bearer。如果网关用其他 header（如 `X-Api-Key`），需要把 `env_key` 注释掉，改用 `env_http_headers = { "X-Api-Key" = "PROXY_API_KEY" }`
+1. CLI 下 shell 是否拿到变量 → `echo $BLUEROUTER_API_KEY` 验证
+2. `env_key` 写的是不是 **env var 名**（`"BLUEROUTER_API_KEY"`），不是 **值**
+3. Codex App（GUI 进程）是否继承到变量：macOS 上必要时执行 `launchctl setenv BLUEROUTER_API_KEY ...`
+4. 网关用 `Authorization: Bearer <key>` 还是自定义 header？Codex 默认发 Bearer。如果网关用其他 header（如 `X-Api-Key`），需要把 `env_key` 注释掉，改用 `env_http_headers = { "X-Api-Key" = "BLUEROUTER_API_KEY" }`
+
+### 坑 2.1：`Reconnecting...` + `unexpected status 401`（App 常见）
+
+典型报错：
+
+```text
+Reconnecting... 5/5
+unexpected status 401 Unauthorized: {"error":"invalid api key"}, url: http://127.0.0.1:18966/v1/responses
+```
+
+这通常不是网关挂了，而是 **Codex App 用的 provider 与你设置的 env var 不匹配**：
+
+- `model_provider = "bluerouter"` 时，Codex 会读 `env_key = "BLUEROUTER_API_KEY"`
+- `model_provider = "openai"` 时，Codex 会读 `OPENAI_API_KEY`
+
+如果你把 provider 临时切成 `openai`，但只设置了 `BLUEROUTER_API_KEY`，就会稳定 401。  
+实战建议：要么保持自定义 provider；要么确保 `OPENAI_API_KEY` 也同步注入。
+
+### 坑 2.2：`supports_websockets` 没关导致重连抖动
+
+很多本地网关只兼容 HTTP/SSE，不兼容 Responses WebSocket。实测建议在自定义 provider 明确设置：
+
+```toml
+[model_providers.bluerouter]
+supports_websockets = false
+wire_api = "responses"
+```
 
 ### 坑 3：SSE 流式响应卡住
 
@@ -320,6 +401,25 @@ stream_max_retries = 10
 ### 坑 4：内置 `openai` / `ollama` / `lmstudio` 这三个 provider ID 改不了
 
 官方写死的，改了 Codex 会忽略。想改 built-in openai 的 URL 走 `openai_base_url` 顶层键，不要建 `[model_providers.openai]`。
+
+### 坑 4.1：Codex App 的模型下拉不是“后端返回啥就显示啥”
+
+实测（反解 `Codex.app` 的 `app.asar`）发现：Desktop UI 在 `list-models-for-host` 返回后，会再做一层客户端过滤。核心条件是：
+
+- 若命中可用性 allowlist，则只显示 allowlist 命中的模型 ID
+- 否则仅显示 `hidden != true` 的模型
+
+这意味着：你的网关即使返回了很多模型，App 里也可能只显示 `gpt-5.5` / `gpt-5.4` 这类少数条目。
+
+### 坑 4.2：`model_catalog_json` 在 Desktop 端存在已知显示限制
+
+`model_catalog_json` 对 CLI 很有用，但 Desktop 目前存在“模型被 picker 过滤掉”的已知问题。  
+参考上游 issue：<https://github.com/openai/codex/issues/19694>
+
+所以在 App 场景里，实际可用策略通常是：
+
+- 用少量“可见模型 ID”（如 `gpt-5.5` / `gpt-5.4`）作为入口
+- 在网关内按 `reasoning.effort` 做二级路由，把请求分发到你真正想用的后端模型
 
 ### 坑 5：项目 `.codex/config.toml` 没生效
 
@@ -342,7 +442,7 @@ codex -c 'model_providers.tmp.base_url="https://x.com/v1"'
 
 ---
 
-## 十一、和 Claude Code CLI 的异同小结
+## 十二、和 Claude Code CLI 的异同小结
 
 | 特性 | Claude Code CLI | Codex CLI |
 |---|---|---|
