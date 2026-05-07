@@ -16,7 +16,7 @@ Claude Desktop for Mac（v1.4758.0 起）**支持接入任意 Anthropic Messages
 ```mermaid
 flowchart LR
     A[Claude Desktop for Mac<br/>Cowork / Claude Code] -->|/v1/messages<br/>x-api-key: sk-bp-xxx| B[本地网关<br/>BlueRouter :18966]
-    B -->|mapping rewrite<br/>+ sanitize payload| C[企业 AI 网关<br/>aicode-api.example.com]
+    B -->|mapping rewrite<br/>+ sanitize payload| C[企业 AI 网关<br/>*.internal]
     C --> D1[Anthropic Bedrock<br/>Claude Opus/Sonnet]
     C --> D2[DeepSeek / Kimi<br/>GLM / Qwen / MiniMax]
     style A fill:#f9e79f
