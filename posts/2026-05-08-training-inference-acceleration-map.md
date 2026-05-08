@@ -101,13 +101,17 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 | **Graph Optim** | 训 + 推 | torch.compile · CUDA Graph · TensorRT engine · Inductor | PyTorch 2.x · TensorRT-LLM · torch.export | 消除 launch overhead |
 | **显存优化** | 训 | Gradient Checkpointing · Selective AC · Activation Offload · ZeRO Offload · Parameter Offload | PyTorch checkpoint · DeepSpeed Offload | OOM / 长 seqlen 训练 |
 | **推理专属** | 推 | Paged Attention · Continuous Batching · Chunked Prefill · Prefix / Sessions Cache · KV Quant / Compression | vLLM · SGLang · TensorRT-LLM · LMDeploy | LLM 高吞吐 serving |
-| **解码优化** | 推 | Speculative Decoding · Medusa · EAGLE · Lookahead Decoding · Jacobi | vLLM SD · SGLang SD · Medusa | Decode TPOT 降低 |
+| **解码优化** | 推 | Speculative Decoding · Medusa · **EAGLE / EAGLE-2 / EAGLE-3** · **DFlash (Draft-Flash fused)** · **PLD (Prompt Lookup Decoding)** · **SpecInfer** · **Ouroboros** · Lookahead Decoding · Jacobi | vLLM SD · SGLang SD · Medusa · **EAGLE-3 官方** · TensorRT-LLM SD | Decode TPOT 降低 2~5x |
 | **架构优化** | 训 + 推 | GQA / MQA · **MLA (Multi-head Latent Attention)** · MoE (Top-K / Switch / Mixtral / **DeepSeek Aux-loss-free** / **DeepSeek-V4 细粒度 expert**) · SwiGLU · Rotary / **NoPE / YaRN** · **DeepSeek-V4 Hybrid Attention (CSA + HCA)** · Linear / State Space / Mamba / Mamba-2 · **Sliding Window + Global Attention** | Qwen3 / Llama / **DeepSeek-V3 / V4** / Mamba / Jamba / **MiniMax-01 (Lightning Attention)** / **Gemma-3 (Hybrid)** | 模型设计时就省算力 |
 | **MoE 训练加速** | 训练 | **DeepEP (Expert Parallel)** · **Grouped GeMM** · **Aux-Loss-Free Load Balance** · All-to-all / comp 重叠 · Expert 量化 · **NoPE MoE** | DeepSeek DeepEP · Megatron-Core MoE · vLLM MoE · Mixtral infra · **Tutel** | MoE 预训练 / SFT 通信瓶颈 |
-| **Diffusion 专属加速** | 训 + 推 | **步数蒸馏 (DMD / DMD2 / LCM / SDXL-Lightning / HyperSD / PCM)** · **FP8 / INT8 Attention (SageAttention / SVDQuant)** · **Feature Caching (DeepCache / TGATE)** · CFG 跳过 · Schnell 变体 · **FLA for Video** | Diffusers · ComfyUI · xDiT · TeaCache · **one-step / few-step models** | 图像 / 视频生成秒级出图 |
+| **Diffusion 专属加速** | 训 + 推 | **步数蒸馏 (DMD / DMD2 / LCM / SDXL-Lightning / HyperSD / PCM / TCD)** · **FP8 / INT8 Attention (SageAttention / SVDQuant / Q-Diffusion)** · **Feature Caching (DeepCache / TGATE / TeaCache / FBCache)** · **CFG 跳过 / Adaptive CFG** · Schnell / Turbo 变体 · **FLA for Video** · **Diffusion Transformer (DiT) 并行** | Diffusers · ComfyUI · xDiT · **FLUX / FLUX.1 [dev/schnell/pro]** · **SD3 / SD3.5 / SDXL** · **Wan 2.1 / HunyuanVideo / CogVideoX / Mochi / Sora-style** · **Stable Video Diffusion** · Qwen-Image | 图像 / 视频生成秒级出图（FLUX.1 [schnell] 4 步已是 SOTA） |
 | **RL 训练栈** | 训练 | **Fully-async PPO / GRPO / DAPO / GSPO / SAPO** · Actor-Critic 异步 · Reward model 并行 · Rollout-train 解耦 · **KL Free / Ref-model optional** · Group-relative advantage · **Step-wise advantage** | **veRL (字节)** · **AReaL (蚂蚁)** · **ROLL (阿里)** · **OpenRLHF** · **SkyRL (UC Berkeley)** · **NeMo-RL** · TRL · **verl-async** | RLHF / RLAIF / Reasoning RL (o1 式) |
-| **MoE → Dense 蒸馏** | 训练 | **Logit Distillation (Top-K vocab 截断)** · **On-Policy / Off-Policy KD** · **Rejection Sampling SFT** · **合成数据 pipeline (teacher 造数据)** · **Teacher FP8 推理加速** · **KV cache 复用** · Layer-drop · Depth / Width reduction | MiniLLM · DistillKit · DistiLLM-2 · **vLLM / SGLang 批量 rollout** · Liger-KD · **Qwen3-Distill** · **Gemma-Distill** | 大 MoE teacher → 小 dense student（Qwen3-MoE → Qwen3-8B / MiniCPM / Gemma-Small） |
+| **MoE → Dense 蒸馏** | 训练 | **Logit Distillation (Top-K vocab 截断)** · **On-Policy / Off-Policy KD** · **Rejection Sampling SFT** · **合成数据 pipeline (teacher 造数据)** · **Teacher FP8 推理加速** · **KV cache 复用** · Layer-drop · Depth / Width reduction | MiniLLM · DistillKit · DistiLLM-2 · **vLLM / SGLang 批量 rollout** · Liger-KD · **Qwen3-Distill** · **Gemma-Distill** | 大 MoE teacher → 小 dense student（Qwen3.5-MoE → Qwen3.5-8B / MiniCPM / Gemma-Small） |
+| **PEFT 微调** | 训练 | **LoRA** · **QLoRA (NF4 + LoRA)** · **DoRA (weight-decomposed)** · **PiSSA (principal singular init)** · **LoRA+ (lr 分组)** · **VeRA (shared random)** · **rsLoRA (rank stable)** · **LoftQ (量化 + 初始化)** · **Prefix / Prompt / IA³ Tuning** · **GaLore / Q-GaLore (低秩梯度)** · **AdaLoRA** · **Mixture of LoRA (MoLA)** · **LoRA hot-swap** | **PEFT (HF)** · **Unsloth** · **LLaMA-Factory** · **ms-swift** · **Axolotl** · **bitsandbytes** · **torchtune** | 消费级显卡 / 少样本微调 / 多任务适配 |
 | **优化器加速** | 训练 | **Muon (matrix-aware)** · **Shampoo / SOAP** · **Adafactor** · **Lion** · Fused AdamW · **8-bit Adam** · ZeRO-Offload optimizer · **Sophia** · Schedule-Free | PyTorch Optim · Apex FusedAdam · bitsandbytes · **moonshot-ai/Muon** · **Keller-Jordan/Muon** · torchshampoo | 收敛加速 / 显存减少 / 超参数省力 |
+| **多模态 / Omni 模型加速** | 训 + 推 | **视觉 encoder 量化 (SigLIP / DINOv3 / ViT INT8)** · **Audio tokenizer (RVQ / Mimi / EnCodec)** · **Cross-modal attention 融合 vs Q-Former** · **Interleave training** · **Video chunking / temporal caching** · **Any-to-any 端到端模型** | Qwen2.5-Omni / Qwen3-Omni · GPT-4o · Gemini 2.5 Flash · **Seed-VL** · Emu3 · **vLLM Multi-modal** · SGLang VLM 加速 · **OmniAvatar** | 图 / 视频 / 音频 / 文本多模态训推 |
+| **端侧小模型加速** | 推 | **INT4 / NF4 / GGUF / AWQ 量化** · **CoreML / NNAPI / LiteRT 原生推理** · **KV cache INT8 / INT4** · **Distill to small dense** · **LoRA adapter 动态加载** · **NPU 调度 (Apple ANE / 高通 Hexagon / 联发科 APU)** | **llama.cpp** · **MLX (Apple)** · **MLC-LLM** · **ExecuTorch** · **TensorRT** · **ONNX Runtime** · **NCNN / MNN / Paddle Lite** · **Qwen3-0.5B / SmolLM / Phi-4-mini / Gemma-3n / Gemma-4 edge** · **SigLIP / CLIP / DINOv3** · **MobileNet v5 / EfficientNet-v2** | 手机 / 笔记本 / 嵌入式推理 |
+| **长上下文专项** | 训 + 推 | **位置外推 (YaRN / NTK / LongRoPE / SelfExtend)** · **Ring Attention / Striped Attention / BlockWise** · **Context Parallel** · **StreamingLLM (attention sink)** · **MInference / SampleAttention / Quest (稀疏 pattern)** · **KV 驱逐 (H2O / SnapKV / PyramidKV / ScissorHands)** · **KV 量化 (KIVI / KVQuant / LMCache)** · **DuoAttention / StarAttention** · **Disaggregated Prefill/Decode (Mooncake)** · **Prefix cache across requests** | **vLLM 长上下文模式** · **SGLang RadixAttention** · **Mooncake (月之暗面)** · **LMCache** · **MInference (MSR)** · **LServe** · **Qwen3-Long / Llama-3.1-405B-long / Gemini 1.5 1M / Qwen3.5-Long** | 128K~10M token 上下文训推 |
 | **系统调度** | 推 | 请求队列 · Load Balance · Autoscaling · 多模型共置 · K8s orchestration | Ray Serve · KServe · Triton Inference Server | 集群级 serving |
 | **IO / 数据侧** | 训 | webdataset · parquet/HDF5 · DALI · ffcv · Packing | NVIDIA DALI · mosaicml composer · streaming-datasets | DataLoader 瓶颈 |
 
@@ -211,20 +215,22 @@ graph TD
 
 ---
 
-## 六、2026 趋势（可能的下一波）
+## 六、2024 ~ 2026 技术趋势
 
-1. **FP4 训练**：H100/B200 上实测可行，Qwen4 / GPT-5 规模可能常态化
-2. **MoE scaling & 训练加速成熟化**：稀疏激活 + Expert Parallelism 标配，Qwen3-MoE / DeepSeek-V3 / GPT-OSS 都走这条；DeepEP / Aux-Loss-Free / Grouped GeMM 成为 MoE 训练栈的"新地基"
-3. **长上下文**：128K 起步、1M 成常见规格，driver 是 KV quantization + chunked prefill + ring attention
-4. **Speculative 家族**：EAGLE / Medusa / Lookahead 融合，decode 速度 2~4x
+1. **FP4 训练**：H100/B200 上实测可行，Qwen3.5 / 3.6 / GPT-5.5 规模已常态化
+2. **MoE scaling & 训练加速成熟化**：稀疏激活 + Expert Parallelism 标配，Qwen3-MoE / Qwen3.5-MoE / DeepSeek-V3 / V4 / GPT-OSS 都走这条；DeepEP / Aux-Loss-Free / Grouped GeMM 成为 MoE 训练栈的"新地基"
+3. **长上下文成标配**：128K 起步、1M~10M 成常见规格，driver 是 KV quantization + disaggregated prefill/decode (Mooncake) + ring attention + LongRoPE + 稀疏 attention pattern (MInference / Quest)
+4. **Speculative 家族升级**：**EAGLE-3** 成开源 SOTA（相比 EAGLE-2 再提 1.3~1.5×），**DFlash** / **PLD** 简化部署，decode 速度 2~5x
 5. **Graph Compilation 再升级**：torch.compile 3.0 / TensorRT-LLM 的 engine 固化
 6. **推理栈收敛**：vLLM / SGLang / TensorRT-LLM 三足鼎立；后续是 agent 服务栈（Claude Code / Codex / Cursor 式）
-7. **硬件多样化**：B200 / GB200 NVL / 国产 AI 芯片涌现，kernel 要 portable
+7. **硬件多样化**：B200 / GB200 NVL72 / 国产 AI 芯片涌现，kernel 要 portable
 8. **Inference-time Scaling**：推理时做多次搜索（o1 / Qwen-Reasoning）——算力预算从训练挪向推理
 9. **Diffusion 从"50 步"到"1 步"**：DMD / DMD2 / LCM / Lightning / HyperSD 等步数蒸馏系列让图像 / 视频生成从秒级变成亚秒级；Attention 量化（SageAttention / SVDQuant）让 SD3 / Flux 消费级显卡可跑
-10. **RL 训练栈爆发**：o1 style reasoning + post-training 大规模化催生 veRL / AReaL / ROLL / OpenRLHF / SkyRL 等专用栈；"**fully-async**"（actor / learner / reward / rollout 完全异步）成新默认
-11. **多模态端到端加速**：VLA (Vision-Language-Action) / 音频 / 视频端到端模型不再各自为战，共享 transformer 加速栈
-12. **"MoE 教师 → Dense 学生"范式**：高参 MoE 先预训练到 SOTA，再蒸馏到消费级 dense 模型（Qwen3-MoE → Qwen3-8B / Gemma-3 / MiniCPM 都这么玩）。蒸馏 pipeline 本身是一套独立加速体系——teacher 批量 rollout 用 vLLM、logit 只存 top-K 省带宽、on-policy KD 让 student 越学越准
+10. **RL 训练栈爆发**：o1 style reasoning + post-training 大规模化催生 veRL / AReaL / ROLL / OpenRLHF / SkyRL 等专用栈；"**fully-async**"（actor / learner / reward / rollout 完全异步）成新默认；GRPO → DAPO / GSPO / SAPO 算法迭代加速
+11. **多模态 / Omni 端到端加速**：Qwen2.5-Omni / Qwen3-Omni / GPT-4o / Gemini 2.5 Flash 等 any-to-any 模型上线；视觉 encoder 量化（SigLIP INT8）、Audio tokenizer（Mimi / EnCodec RVQ）、temporal caching 成新子栈
+12. **端侧模型爆发**：Gemma-3n / Gemma-4 edge / Qwen3-0.5B / SmolLM 让 LLM 跑进手机；NPU 调度（ANE / Hexagon / APU）+ INT4 量化 + KV cache 压缩成标配
+13. **"MoE 教师 → Dense 学生"范式**：高参 MoE 先预训练到 SOTA，再蒸馏到消费级 dense 模型（Qwen3.5-MoE → Qwen3.5-8B / Gemma-4 / MiniCPM-4 都这么玩）。蒸馏 pipeline 本身是一套独立加速体系——teacher 批量 rollout 用 vLLM、logit 只存 top-K 省带宽、on-policy KD 让 student 越学越准
+14. **Hybrid Attention 架构**：DeepSeek-V4 CSA/HCA、MiniMax-01 Lightning、Gemma-3/4 的 SWA+Global 交替层——长上下文下 full attention 被部分替换，KV cache 和 FLOPs 双降
 
 ---
 
@@ -311,11 +317,18 @@ graph TD
 - **DeepEP** = DeepSeek 开源的 Expert Parallel 通信库，优化 MoE all-to-all，是 DeepSeek-V3 能高效训练的基建之一。
 - **DeepSpeed** = 微软训练框架；ZeRO 系列 + Offload。
 - **DeviceMesh** = PyTorch 2.x 提供的 N 维设备网格抽象，FSDP2 / TP / SP 都基于它组合。
+- **DFlash** = 2025 提出的 Speculative Decoding 变体，把 draft 模型 + verify 阶段融合到单 kernel，适合轻量部署。
+- **Disaggregated Prefill/Decode** = Mooncake / DistServe 提出，把 prefill 和 decode 部署到不同 GPU pool，各自用最优 batch/parallelism 配置。
 - **DMD / DMD2 (Distribution Matching Distillation)** = 扩散模型的"多步 → 几步"蒸馏，DMD2 去掉 regression loss 进一步提速。
+- **DoRA (Weight-Decomposed LoRA)** = 把权重分解为方向 + 幅度，只对方向做 LoRA，效果接近全参微调。
 - **DPO (Direct Preference Optimization)** = 不要 reward model 的 RLHF 替代。
 
 ### F–L
 
+- **EAGLE / EAGLE-2 / EAGLE-3** = Speculative Decoding 的 tree-based 方案，EAGLE-3 在 decode 速度和质量上再刷新 SOTA（相对 EAGLE-2 再提 30~50%）。
+- **ExecuTorch** = PyTorch 官方端侧推理运行时，目标取代 TFLite / CoreML 的部分场景。
+- **FLA (Fast Linear Attention)** = flash-linear-attention 项目，Mamba / Linear-attention 系列的统一 kernel 仓库。
+- **FLUX / FLUX.1** = Black Forest Labs（原 Stability AI 核心团队）的 DiT 基座文生图模型，[dev] / [schnell] / [pro] 三档；schnell 基于 LCM 蒸馏，4 步出图。
 - **Flash-Attention** = Tri Dao 的 attention 算子，tile + online softmax。v1/v2/v3 逐代优化。
 - **FLA (Fast Linear Attention)** = flash-linear-attention 项目，Mamba / Linear-attention 系列的统一 kernel 仓库。
 - **FSDP (Fully Sharded Data Parallel)** = PyTorch 版 ZeRO-3，参数 / 梯度 / 优化器全部 shard。
@@ -330,6 +343,7 @@ graph TD
 - **Grouped GeMM** = MoE 训练中对不同 expert 的 GeMM 批量合并调度，减少 kernel launch 和内存碎片。
 - **HBM (High Bandwidth Memory)** = GPU 主显存，H100 80GB HBM3 ≈ 3TB/s。
 - **HFU (Hardware FLOPs Utilization)** = 含重算的 FLOPs 利用率。
+- **H2O (Heavy Hitter Oracle)** = KV cache 驱逐算法，只保留"重要 token"的 KV，长上下文显存打折扣。
 - **HyperSD** = ByteDance 的多步 → 单/四步扩散蒸馏方案，和 DMD / LCM 齐名。
 - **ITL (Inter-Token Latency)** = 流式 decode 相邻 token 间隔。
 - **KL Divergence** = 两概率分布的差异度量。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
@@ -337,11 +351,17 @@ graph TD
 - **LCM (Latent Consistency Model)** = 扩散模型的步数蒸馏路线之一，4 步推理可用。
 - **Liger Kernel** = LinkedIn 为 Qwen/Llama 家族做的 fused kernel 集合。
 - **LLaMA-Factory** = 开源 LLM 微调框架，封装 SFT / DPO / PPO，国内用户多。
+- **LongRoPE** = 微软提出的 RoPE 长度外推方案，可扩展到 2M context。
 - **LoRA** = Low-Rank Adaptation，PEFT 主流之一。
+- **LoRA+ / rsLoRA / AdaLoRA / VeRA / LoftQ / PiSSA** = LoRA 的 2024-2025 变体族：LoRA+ 分组学习率、rsLoRA 稳定 rank、AdaLoRA 自适应 rank、VeRA 共享随机基、LoftQ 联合量化初始化、PiSSA 奇异值初始化。
 
 ### M–R
 
+- **Mamba / Mamba-2** = Selective State Space Model，线性复杂度替代 attention。
 - **Megatron-LM** = NVIDIA 训练框架；TP / SP / PP 并行。
+- **MInference** = MSR 2024 提出的长上下文稀疏 attention pattern 选择算法，1M token 推理快 10×。
+- **MLX** = Apple 针对 M 系列 芯片的 ML 框架，支持 Unified Memory，端侧 LLM 首选之一。
+- **Mooncake** = 月之暗面开源的 disaggregated KV cache + scheduler 方案，长上下文服务的代表性栈。
 - **MFU (Model FLOPs Utilization)** = 模型 FLOPs 与硬件峰值 FLOPs 比值。
 - **MLA (Multi-head Latent Attention)** = DeepSeek-V2/V3 提出的 attention 变体，压缩 KV 到 latent 空间，显存显著降低。
 - **ms-swift** = 阿里魔搭（ModelScope）的大模型训练 / 微调 / 推理框架。
@@ -355,7 +375,9 @@ graph TD
 - **OpenRLHF** = 开源 PPO / DPO / KTO 训练框架，支持 Ray 分布式。
 - **Paged Attention** = vLLM 把 KV cache 按 page 管理（像 OS paging），减少碎片。
 - **Pai-Megatron-Patch** = 阿里 PAI 对 Megatron-LM 的国产适配 + 增强补丁集。
-- **PEFT (Parameter-Efficient Fine-Tuning)** = LoRA / QLoRA / Prefix Tuning 等总称。
+- **PEFT (Parameter-Efficient Fine-Tuning)** = LoRA / QLoRA / Prefix Tuning / DoRA / IA³ / GaLore 等总称。
+- **PLD (Prompt Lookup Decoding)** = 从 prompt 中直接"复制"作为 draft 的 Speculative 变体，适合代码 / 问答等 prompt-output 相似场景。
+- **PyramidKV / SnapKV / ScissorHands** = KV cache 驱逐家族，2024-2025 主流方案。
 - **Perplexity (PPL)** = `exp(CE)`，模型困惑度。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
 - **PP (Pipeline Parallel)** = 模型分阶段放到不同卡。
 - **Prefix Caching** = 共享 prompt 前缀的 KV 重用。
@@ -375,6 +397,8 @@ graph TD
 - **SP / Ulysses SP** = Sequence Parallel / Ulysses 长序列并行（DeepSpeed 提出），把 attention 的 head 维 all-to-all 到多卡。
 - **Speculative Decoding** = 小模型草稿 + 大模型验证，decode 加速 2~4x。
 - **SLO (Service Level Objective)** = 服务等级目标，TTFT/P99 的上限承诺。
+- **StarAttention / DuoAttention** = 长上下文下的 attention 稀疏 pattern，把"检索 / 摘要"等长文任务的 KV 访问量大幅压低。
+- **StreamingLLM** = MIT 2024 提出，保留 attention sink + 滑动窗口，无限长上下文持续生成不爆显存。
 - **Step Distillation (步数蒸馏)** = Diffusion 把 50 步采样蒸馏到 1~4 步（DMD / LCM / Lightning / HyperSD）。
 - **SVDQuant** = MIT 提出的 4-bit 扩散模型 weight + activation 量化方案。
 - **SwiGLU** = `silu(W_gate x) * W_up x`，Llama / Qwen MLP 激活。
