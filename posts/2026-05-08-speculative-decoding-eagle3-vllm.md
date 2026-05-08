@@ -368,6 +368,36 @@ $$
 
 **实测通常打到理论上限的 60~80%**（2.0~2.7×），gap 来自调度 / KV cache 管理 / kernel launch 开销。
 
+### 7.4 为什么 Acceptance Rate 是**训练侧**指标
+
+这是 Speculative Decoding 一个反直觉的地方——**α 看起来是推理指标，本质却由训练质量 100% 决定**。逻辑链：
+
+$$
+\text{Draft 训练质量} \uparrow \;\Rightarrow\; q(y) \approx p(y) \;\Rightarrow\; \min\left(1, \tfrac{p(y)}{q(y)}\right) \to 1 \;\Rightarrow\; \alpha \uparrow \;\Rightarrow\; \text{TPOT} \downarrow
+$$
+
+**三个训练决策直接决定推理时的 α**：
+
+| 决策 | 来自训练阶段 | 对 α 的影响 |
+|---|---|---|
+| **Draft 架构**（多层 feature / draft layer 数） | 训练前定义 | 决定 draft 能"读到大模型多深的思考" |
+| **训练数据分布**（self-distillation 数据量 + 覆盖领域） | 训练数据集准备 | EAGLE-3 相对 EAGLE-2 就靠这点把 α 从 0.68 → 0.78 |
+| **领域 fine-tune**（代码 / 长对话 / 多语种） | 下游 adapt | 特定场景可再 +15% |
+
+**和常规加速指标的本质区别**：
+
+| 类别 | 指标 | 决定因素 |
+|---|---|---|
+| 纯推理优化 | TPOT · QPS · P99 | Kernel / 调度 / 显存 |
+| 纯训练优化 | Loss · Grad norm · MFU | 优化器 / 并行 / 数据 |
+| **Speculative α** | Acceptance rate | **Draft 训练数据 + 架构 + fine-tune** |
+
+**工程结论**：**SD 是少见的"训练侧投入直接换推理侧收益"的技术**。
+- 如果 α 已经 > 0.80：推理侧继续调优（KV cache / scheduler / kernel）
+- 如果 α < 0.70：别调推理了，回去**扩训练数据 / fine-tune draft head**——收益会大得多
+
+这也解释了为什么 EAGLE-3 论文 60% 篇幅在讲**训练方法**（feature 选择 / 数据扩充 / loss 设计），而不是推理 kernel。
+
 ---
 
 ## 八、常见陷阱 + 调优
