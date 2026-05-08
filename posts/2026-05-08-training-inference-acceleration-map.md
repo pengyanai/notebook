@@ -110,6 +110,7 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 | **PEFT 微调** | 训练 | **LoRA** · **QLoRA** · **DoRA** · PiSSA · LoRA+ · rsLoRA · VeRA · LoftQ · AdaLoRA · GaLore · IA³ · MoLA · LoRA hot-swap | **PEFT (HF)** · **Unsloth** · LLaMA-Factory · ms-swift · Axolotl · bitsandbytes · torchtune | 消费级显卡 / 少样本微调 / 多任务适配 |
 | **优化器加速** | 训练 | **Muon** · Fused AdamW · 8-bit Adam · Shampoo / SOAP · Sophia · Adafactor · Lion · Schedule-Free | **Apex FusedAdam** · **bitsandbytes** · moonshot-ai/Muon · Keller-Jordan/Muon · torchshampoo | 收敛加速 / 显存减少 |
 | **多模态 / Omni 模型加速** | 训 + 推 | **视觉 encoder 量化**（SigLIP / DINOv3 INT8）· **Audio tokenizer**（Mimi / EnCodec RVQ）· Cross-modal attention 融合 / Q-Former · Interleave training · Video chunking / temporal caching · Any-to-any 端到端 | **Qwen2.5-Omni / Qwen3-Omni** · **GPT-4o** · Gemini 2.5 Flash · Seed-VL · Emu3 · vLLM Multi-modal · SGLang VLM | 图 / 视频 / 音频 / 文本多模态训推 |
+| **语音 / 音频模型加速** | 训 + 推 | **Audio Tokenizer / AuT**（Mimi · WavTokenizer · XCodec2 · EnCodec · DAC · BigCodec）· **Streaming ASR（Chunk-based / Transducer）** · **Full-duplex Voice Dialog** · Zipformer / Conformer / Paraformer 非自回归 · Flow Matching TTS（F5 / E2）· TTS 步数蒸馏 · FP16 / INT8 量化 · VAD / Diarization · 声学 codec INT8 · KV cache 流式 | **ASR**：**Qwen3-ASR**（阿里，52 语种）· **SenseVoice / Paraformer**（FunASR）· **Whisper v3 / v3-Turbo** · Voxtral · Nemo Canary · K2 / Zipformer · sherpa-onnx<br/>**TTS**：**CosyVoice 2**（阿里）· **F5-TTS / E2-TTS** · MegaTTS3 · Fish-Speech · **Kokoro**（端侧小 TTS）· GPT-SoVITS · XTTS-v2 · MaskGCT<br/>**Dialog / Omni**：**Moshi**（Kyutai, full-duplex）· **GPT-4o Realtime** · Qwen2.5-Omni · MiniCPM-o · Step-Audio · LLaMA-Omni · SALMONN<br/>**工具栈**：FunASR · NeMo Speech · ESPnet · SpeechBrain · k2 / icefall · WeNet · whisper.cpp · pyannote.audio | 实时语音对话 / 转录 / 合成 / 歌曲生成 |
 | **端侧小模型加速** | 推 | **INT4 / AWQ / GGUF 量化** · **NPU 调度**（ANE / Hexagon / APU）· KV cache INT8 / INT4 · CoreML / NNAPI / LiteRT · Distill to small dense · LoRA adapter 动态加载 | **llama.cpp** · **MLX (Apple)** · **ExecuTorch** · MLC-LLM · TensorRT · ONNX Runtime · NCNN / MNN · 代表模型：**Gemma-3n / Qwen3-0.5B** · SmolLM · Phi-4-mini · SigLIP / DINOv3 · MobileNet v5 | 手机 / 笔记本 / 嵌入式推理 |
 | **长上下文专项** | 训 + 推 | **Disaggregated Prefill/Decode**（Mooncake 范式）· **MInference / Quest** 稀疏 pattern · **KV 驱逐**（H2O / SnapKV / PyramidKV / ScissorHands）· **LongRoPE / YaRN** 位置外推 · Ring / Striped Attention · StreamingLLM · KV 量化（KIVI / KVQuant / LMCache）· DuoAttention / StarAttention · Prefix cache across requests | **Mooncake**（月之暗面）· **SGLang RadixAttention** · **vLLM 长上下文** · MInference · LMCache · LServe · 代表模型：Qwen3.5-Long · Llama-3.1-405B · Gemini 1.5 1M | 128K ~ 10M token 上下文训推 |
 | **系统调度** | 推 | **Autoscaling** · 请求队列 · Load Balance · 多模型共置 · K8s orchestration | **Ray Serve** · **Triton Inference Server** · KServe | 集群级 serving |
@@ -436,6 +437,72 @@ graph TD
 - **YaRN** = RoPE 的长度外推方案之一，Qwen2.5-long / Llama-3.1 均采用。
 - **ZeRO (Zero Redundancy Optimizer)** = DeepSpeed 提出；ZeRO-1/2/3 分别 shard 优化器 / 梯度 / 参数。
 - **ZeRO++** = ZeRO 升级版，量化通信。
+
+### 语音 / 音频模型专栏（ASR / TTS / Codec / Full-duplex Dialog）
+
+**Audio Tokenizer / AuT（音频编码器）**
+
+- **Mimi** = Kyutai Moshi 的双流 audio tokenizer，**语义流 + 声学流**分开编码，1.1 kbps 低码率下保持高质量，是 Moshi 能做 full-duplex 对话的关键基建。
+- **WavTokenizer** = 2024 单流极低码率 codec（0.5~0.9 kbps），为 speech LLM 做离散化。
+- **XCodec / XCodec2** = 语义 + 声学统一编码，Step-Audio / MiniCPM-o 采用。
+- **EnCodec** = Meta 早期 RVQ codec，仍是 TTS 默认选项。
+- **SoundStream** = Google 的原始 neural audio codec。
+- **DAC (Descript Audio Codec)** = 高质量音频重建，音乐 / 广播级。
+- **BigCodec** = 2024 大容量 codec，用于高保真音乐生成。
+- **SpeechTokenizer** = 层次化 codec，底层声学 + 顶层语义。
+
+**ASR 核心模型 / 框架**
+
+- **Qwen3-ASR** = 阿里 2026 发布的 ASR 系列（1.7B / 0.6B），52 语种 + 22 中文方言，支持 streaming / offline 统一推理，伴生 Qwen3-ForcedAligner 做时间戳。
+- **SenseVoice** = 阿里 FunASR 的多语种 ASR，一次推理同时输出转录 + 情感 + 音频事件检测，非自回归速度快。
+- **Paraformer / Paraformer-v2** = 阿里非自回归 ASR，比 Whisper 快 10× 以上，是工业实时 ASR 主流之一。
+- **Whisper v3 / v3-Turbo** = OpenAI 680k 小时带字幕预训练；v3-Turbo 把 decoder 层减半，速度 5~8× 提升。
+- **K2 / icefall / sherpa / sherpa-onnx** = Next-gen Kaldi 全家桶，端到端训练 + 端侧部署一条龙；sherpa-onnx 是端侧 ASR 部署王者。
+- **Zipformer** = K2 家族的主力 streaming encoder，推理极快（比 Conformer 快 2×+），RNN-T / CTC / AED 都能接。
+- **Voxtral** = Mistral 的 ASR 模型。
+- **NeMo Canary** = NVIDIA 的多语言 ASR 模型，在 HuggingFace Open ASR leaderboard 曾登顶。
+- **WeNet** = 出门问问开源工业级 ASR，streaming + offline 共用 decoder。
+- **FunASR** = 阿里开源的 ASR 全家桶：Paraformer / SenseVoice / CosyVoice 统一。
+- **ESPnet / SpeechBrain** = 学术界最活跃的两个语音 toolkit。
+
+**TTS 核心模型 / 框架**
+
+- **CosyVoice / CosyVoice 2** = 阿里开源 zero-shot TTS，3 秒音色克隆，中文 SOTA 之一。
+- **F5-TTS / E2-TTS** = 基于 **Flow Matching** 的非自回归 TTS，4 步出音频，工业级质量。
+- **MegaTTS3** = 字节最新 TTS，多语言 + 歌唱合成。
+- **Fish-Speech** = 开源 TTS + 语音克隆，部署轻量。
+- **Kokoro** = 82M 参数端侧小 TTS，CPU 可跑，手机端明星。
+- **GPT-SoVITS** = SoftVC VITS + GPT 框架，国内最流行的个人 TTS 克隆方案。
+- **MaskGCT** = Masked generative codec transformer，高质量 zero-shot TTS。
+- **ChatTTS** = 对话场景专精，支持笑声 / 停顿 / 语气词标签。
+- **VALL-E / VALL-E 2** = 微软原创的 audio token AR TTS 范式，许多开源方案的始祖。
+- **XTTS-v2** = Coqui 的多语种 TTS，开源社区常备。
+
+**Full-duplex / Dialog 语音模型**
+
+- **Moshi** = Kyutai 2024 发布的**首个开源 full-duplex** speech dialog 模型，延迟 < 200ms，用 **Mimi codec** 双流处理。
+- **GPT-4o Realtime** = OpenAI 的实时语音对话 API，端到端 speech-to-speech，无需 ASR+TTS 级联。
+- **Qwen2.5-Omni / Qwen3-Omni** = 阿里统一多模态（文/语/视频/图），Omni decoder 端到端出音频 token。
+- **MiniCPM-o** = 面壁 end-to-end 语音对话模型，2.6B 参数，手机端可跑。
+- **Step-Audio** = 阶跃星辰的对话 + TTS 模型。
+- **LLaMA-Omni** = 清华开源的 LLaMA + speech 对话。
+- **SALMONN** = 清华 / 字节的通用 speech understanding LLM。
+
+**加速 / 部署工具**
+
+- **sherpa-onnx** = K2 生态的跨平台 ASR / TTS 运行时，iOS / Android / Linux / Windows 一套代码。
+- **whisper.cpp** = ggerganov 的 Whisper C++ 实现，端侧 CPU 推理标配。
+- **MLX-Audio** = Apple MLX 的音频扩展，M 系列芯片实时 ASR / TTS。
+- **pyannote.audio** = 说话人分割（diarization）与识别，配合 ASR 做多人会议转录。
+- **Vosk** = 轻量级 offline ASR，Kaldi 路线。
+- **Triton Inference Server 语音插件** = 服务端 ASR / TTS 批处理调度。
+
+**关键概念**
+
+- **Streaming ASR** = 边听边转写，chunk-based + limited left context，延迟 < 500ms。
+- **Full-duplex** = 同时听 + 说，和 Moshi / GPT-4o Realtime 一样，区别于"半双工"级联 ASR → LLM → TTS。
+- **RNN-T / CTC / AED** = 三种 ASR 解码范式。RNN-T（Transducer）是流式黄金标准，CTC 非自回归最快，AED（Encoder-Decoder attention）精度最高。
+- **Forced Alignment** = 给定音频 + 转录文本，输出每个 token 的时间戳。Qwen3-ForcedAligner / MFA (Montreal Forced Aligner) 是主流。
 
 ### Hybrid Attention 专栏（DeepSeek-V4 等）
 
