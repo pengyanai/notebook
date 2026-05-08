@@ -154,8 +154,8 @@ graph TD
 
 ### 3.2 分布式训练的地基：DeepSpeed / ZeRO
 
-![DeepSpeed](https://raw.githubusercontent.com/microsoft/DeepSpeed/master/docs/assets/images/DeepSpeed_light.svg)
-*图：DeepSpeed 的 ZeRO 系列提出"参数 / 梯度 / 优化器按需 shard"的范式，后续 PyTorch FSDP 直接继承。来源：microsoft/DeepSpeed*
+![ZeRO memory partitioning](https://ar5iv.labs.arxiv.org/html/1910.02054/assets/x1.png)
+*图：ZeRO 论文 Figure 1——Baseline（每卡完整 P+G+Opt）→ P_os（按卡分 Optimizer States）→ P_os+g（再分 Gradients）→ P_os+g+p（最终所有都分）。7.5B 模型从 120GB / 卡 降到 1.9GB / 卡。PyTorch FSDP 直接继承这个范式。来源：Rajbhandari et al. 2020, arXiv:1910.02054*
 
 ---
 

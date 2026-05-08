@@ -143,30 +143,57 @@ graph LR
 **时序事实图**（时间比例真实，假设 prompt 512 tokens / 输出 200 tokens）：
 
 ```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "-apple-system, Source Sans Pro, sans-serif",
+    "primaryTextColor": "#374151",
+    "textColor": "#374151",
+    "titleColor": "#374151",
+    "lineColor": "#9CA3AF",
+    "sectionBkgColor": "#FAFAF7",
+    "altSectionBkgColor": "#F3F4F0",
+    "gridColor": "#E5E7EB",
+    "taskBkgColor": "#FDE8A9",
+    "taskBorderColor": "#E7C56D",
+    "taskTextColor": "#374151",
+    "taskTextOutsideColor": "#374151",
+    "taskTextLightColor": "#374151",
+    "activeTaskBkgColor": "#CFE0F3",
+    "activeTaskBorderColor": "#8AB0DB",
+    "doneTaskBkgColor": "#D4E8CF",
+    "doneTaskBorderColor": "#94C18A",
+    "critBkgColor": "#F6CED0",
+    "critBorderColor": "#D98F92"
+  }
+}}%%
 gantt
-    title 单请求生命周期（毫秒，prompt=512, output=200, Qwen3-8B 示意）
-    dateFormat X
-    axisFormat %Lms
+    title 单请求生命周期 prompt=512 output=200 Qwen3-8B 示意
+    dateFormat x
+    axisFormat %S.%Ls
 
     section 请求生命周期
-    Queue wait            :done,    q,   0, 30
-    Prefill compute       :active,  pf,  30, 170
-    First token emit      :crit,    ft,  200, 5
-    Decode token 2        :         d2,  205, 25
-    Decode token 3        :         d3,  230, 25
-    Decode tokens 4 to 199 skipped :       d4,  255, 4545
-    Decode token 200      :         dn,  4800, 25
-    Completion return     :done,    cp,  4825, 10
+    Queue wait                       :done,   q,  0,  30
+    Prefill compute                  :active, pf, 30, 170
+    First token emit                 :crit,   ft, 200, 5
+    Decode token 2                   :        d2, 205, 25
+    Decode token 3                   :        d3, 230, 25
+    Decode tokens 4 to 199 skipped   :        d4, 255, 4545
+    Decode token 200                 :        dn, 4800, 25
+    Completion return                :done,   cp, 4825, 10
 ```
 
-**颜色语义对齐 4 个指标**：
+x 轴单位 `秒.毫秒`（例如 `0.200s` = 200ms，`4.825s` = 4825ms）。
 
-| 指标 | 对应区间 | 颜色 |
+**颜色语义 vs 指标对应**：
+
+| 指标 | 视觉位置 | 图中对应的颜色 |
 |---|---|---|
-| **TTFT** | 从请求入队到 First token emit（0 → 200ms） | 粉（`crit`）——用户最敏感 |
-| **TPOT** | 单个 decode token 宽度（≈ 25ms） | 蓝（`active`） |
-| **ITL** | decode 相邻 token 间距 | 同上 |
-| **E2E** | 全条最左到最右（≈ 4835ms） | 绿（`done`） |
+| **TTFT** | 从请求入队到 First token emit（前 200ms） | 第一根 **粉色 crit** 标记 TTFT 终点 |
+| **TPOT** | 单个 decode token 条的宽度（≈ 25ms） | **黄色普通条**（Decode token 2/3/200） |
+| **ITL** | decode token 之间的间距（本图近似等于 TPOT） | 同上 |
+| **E2E** | 全条最左到最右（≈ 4835ms） | 首尾两根 **绿色 done** 标记起止（Queue wait / Completion return） |
+| Prefill 计算 | 蓝色 **active** 条 | 占 TTFT 中 170/200ms |
 
 **关键直觉**：本图里 TTFT 只占 E2E 的 ~4%，**真正主导 E2E 的是 TPOT × N_output**。所以推理优化先问一句"你优化的是 TTFT 还是 TPOT"——优先级完全不同（见 §七 Goodput）。
 
