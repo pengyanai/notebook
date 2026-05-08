@@ -110,7 +110,7 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 | **PEFT 微调** | 训练 | **LoRA** · **QLoRA** · **DoRA** · PiSSA · LoRA+ · rsLoRA · VeRA · LoftQ · AdaLoRA · GaLore · IA³ · MoLA · LoRA hot-swap | **PEFT (HF)** · **Unsloth** · LLaMA-Factory · ms-swift · Axolotl · bitsandbytes · torchtune | 消费级显卡 / 少样本微调 / 多任务适配 |
 | **优化器加速** | 训练 | **Muon** · Fused AdamW · 8-bit Adam · Shampoo / SOAP · Sophia · Adafactor · Lion · Schedule-Free | **Apex FusedAdam** · **bitsandbytes** · moonshot-ai/Muon · Keller-Jordan/Muon · torchshampoo | 收敛加速 / 显存减少 |
 | **多模态 / Omni 模型加速** | 训 + 推 | **视觉 encoder 量化**（SigLIP / DINOv3 INT8）· **Audio tokenizer**（Mimi / EnCodec RVQ）· Cross-modal attention 融合 / Q-Former · Interleave training · Video chunking / temporal caching · Any-to-any 端到端 | **Qwen2.5-Omni / Qwen3-Omni** · **GPT-4o** · Gemini 2.5 Flash · Seed-VL · Emu3 · vLLM Multi-modal · SGLang VLM | 图 / 视频 / 音频 / 文本多模态训推 |
-| **语音 / 音频模型加速** | 训 + 推 | **Audio Tokenizer / AuT**（Mimi · WavTokenizer · XCodec2 · EnCodec · DAC · BigCodec）· **Streaming ASR（Chunk-based / Transducer）** · **Full-duplex Voice Dialog** · Zipformer / Conformer / Paraformer 非自回归 · Flow Matching TTS（F5 / E2）· TTS 步数蒸馏 · FP16 / INT8 量化 · VAD / Diarization · 声学 codec INT8 · KV cache 流式 | **ASR**：**Qwen3-ASR**（阿里，52 语种）· **SenseVoice / Paraformer**（FunASR）· **Whisper v3 / v3-Turbo** · Voxtral · Nemo Canary · K2 / Zipformer · sherpa-onnx<br/>**TTS**：**CosyVoice 2**（阿里）· **F5-TTS / E2-TTS** · MegaTTS3 · Fish-Speech · **Kokoro**（端侧小 TTS）· GPT-SoVITS · XTTS-v2 · MaskGCT<br/>**Dialog / Omni**：**Moshi**（Kyutai, full-duplex）· **GPT-4o Realtime** · Qwen2.5-Omni · MiniCPM-o · Step-Audio · LLaMA-Omni · SALMONN<br/>**工具栈**：FunASR · NeMo Speech · ESPnet · SpeechBrain · k2 / icefall · WeNet · whisper.cpp · pyannote.audio | 实时语音对话 / 转录 / 合成 / 歌曲生成 |
+| **语音 / 音频模型加速** | 训 + 推 | **Audio Tokenizer / AuT**（Mimi · WavTokenizer · XCodec2 · EnCodec · DAC · BigCodec）· **Streaming ASR（Chunk-based / Transducer）** · **Full-duplex Voice Dialog** · Zipformer / Conformer / Paraformer 非自回归 · Flow Matching TTS（F5 / E2）· TTS 步数蒸馏 · FP16 / INT8 量化 · VAD / Diarization · 声学 codec INT8 · KV cache 流式 | **ASR**：**Qwen3-ASR**（阿里，52 语种）· **SenseVoice / Paraformer**（FunASR）· **Whisper v3 / v3-Turbo** · Voxtral · Nemo Canary · K2 / Zipformer · sherpa-onnx<br/>**TTS**：**CosyVoice 2**（阿里）· **F5-TTS / E2-TTS** · MegaTTS3 · Fish-Speech · **Kokoro**（端侧小 TTS）· GPT-SoVITS · XTTS-v2 · MaskGCT · **Vocoder 侧：HiFi-GAN / BigVGAN-v2 / Vocos**<br/>**Dialog / Omni**：**Moshi**（Kyutai, full-duplex）· **GPT-4o Realtime** · Qwen2.5-Omni · MiniCPM-o · Step-Audio · LLaMA-Omni · SALMONN<br/>**工具栈**：FunASR · NeMo Speech · ESPnet · SpeechBrain · k2 / icefall · WeNet · whisper.cpp · pyannote.audio | 实时语音对话 / 转录 / 合成 / 歌曲生成 |
 | **端侧小模型加速** | 推 | **INT4 / AWQ / GGUF 量化** · **NPU 调度**（ANE / Hexagon / APU）· KV cache INT8 / INT4 · CoreML / NNAPI / LiteRT · Distill to small dense · LoRA adapter 动态加载 | **llama.cpp** · **MLX (Apple)** · **ExecuTorch** · MLC-LLM · TensorRT · ONNX Runtime · NCNN / MNN · 代表模型：**Gemma-3n / Qwen3-0.5B** · SmolLM · Phi-4-mini · SigLIP / DINOv3 · MobileNet v5 | 手机 / 笔记本 / 嵌入式推理 |
 | **长上下文专项** | 训 + 推 | **Disaggregated Prefill/Decode**（Mooncake 范式）· **MInference / Quest** 稀疏 pattern · **KV 驱逐**（H2O / SnapKV / PyramidKV / ScissorHands）· **LongRoPE / YaRN** 位置外推 · Ring / Striped Attention · StreamingLLM · KV 量化（KIVI / KVQuant / LMCache）· DuoAttention / StarAttention · Prefix cache across requests | **Mooncake**（月之暗面）· **SGLang RadixAttention** · **vLLM 长上下文** · MInference · LMCache · LServe · 代表模型：Qwen3.5-Long · Llama-3.1-405B · Gemini 1.5 1M | 128K ~ 10M token 上下文训推 |
 | **系统调度** | 推 | **Autoscaling** · 请求队列 · Load Balance · 多模型共置 · K8s orchestration | **Ray Serve** · **Triton Inference Server** · KServe | 集群级 serving |
@@ -233,6 +233,13 @@ graph TD
 12. **端侧模型爆发**：Gemma-3n / Gemma-4 edge / Qwen3-0.5B / SmolLM 让 LLM 跑进手机；NPU 调度（ANE / Hexagon / APU）+ INT4 量化 + KV cache 压缩成标配
 13. **"MoE 教师 → Dense 学生"范式**：高参 MoE 先预训练到 SOTA，再蒸馏到消费级 dense 模型（Qwen3.5-MoE → Qwen3.5-8B / Gemma-4 / MiniCPM-4 都这么玩）。蒸馏 pipeline 本身是一套独立加速体系——teacher 批量 rollout 用 vLLM、logit 只存 top-K 省带宽、on-policy KD 让 student 越学越准
 14. **Hybrid Attention 架构**：DeepSeek-V4 CSA/HCA、MiniMax-01 Lightning、Gemma-3/4 的 SWA+Global 交替层——长上下文下 full attention 被部分替换，KV cache 和 FLOPs 双降
+15. **语音大模型 / 全双工对话爆发**：2024~2026 语音栈有几个关键跳跃——
+    - **Qwen3-ASR** 把 ASR 带入"LLM 尺寸级多方言多语种"（52 语种 + 22 中文方言，1.7B / 0.6B），并把"**对齐 / 时间戳**"独立成 0.6B ForcedAligner 配套发布
+    - **K2 + Zipformer + sherpa-onnx** 是 streaming / 端侧 ASR 的事实标准，学术 ESPnet 依然活跃但部署不如 K2 生态
+    - **Mimi codec**（Kyutai）是 **full-duplex 对话**的关键基建——**双流 tokenizer**（语义流 + 声学流分离）让模型"边听边说"，Moshi / GPT-4o Realtime / Qwen2.5-Omni 都基于这条范式
+    - **F5-TTS / E2-TTS** 把 TTS 带入 Flow Matching 时代，和 FLUX / Wan 2.2 一条技术范式——**Flow Matching 正在统治生成领域**（图像 / 视频 / 音频）
+    - **Vocoder** 侧：HiFi-GAN 仍是工程基线，BigVGAN-v2 / Vocos 是 2024-2025 SOTA；但 F5-TTS / Moshi 这类新方案开始**跳过 mel→vocoder 两段式，直接用 codec decoder 出波形**
+    - **端侧 TTS**：Kokoro（82M）证明手机 CPU 也能出工业级音质，端侧 speech 成新战场
 
 ---
 
@@ -477,6 +484,17 @@ graph TD
 - **ChatTTS** = 对话场景专精，支持笑声 / 停顿 / 语气词标签。
 - **VALL-E / VALL-E 2** = 微软原创的 audio token AR TTS 范式，许多开源方案的始祖。
 - **XTTS-v2** = Coqui 的多语种 TTS，开源社区常备。
+
+**Vocoder（Mel → 波形）**
+
+TTS 管线里最后一步——acoustic model 产生 mel-spectrogram，再由 vocoder 合成波形。2024-2026 有一批更快更高质量的方案。
+
+- **HiFi-GAN** = 2020 Kong et al. 的 GAN vocoder，**目前仍是 TTS 默认基线**——CosyVoice / XTTS / GPT-SoVITS / Tortoise 都在用。训练稳定、推理极快（> 1000× realtime）、质量足够 24kHz/48kHz。
+- **BigVGAN / BigVGAN-v2** = NVIDIA 的"universal vocoder"，解决 HiFi-GAN 在未见声线 / 乐器上的 artifact；2024 的 v2 是当前客观指标 SOTA。
+- **Vocos** = 2024 ConvNeXt + iSTFT head 的 vocoder，**推理比 HiFi-GAN 还快 ~10×**，GPU 端吞吐王。
+- **WaveRNN / Parallel WaveGAN / MelGAN** = Tacotron 时代的 vocoder，2024 后逐步退场。
+- **SoundStorm / Voicebox / Audiobox** = Meta 的大规模 flow-matching 音频生成，**端到端跳过 mel-vocoder 两段式**，未来方向。
+- **Codec Vocoder**（Mimi / EnCodec / DAC 的 decoder 端）= Neural codec 的"反向路径"——给定离散 token 直接出波形，本身就是 vocoder。F5-TTS / Moshi 这类新方案不再单独训 HiFi-GAN，改用 codec decoder。
 
 **Full-duplex / Dialog 语音模型**
 
