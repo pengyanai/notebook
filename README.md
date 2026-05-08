@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [训推加速效率指标全景：吞吐 / 延迟 / MFU / TGS / SLO（含数学公式）](posts/2026-05-08-training-inference-efficiency-metrics.md)
 - 2026-05-08 [Qwen3-8B 下 CUDA Graph 的合理使用：训练 / 推理分场景 + 陷阱清单](posts/2026-05-08-cuda-graph-qwen3-dense.md)
 - 2026-05-08 [Qwen3-8B 下让 Gradient Checkpointing 收益最大化：选择性重算 + Pareto 曲线](posts/2026-05-08-gradient-checkpointing-qwen3-dense.md)
 - 2026-05-08 [替换 Fused Kernel 后如何对齐训推精度：7 类差异 + 3 道验证 Gate + 8 个技巧](posts/2026-05-08-fused-kernel-accuracy-alignment.md)
