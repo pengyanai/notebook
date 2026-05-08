@@ -1,5 +1,7 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [水印消除 / 图像编辑模型训练加速：Inpainting / Instruct-Edit / Flux Fill 的 2024~2026 栈](posts/2026-05-08-watermark-removal-image-editing-acceleration.md)
+- 2026-05-08 [视频图像分割模型技术洞察与训练加速：SAM 2 / SAM 3 / Grounded-SAM / 视频 Mask](posts/2026-05-08-segmentation-sam2-training-acceleration.md)
 - 2026-05-08 [机器人 VLA 训推加速：OpenVLA / π0 / RDT-1B / GR00T 的实时控制工程](posts/2026-05-08-robotic-vla-training-inference-acceleration.md)
 - 2026-05-08 [音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio ](posts/2026-05-08-music-audio-generation-acceleration.md)
 - 2026-05-08 [端侧多模态端到端加速：MiniCPM-o / Gemma 3n / Qwen3-Omni ](posts/2026-05-08-edge-multimodal-end-to-end.md)
