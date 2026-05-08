@@ -172,7 +172,7 @@ class CustomQwen3Layer(nn.Module):
 
 最细粒度：**按 [访存比 (AI)](/posts/2026-05-07-qwen3-understand-model-identify-fusion.html#访存比arithmetic-intensity与-roofline) 来选**——AI 低的算子重算便宜（反正是 memory-bound），AI 高的算子重算贵（要重跑 compute）。
 
-![Roofline 模型](https://upload.wikimedia.org/wikipedia/commons/4/41/Roofline_model.png)
+![Roofline 模型](https://upload.wikimedia.org/wikipedia/commons/4/41/Roofline_model.png)  
 *图：Roofline 模型。横轴是访存比 $AI = \text{FLOPs}/\text{Bytes}$，纵轴是性能 (FLOP/s)。低 AI 算子卡在斜线（带宽上限），高 AI 算子顶到屋顶（算力上限）。来源：Wikimedia Commons*
 
 **决策规则**：设算子 $o$ 的访存比 $AI_o$、重算时间 $R_o$、保留 activation 显存 $M_o$。定义重算"性价比"：

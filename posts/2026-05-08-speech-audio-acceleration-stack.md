@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话的 2024~2026 技术栈"
+title: "语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话"
 date: 2026-05-08
 author: Austin
 categories: [语音, 深度学习, 性能优化]
@@ -138,10 +138,10 @@ $$
 ```mermaid
 graph TD
     A[Audio 16/24kHz] --> B[Encoder]
-    B --> C1[语义流 Semantic Tokens<br/>WER 导向 保留"说了什么"]
-    B --> C2[声学流 Acoustic Tokens<br/>保真度导向 保留"声音长什么样"]
+    B --> C1[语义流 Semantic Tokens  WER 导向 保留 说了什么]
+    B --> C2[声学流 Acoustic Tokens 保真度导向 保留 声音长什么样]
     C1 --> D1[LLM 只看语义流做生成]
-    C2 --> D2[Vocoder/Decoder 还原波形<br/>只在合成时需要]
+    C2 --> D2[Vocoder/Decoder 还原波形 只在合成时需要]
 
     style C1 fill:#CFE0F3,stroke:#8AB0DB
     style C2 fill:#F6CED0,stroke:#D98F92

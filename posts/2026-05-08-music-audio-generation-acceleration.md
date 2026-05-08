@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio 的 2024~2026 技术栈"
+title: "音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio "
 date: 2026-05-08
 author: Austin
 categories: [深度学习, 性能优化, 生成模型]

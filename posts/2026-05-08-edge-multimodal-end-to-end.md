@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "端侧多模态端到端加速：MiniCPM-o / Gemma 3n / Qwen3-Omni 在手机上的 2026 栈"
+title: "端侧多模态端到端加速：MiniCPM-o / Gemma 3n / Qwen3-Omni "
 date: 2026-05-08
 author: Austin
 categories: [深度学习, 性能优化, 端侧部署]

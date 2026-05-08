@@ -310,7 +310,7 @@ Nsight Compute 出这个数字。**不是越高越好**——低 occupancy 但�
 
 [前篇 §3.4](/posts/2026-05-07-qwen3-understand-model-identify-fusion.html) 已讲。一句话回顾：算子在 Roofline 上的位置 = `min(AI × BW, Peak FLOPS)`，H100 Ridge Point ≈ 330 FLOPs/byte。
 
-![Roofline Model](https://upload.wikimedia.org/wikipedia/commons/9/99/Roofline_model_example.png)
+![Roofline Model](https://upload.wikimedia.org/wikipedia/commons/9/99/Roofline_model_example.png)  
 *图：Roofline 模型——横轴算术强度 (FLOP/Byte)，纵轴性能 (GFLOPS)。斜线 = 带宽上限，水平线 = 算力上限。Ridge Point 左边的算子是 memory-bound（RMSNorm / RoPE / SwiGLU elementwise），右边是 compute-bound（大 matmul）。来源：Wikimedia Commons*
 
 ---

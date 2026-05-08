@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "图像 Diffusion 训推加速深化：FLUX / SD3 / DMD2 / SageAttention 的 2024~2026 技术栈"
+title: "图像 Diffusion 训推加速深化：FLUX / SD3 / DMD2 / SageAttention "
 date: 2026-05-08
 author: Austin
 categories: [深度学习, 性能优化, 生成模型]
