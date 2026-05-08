@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [MoE 教师 → Dense 学生：2024~2026 开源社区的落地范式](posts/2026-05-08-moe-to-dense-distillation.md)
 - 2026-05-08 [Speculative Decoding 实战：vLLM 框架下 EAGLE-3 原理与工程落地](posts/2026-05-08-speculative-decoding-eagle3-vllm.md)
 - 2026-05-08 [语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话的 2024~2026 技术栈](posts/2026-05-08-speech-audio-acceleration-stack.md)
 - 2026-05-08 [训推加速技术地图：三维分类 + 全景图 + 决策流 + 大模型加速术语表](posts/2026-05-08-training-inference-acceleration-map.md)
