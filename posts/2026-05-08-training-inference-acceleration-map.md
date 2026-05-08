@@ -95,7 +95,7 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 
 | 大类 | 训练 / 推理 | 子技术 | 代表实现 / 工具 | 典型场景 |
 |---|:---:|---|---|---|
-| **分布式并行** | 训练 | DP · TP · PP · SP · EP · **FSDP2 (DTensor + DeviceMesh)** · **Ulysses SP (长序列并行)** · **Ring Attention** · **Context Parallel** · ZeRO 1/2/3 · ZeRO++ · 通信 overlap | Megatron-LM · **Pai-Megatron-Patch** · PyTorch FSDP2 · DeepSpeed · **ms-swift (魔搭)** · LLaMA-Factory · Axolotl | 大模型多卡扩展 |
+| **分布式并行** | 训练 | DP · TP · PP · SP · EP · **FSDP2 (DTensor + DeviceMesh)** · **Ulysses SP (长序列并行)** · **Ring Attention** · **Context Parallel** · ZeRO 1/2/3 · ZeRO++ · 通信 overlap | **Megatron-LM** · **Megatron-Core** · **M-Bridge / Megatron-Bridge**（NVIDIA 2025，HF↔Megatron 桥接）· **NeMo-AutoModel**（NVIDIA NeMo 自动化训练栈）· **Megatron-Energon**（数据加载）· **Pai-Megatron-Patch** · PyTorch FSDP2 · **torchtitan** · DeepSpeed · **ms-swift (魔搭)** · LLaMA-Factory · Axolotl | 大模型多卡扩展 |
 | **低精度** | 训 + 推 | BF16 / FP16 混精 · FP8 训练 · INT8/FP8 推理 · INT4/FP4 weight-only · AWQ / GPTQ / GGUF · **FP8 Attention 量化** | Transformer Engine · AWQ · bitsandbytes · llama.cpp · **SageAttention** | 显存压缩 / 算力利用率 |
 | **Kernel Fusion** | 训 + 推 | Flash-Attention 2/3 · **FLA (Fast Linear Attention)** · Fused RMSNorm/RoPE/SwiGLU · 自写 Triton · 融合 cross-entropy | Flash-Attn · Liger Kernel · Apex · xFormers · Unsloth · **flash-linear-attention** | 消除小 kernel / HBM 往返 / 线性 attention |
 | **Graph Optim** | 训 + 推 | torch.compile · CUDA Graph · TensorRT engine · Inductor | PyTorch 2.x · TensorRT-LLM · torch.export | 消除 launch overhead |
@@ -364,7 +364,10 @@ graph TD
 ### M–R
 
 - **Mamba / Mamba-2** = Selective State Space Model，线性复杂度替代 attention。
-- **Megatron-LM** = NVIDIA 训练框架；TP / SP / PP 并行。
+- **Megatron-LM** = NVIDIA 训练框架；TP / SP / PP 并行，大模型训练基建最早的落地方案之一。
+- **Megatron-Core** = Megatron-LM 的核心模块化版本，剥离训练 loop，方便被其它框架（NeMo / TRT-LLM）复用。
+- **Megatron-Energon** = NVIDIA 出的大规模数据加载库，配套 Megatron-Core 使用，解决 petabyte 级数据吞吐。
+- **M-Bridge (Megatron-Bridge)** = NVIDIA 2025 推出的 HuggingFace ↔ Megatron 格式桥接库，支持一键把 HF Transformers 模型转成 Megatron-Core 训练（省掉自己写转换脚本），主打"HF 研究员无缝享受 Megatron 训练效率"。
 - **MInference** = MSR 2024 提出的长上下文稀疏 attention pattern 选择算法，1M token 推理快 10×。
 - **MLX** = Apple 针对 M 系列 芯片的 ML 框架，支持 Unified Memory，端侧 LLM 首选之一。
 - **Mooncake** = 月之暗面开源的 disaggregated KV cache + scheduler 方案，长上下文服务的代表性栈。
@@ -376,6 +379,7 @@ graph TD
 - **MMLU** = 57 学科选择题 benchmark。
 - **Muon (optimizer)** = Keller Jordan 等提出的 matrix-aware 优化器，对 2D 权重用 Newton-Schulz 迭代正交化，在 Llama / NanoGPT 级规模上明显快于 AdamW。
 - **NCCL** = NVIDIA 分布式通信库。
+- **NeMo-AutoModel** = NVIDIA NeMo 2025 推出的"自动化训练栈"，将 Megatron-Core / FSDP2 / 量化 / 蒸馏 / PEFT 全套封装到一致 API 后面，面向不想手调并行策略的团队。
 - **NoPE** = No Position Embedding，某些长上下文 MoE 架构尝试取消显式位置编码。
 - **On-Policy KD** = 学生生成 → 教师打分 / 提供 label 的蒸馏方式，效果显著好于 off-policy。
 - **OpenRLHF** = 开源 PPO / DPO / KTO 训练框架，支持 Ray 分布式。
@@ -414,6 +418,7 @@ graph TD
 - **TTFT (Time To First Token)** = prefill 阶段延迟。
 - **Triton** = OpenAI 的 GPU DSL，Python 写 kernel。[实战](/posts/2026-05-07-triton-kernel-fusion-practice.html)
 - **torch.compile** = PyTorch 2.x 的图编译器（Inductor 后端）。
+- **torchtitan** = Meta 开源的 PyTorch-native 大模型训练框架，核心路线是 FSDP2 + DTensor，目标是"不用 Megatron 也能训 Llama 规模模型"。
 - **Tutel** = 微软开源的 MoE 训练加速库，主打 all-to-all 调度 + grouped GeMM。
 - **veRL** = 字节 ByteDance 开源的 async RL 训练框架，面向 reasoning / SWE-bench 等 agentic 场景，现已成为 GRPO / DAPO 研究基准。
 - **vLLM** = UC Berkeley 的开源推理引擎，Paged Attention 原创。
