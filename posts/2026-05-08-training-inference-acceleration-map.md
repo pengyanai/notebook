@@ -30,7 +30,13 @@ mermaid: true
 
 ## 一、引子：技术栈太多，从哪看起
 
-训推加速的"技术噪音"极大——2024~2026 两年里仅主流的加速技术就冒出来几十个：FlashAttention v1/v2/v3、Paged Attention、Continuous Batching、Speculative Decoding、Medusa、EAGLE、MoE 各派、FP8/FP4 推理、KV Quant、Chunked Prefill、FSDP v2、Megatron-LM TP/SP、ZeRO++、cuGraph、torch.compile…
+训推加速的"技术噪音"极大——2024~2026 两年里仅主流的加速技术就冒出来几十个：
+
+- **LLM 侧**：FlashAttention v1/v2/v3、Paged Attention、Continuous Batching、Speculative Decoding、Medusa、EAGLE、MoE 各派、FP8/FP4 推理、KV Quant、Chunked Prefill、FSDP v2、Megatron-LM TP/SP、ZeRO++、cuGraph、torch.compile …
+- **MoE 专属**：DeepEP、Grouped GeMM、Aux-Loss-Free Balance、MLA、NoPE、Tutel …
+- **Diffusion / 视频生成**：DMD / DMD2、LCM、SDXL-Lightning、HyperSD、SageAttention、SVDQuant、DeepCache、TeaCache、xDiT …
+- **RL 训练栈**：veRL、AReaL、ROLL、OpenRLHF、SkyRL、NeMo-RL、fully-async、GRPO / DAPO / GSPO / SAPO …
+- **MoE → Dense 蒸馏**：On-policy KD、Top-K Logit 蒸馏、vLLM 批量 rollout、Rejection Sampling SFT、Qwen3-Distill / Gemma-Distill …
 
 **读者痛点**：
 - 每个技术都有 blog 写得很好，但**技术之间的关系**没人说清
@@ -89,14 +95,19 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 
 | 大类 | 训练 / 推理 | 子技术 | 代表实现 / 工具 | 典型场景 |
 |---|:---:|---|---|---|
-| **分布式并行** | 训练 | DP · TP · PP · SP · EP · FSDP · ZeRO 1/2/3 · ZeRO++ · 通信 overlap | Megatron-LM · PyTorch FSDP · DeepSpeed · ColossalAI | 大模型多卡扩展 |
-| **低精度** | 训 + 推 | BF16 / FP16 混精 · FP8 训练 · INT8/FP8 推理 · INT4/FP4 weight-only · AWQ / GPTQ / GGUF | Transformer Engine · AWQ · bitsandbytes · llama.cpp | 显存压缩 / 算力利用率 |
-| **Kernel Fusion** | 训 + 推 | Flash-Attention 2/3 · Fused RMSNorm/RoPE/SwiGLU · 自写 Triton · 融合 cross-entropy | Flash-Attn · Liger Kernel · Apex · xFormers · Unsloth | 消除小 kernel / HBM 往返 |
+| **分布式并行** | 训练 | DP · TP · PP · SP · EP · **FSDP2 (DTensor + DeviceMesh)** · **Ulysses SP (长序列并行)** · **Ring Attention** · **Context Parallel** · ZeRO 1/2/3 · ZeRO++ · 通信 overlap | Megatron-LM · **Pai-Megatron-Patch** · PyTorch FSDP2 · DeepSpeed · **ms-swift (魔搭)** · LLaMA-Factory · Axolotl | 大模型多卡扩展 |
+| **低精度** | 训 + 推 | BF16 / FP16 混精 · FP8 训练 · INT8/FP8 推理 · INT4/FP4 weight-only · AWQ / GPTQ / GGUF · **FP8 Attention 量化** | Transformer Engine · AWQ · bitsandbytes · llama.cpp · **SageAttention** | 显存压缩 / 算力利用率 |
+| **Kernel Fusion** | 训 + 推 | Flash-Attention 2/3 · **FLA (Fast Linear Attention)** · Fused RMSNorm/RoPE/SwiGLU · 自写 Triton · 融合 cross-entropy | Flash-Attn · Liger Kernel · Apex · xFormers · Unsloth · **flash-linear-attention** | 消除小 kernel / HBM 往返 / 线性 attention |
 | **Graph Optim** | 训 + 推 | torch.compile · CUDA Graph · TensorRT engine · Inductor | PyTorch 2.x · TensorRT-LLM · torch.export | 消除 launch overhead |
 | **显存优化** | 训 | Gradient Checkpointing · Selective AC · Activation Offload · ZeRO Offload · Parameter Offload | PyTorch checkpoint · DeepSpeed Offload | OOM / 长 seqlen 训练 |
 | **推理专属** | 推 | Paged Attention · Continuous Batching · Chunked Prefill · Prefix / Sessions Cache · KV Quant / Compression | vLLM · SGLang · TensorRT-LLM · LMDeploy | LLM 高吞吐 serving |
 | **解码优化** | 推 | Speculative Decoding · Medusa · EAGLE · Lookahead Decoding · Jacobi | vLLM SD · SGLang SD · Medusa | Decode TPOT 降低 |
-| **架构优化** | 训 + 推 | GQA / MQA · MoE (Top-K / Switch / Mixtral) · SwiGLU · Rotary · Linear / State Space · Hybrid | Qwen3 / Llama / DeepSeek / Mamba / Jamba | 模型设计时就省算力 |
+| **架构优化** | 训 + 推 | GQA / MQA · **MLA (Multi-head Latent Attention)** · MoE (Top-K / Switch / Mixtral / **DeepSeek Aux-loss-free** / **DeepSeek-V4 细粒度 expert**) · SwiGLU · Rotary / **NoPE / YaRN** · **DeepSeek-V4 Hybrid Attention (CSA + HCA)** · Linear / State Space / Mamba / Mamba-2 · **Sliding Window + Global Attention** | Qwen3 / Llama / **DeepSeek-V3 / V4** / Mamba / Jamba / **MiniMax-01 (Lightning Attention)** / **Gemma-3 (Hybrid)** | 模型设计时就省算力 |
+| **MoE 训练加速** | 训练 | **DeepEP (Expert Parallel)** · **Grouped GeMM** · **Aux-Loss-Free Load Balance** · All-to-all / comp 重叠 · Expert 量化 · **NoPE MoE** | DeepSeek DeepEP · Megatron-Core MoE · vLLM MoE · Mixtral infra · **Tutel** | MoE 预训练 / SFT 通信瓶颈 |
+| **Diffusion 专属加速** | 训 + 推 | **步数蒸馏 (DMD / DMD2 / LCM / SDXL-Lightning / HyperSD / PCM)** · **FP8 / INT8 Attention (SageAttention / SVDQuant)** · **Feature Caching (DeepCache / TGATE)** · CFG 跳过 · Schnell 变体 · **FLA for Video** | Diffusers · ComfyUI · xDiT · TeaCache · **one-step / few-step models** | 图像 / 视频生成秒级出图 |
+| **RL 训练栈** | 训练 | **Fully-async PPO / GRPO / DAPO / GSPO / SAPO** · Actor-Critic 异步 · Reward model 并行 · Rollout-train 解耦 · **KL Free / Ref-model optional** · Group-relative advantage · **Step-wise advantage** | **veRL (字节)** · **AReaL (蚂蚁)** · **ROLL (阿里)** · **OpenRLHF** · **SkyRL (UC Berkeley)** · **NeMo-RL** · TRL · **verl-async** | RLHF / RLAIF / Reasoning RL (o1 式) |
+| **MoE → Dense 蒸馏** | 训练 | **Logit Distillation (Top-K vocab 截断)** · **On-Policy / Off-Policy KD** · **Rejection Sampling SFT** · **合成数据 pipeline (teacher 造数据)** · **Teacher FP8 推理加速** · **KV cache 复用** · Layer-drop · Depth / Width reduction | MiniLLM · DistillKit · DistiLLM-2 · **vLLM / SGLang 批量 rollout** · Liger-KD · **Qwen3-Distill** · **Gemma-Distill** | 大 MoE teacher → 小 dense student（Qwen3-MoE → Qwen3-8B / MiniCPM / Gemma-Small） |
+| **优化器加速** | 训练 | **Muon (matrix-aware)** · **Shampoo / SOAP** · **Adafactor** · **Lion** · Fused AdamW · **8-bit Adam** · ZeRO-Offload optimizer · **Sophia** · Schedule-Free | PyTorch Optim · Apex FusedAdam · bitsandbytes · **moonshot-ai/Muon** · **Keller-Jordan/Muon** · torchshampoo | 收敛加速 / 显存减少 / 超参数省力 |
 | **系统调度** | 推 | 请求队列 · Load Balance · Autoscaling · 多模型共置 · K8s orchestration | Ray Serve · KServe · Triton Inference Server | 集群级 serving |
 | **IO / 数据侧** | 训 | webdataset · parquet/HDF5 · DALI · ffcv · Packing | NVIDIA DALI · mosaicml composer · streaming-datasets | DataLoader 瓶颈 |
 
@@ -203,13 +214,17 @@ graph TD
 ## 六、2026 趋势（可能的下一波）
 
 1. **FP4 训练**：H100/B200 上实测可行，Qwen4 / GPT-5 规模可能常态化
-2. **MoE scaling**：稀疏激活 + Expert Parallelism 标配，Qwen3-MoE / DeepSeek-V3 / GPT-OSS 都走这条
+2. **MoE scaling & 训练加速成熟化**：稀疏激活 + Expert Parallelism 标配，Qwen3-MoE / DeepSeek-V3 / GPT-OSS 都走这条；DeepEP / Aux-Loss-Free / Grouped GeMM 成为 MoE 训练栈的"新地基"
 3. **长上下文**：128K 起步、1M 成常见规格，driver 是 KV quantization + chunked prefill + ring attention
 4. **Speculative 家族**：EAGLE / Medusa / Lookahead 融合，decode 速度 2~4x
 5. **Graph Compilation 再升级**：torch.compile 3.0 / TensorRT-LLM 的 engine 固化
 6. **推理栈收敛**：vLLM / SGLang / TensorRT-LLM 三足鼎立；后续是 agent 服务栈（Claude Code / Codex / Cursor 式）
 7. **硬件多样化**：B200 / GB200 NVL / 国产 AI 芯片涌现，kernel 要 portable
 8. **Inference-time Scaling**：推理时做多次搜索（o1 / Qwen-Reasoning）——算力预算从训练挪向推理
+9. **Diffusion 从"50 步"到"1 步"**：DMD / DMD2 / LCM / Lightning / HyperSD 等步数蒸馏系列让图像 / 视频生成从秒级变成亚秒级；Attention 量化（SageAttention / SVDQuant）让 SD3 / Flux 消费级显卡可跑
+10. **RL 训练栈爆发**：o1 style reasoning + post-training 大规模化催生 veRL / AReaL / ROLL / OpenRLHF / SkyRL 等专用栈；"**fully-async**"（actor / learner / reward / rollout 完全异步）成新默认
+11. **多模态端到端加速**：VLA (Vision-Language-Action) / 音频 / 视频端到端模型不再各自为战，共享 transformer 加速栈
+12. **"MoE 教师 → Dense 学生"范式**：高参 MoE 先预训练到 SOTA，再蒸馏到消费级 dense 模型（Qwen3-MoE → Qwen3-8B / Gemma-3 / MiniCPM 都这么玩）。蒸馏 pipeline 本身是一套独立加速体系——teacher 批量 rollout 用 vLLM、logit 只存 top-K 省带宽、on-policy KD 让 student 越学越准
 
 ---
 
@@ -282,58 +297,86 @@ graph TD
 - **Activation Checkpointing** = Gradient Checkpointing，同义。[见 GC 篇](/posts/2026-05-08-gradient-checkpointing-qwen3-dense.html)
 - **All-Reduce** = 分布式通信原语，汇总 N 个 rank 的 tensor 再广播。
 - **AMP (Automatic Mixed Precision)** = PyTorch 自动混精，配合 `GradScaler` 保持数值稳定。
+- **AReaL** = 蚂蚁 / 清华开源的 async RL 训练框架，主打 fully-async actor/learner/rollout。
 - **Attention Head** = 多头注意力的一个头；Qwen3-8B 有 32 个 query head、8 个 KV head（GQA）。
+- **Aux-Loss-Free Balance** = DeepSeek-V3 提出的 MoE 负载均衡方案，通过动态偏置替代辅助损失，不牺牲主任务 loss。
 - **BF16 (bfloat16)** = 1 sign + 8 exp + 7 mantissa，范围大精度低，训练友好。
 - **Batch Size** = 单次前向/反向处理的样本数。
 - **CUDA Graph** = 预录 kernel 序列 + 回放，消除 launch 开销。[专篇](/posts/2026-05-08-cuda-graph-qwen3-dense.html)
 - **Continuous Batching** = vLLM 把不同请求动态拼进同一 batch，提升 serving 吞吐。
+- **Context Parallel (CP)** = Megatron / FSDP2 提供的长序列并行方式，把 seq 维度切到多卡。
 - **CE (Cross-Entropy)** = 分类 loss 标准形式。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
 - **Chunked Prefill** = 把长 prefill 切片和 decode 拼一起处理，降 TTFT 尾部。
-- **DP (Data Parallel)** = 每卡完整模型，不同数据。
+- **DAPO** = Decoupled advantage-based PPO，ByteDance 提出的 GRPO 变体，分离长序列 vs 短序列 advantage。
+- **DeepEP** = DeepSeek 开源的 Expert Parallel 通信库，优化 MoE all-to-all，是 DeepSeek-V3 能高效训练的基建之一。
 - **DeepSpeed** = 微软训练框架；ZeRO 系列 + Offload。
+- **DeviceMesh** = PyTorch 2.x 提供的 N 维设备网格抽象，FSDP2 / TP / SP 都基于它组合。
+- **DMD / DMD2 (Distribution Matching Distillation)** = 扩散模型的"多步 → 几步"蒸馏，DMD2 去掉 regression loss 进一步提速。
 - **DPO (Direct Preference Optimization)** = 不要 reward model 的 RLHF 替代。
 
 ### F–L
 
 - **Flash-Attention** = Tri Dao 的 attention 算子，tile + online softmax。v1/v2/v3 逐代优化。
+- **FLA (Fast Linear Attention)** = flash-linear-attention 项目，Mamba / Linear-attention 系列的统一 kernel 仓库。
 - **FSDP (Fully Sharded Data Parallel)** = PyTorch 版 ZeRO-3，参数 / 梯度 / 优化器全部 shard。
+- **FSDP2** = PyTorch 2.x 第二代 FSDP，基于 **DTensor + DeviceMesh**，比 FSDP1 更灵活，支持细粒度 shard / 2D 并行组合。
 - **FP8** = 1+4+3 或 1+5+2 两种格式，H100/B200 支持。训练和推理都能用。
 - **FP4** = 新一代低精度，B200 原生支持，Weight-only 已落地。
 - **GQA (Grouped-Query Attention)** = 多个 Q head 共享一个 KV head，省 KV 显存。Qwen3 标配。
 - **Gradient Checkpointing** = 丢中间 activation、backward 重算。[专篇](/posts/2026-05-08-gradient-checkpointing-qwen3-dense.html)
 - **Goodput** = 满足 SLO 的吞吐（vLLM 提出）。[公式](/posts/2026-05-08-training-inference-efficiency-metrics.html)
+- **GRPO (Group Relative Policy Optimization)** = DeepSeek-R1 使用的 RL 算法，用 group-mean 作 baseline 替代 critic。
+- **GSPO** = 2025 提出的 RL 算法，改进 GRPO 的方差估计。
+- **Grouped GeMM** = MoE 训练中对不同 expert 的 GeMM 批量合并调度，减少 kernel launch 和内存碎片。
 - **HBM (High Bandwidth Memory)** = GPU 主显存，H100 80GB HBM3 ≈ 3TB/s。
 - **HFU (Hardware FLOPs Utilization)** = 含重算的 FLOPs 利用率。
+- **HyperSD** = ByteDance 的多步 → 单/四步扩散蒸馏方案，和 DMD / LCM 齐名。
 - **ITL (Inter-Token Latency)** = 流式 decode 相邻 token 间隔。
 - **KL Divergence** = 两概率分布的差异度量。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
 - **KV Cache** = decode 时缓存历史 token 的 K/V，避免重算。
+- **LCM (Latent Consistency Model)** = 扩散模型的步数蒸馏路线之一，4 步推理可用。
 - **Liger Kernel** = LinkedIn 为 Qwen/Llama 家族做的 fused kernel 集合。
+- **LLaMA-Factory** = 开源 LLM 微调框架，封装 SFT / DPO / PPO，国内用户多。
 - **LoRA** = Low-Rank Adaptation，PEFT 主流之一。
 
 ### M–R
 
 - **Megatron-LM** = NVIDIA 训练框架；TP / SP / PP 并行。
 - **MFU (Model FLOPs Utilization)** = 模型 FLOPs 与硬件峰值 FLOPs 比值。
+- **MLA (Multi-head Latent Attention)** = DeepSeek-V2/V3 提出的 attention 变体，压缩 KV 到 latent 空间，显存显著降低。
+- **ms-swift** = 阿里魔搭（ModelScope）的大模型训练 / 微调 / 推理框架。
 - **MoE (Mixture of Experts)** = 稀疏激活 —— N 个 expert 每 token 只路由到 top-k 个。
 - **MQA (Multi-Query Attention)** = Q 有 multi head，KV 只 1 head。
 - **MMLU** = 57 学科选择题 benchmark。
+- **Muon (optimizer)** = Keller Jordan 等提出的 matrix-aware 优化器，对 2D 权重用 Newton-Schulz 迭代正交化，在 Llama / NanoGPT 级规模上明显快于 AdamW。
 - **NCCL** = NVIDIA 分布式通信库。
+- **NoPE** = No Position Embedding，某些长上下文 MoE 架构尝试取消显式位置编码。
+- **On-Policy KD** = 学生生成 → 教师打分 / 提供 label 的蒸馏方式，效果显著好于 off-policy。
+- **OpenRLHF** = 开源 PPO / DPO / KTO 训练框架，支持 Ray 分布式。
 - **Paged Attention** = vLLM 把 KV cache 按 page 管理（像 OS paging），减少碎片。
+- **Pai-Megatron-Patch** = 阿里 PAI 对 Megatron-LM 的国产适配 + 增强补丁集。
 - **PEFT (Parameter-Efficient Fine-Tuning)** = LoRA / QLoRA / Prefix Tuning 等总称。
 - **Perplexity (PPL)** = `exp(CE)`，模型困惑度。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
 - **PP (Pipeline Parallel)** = 模型分阶段放到不同卡。
 - **Prefix Caching** = 共享 prompt 前缀的 KV 重用。
 - **QLoRA** = 4-bit 量化 + LoRA 微调。
+- **Rejection Sampling SFT** = MoE 教师生成 → 用 reward / rule 过滤 → 喂给 student 做 SFT 的数据 pipeline。
+- **ROLL** = 阿里开源的 RL 训练框架，主打 fully-async + reasoning 场景。
 - **RoPE (Rotary Position Embedding)** = Llama/Qwen 系列的位置编码方式。
 - **RLHF** = Reinforcement Learning from Human Feedback。
 - **Roofline** = 算力/带宽 vs 访存比的性能上限图。[专篇](/posts/2026-05-07-qwen3-understand-model-identify-fusion.html)
 
 ### S–Z
 
+- **SageAttention** = 清华等提出的 FP8/INT8 Attention 量化算法，训推都能用，在 SD3 / Flux / LLM 上广泛应用。
+- **SAPO** = 2025 提出的 RL 算法（自适应 PPO 变体），改进 reward 方差处理。
+- **SkyRL** = UC Berkeley 开源 RL 训练栈，面向 reasoning。
 - **SM (Streaming Multiprocessor)** = GPU 计算单元，H100 有 132 个 SM。
-- **SP (Sequence Parallel)** = Megatron 的序列维度并行，和 TP 搭配。
+- **SP / Ulysses SP** = Sequence Parallel / Ulysses 长序列并行（DeepSpeed 提出），把 attention 的 head 维 all-to-all 到多卡。
 - **Speculative Decoding** = 小模型草稿 + 大模型验证，decode 加速 2~4x。
 - **SLO (Service Level Objective)** = 服务等级目标，TTFT/P99 的上限承诺。
+- **Step Distillation (步数蒸馏)** = Diffusion 把 50 步采样蒸馏到 1~4 步（DMD / LCM / Lightning / HyperSD）。
+- **SVDQuant** = MIT 提出的 4-bit 扩散模型 weight + activation 量化方案。
 - **SwiGLU** = `silu(W_gate x) * W_up x`，Llama / Qwen MLP 激活。
 - **TGS (Tokens per GPU per Second)** = 分布式训练扩展性指标。[公式](/posts/2026-05-08-training-inference-efficiency-metrics.html)
 - **TP (Tensor Parallel)** = 矩阵按列或行 shard 到多卡。
@@ -341,10 +384,23 @@ graph TD
 - **TTFT (Time To First Token)** = prefill 阶段延迟。
 - **Triton** = OpenAI 的 GPU DSL，Python 写 kernel。[实战](/posts/2026-05-07-triton-kernel-fusion-practice.html)
 - **torch.compile** = PyTorch 2.x 的图编译器（Inductor 后端）。
+- **Tutel** = 微软开源的 MoE 训练加速库，主打 all-to-all 调度 + grouped GeMM。
+- **veRL** = 字节 ByteDance 开源的 async RL 训练框架，面向 reasoning / SWE-bench 等 agentic 场景，现已成为 GRPO / DAPO 研究基准。
 - **vLLM** = UC Berkeley 的开源推理引擎，Paged Attention 原创。
 - **WER / CER (Word/Character Error Rate)** = 语音识别评测。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
+- **xDiT** = 扩散模型的并行推理框架，专做 SD / Flux / CogVideoX 的多卡加速。
+- **YaRN** = RoPE 的长度外推方案之一，Qwen2.5-long / Llama-3.1 均采用。
 - **ZeRO (Zero Redundancy Optimizer)** = DeepSpeed 提出；ZeRO-1/2/3 分别 shard 优化器 / 梯度 / 参数。
 - **ZeRO++** = ZeRO 升级版，量化通信。
+
+### Hybrid Attention 专栏（DeepSeek-V4 等）
+
+- **Hybrid Attention** = 同一模型里**交替堆叠**"全 attention layer"和"线性 / 稀疏 attention layer"，兼顾长上下文能力与推理成本。Gemma-3 / MiniMax-01 / DeepSeek-V4 都是这条路线。
+- **CSA (Compact Sparse Attention)** = DeepSeek-V4 提出的稀疏 attention 变体，仅对部分 token 建立全连接，显著减少 KV 访问。
+- **HCA (Hybrid Compact Attention)** = DeepSeek-V4 的另一种 attention 模式，与 CSA 交替使用，长上下文下 KV cache 和 FLOPs 均显著低于纯 full attention。
+- **Lightning Attention** = MiniMax-01 的线性 attention 实现，单次 kernel 完成 Linear + Softmax 混合模式。
+- **Mamba / Mamba-2** = Selective State Space Model，线性复杂度替代 attention。
+- **Sliding Window + Global (SWA+G)** = Gemma 系列等采用的混合 pattern，大部分层 local window、少数层 full attention。
 
 ---
 
