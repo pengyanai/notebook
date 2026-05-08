@@ -23,13 +23,13 @@ mermaid: true
 | §一 | 分割 ≠ 检测 ≠ Diffusion | 独特挑战 |
 | §二 | SAM 家族演进：SAM 1 → SAM 2 → SAM 3 | 时间线 |
 | §三 | SAM 2 架构拆解：Memory Attention | 视频一致性关键 |
-| §四 | Grounded-SAM / Florence-2：开放词汇分割 | VLM × SAM |
-| §五 | 训练加速：数据引擎 + Mask Head + 长视频 | - |
-| §六 | 推理加速：ONNX / TensorRT / 端侧 SAM | - |
-| §七 | Matting / 精细化分割 | BiRefNet / MatAnyone |
-| §八 | Benchmark：COCO / LVIS / DAVIS / SA-V | - |
-| §九 | 2026 SOTA 配置 | - |
-| §十 | 权威参考 | - |
+| §四 | **Bounding Box 作为分割的入口** | **Bbox prompt / Det→Seg 级联** |
+| §五 | Grounded-SAM / Florence-2：开放词汇分割 | VLM × SAM |
+| §六 | 训练加速：数据引擎 + Mask Head + 长视频 | - |
+| §七 | 推理加速：ONNX / TensorRT / 端侧 SAM | - |
+| §八 | Matting / 精细化分割 | BiRefNet / MatAnyone |
+| §九 | Benchmark：COCO / LVIS / DAVIS / SA-V | - |
+| §十 | 2026 SOTA 配置 + 权威参考 | - |
 
 ---
 
@@ -130,7 +130,101 @@ $$
 
 ---
 
-## 四、Grounded-SAM / Florence-2：开放词汇分割
+## 四、Bounding Box 作为分割的入口
+
+### 4.1 为什么 Bbox 在分割系统里这么重要
+
+分割模型的 prompt 形式有三种（SAM 系列标准）：
+- **Point prompt**：点击 1~N 个点，前景 / 背景
+- **Box prompt**：画一个 bbox
+- **Mask prompt**：给一个粗 mask 作 refine
+
+**Bbox 是交互 / 自动化 pipeline 中最常用的**，原因：
+- **信息量 >> point**：一个 bbox 给出尺度 + 位置 + 大致形状
+- **上游可机生成**：YOLO / DETR / Grounding DINO 直接出 bbox
+- **歧义小**：不像 point 可能指向重叠对象
+
+### 4.2 Bbox-to-Mask：检测 → 分割级联
+
+几乎所有"开放场景分割"系统都走这条链路：
+
+```mermaid
+graph LR
+    I[Image] --> DET[目标检测<br/>YOLO / DETR / Grounding DINO]
+    DET --> BB[Bbox + score + class]
+    BB --> SAM[SAM 2<br/>Box-prompted]
+    I --> SAM
+    SAM --> M[Instance Mask]
+
+    style DET fill:#CFE0F3,stroke:#8AB0DB
+    style BB fill:#FDE8A9,stroke:#E7C56D
+    style SAM fill:#D4E8CF,stroke:#94C18A
+```
+
+**工程收益**：
+- 检测器负责"**找在哪**"（快、可批量）
+- SAM 负责"**精细 mask**"（质量高）
+- 两阶段解耦，各自独立加速 / 替换
+
+### 4.3 检测侧的主流模型（2024~2026）
+
+| 模型 | 类型 | 开放词汇 | 延迟 |
+|---|---|---|---|
+| **YOLO v10 / v11** | 闭集检测 | ❌ | 极快 |
+| **RT-DETR** | Transformer 实时检测 | ❌ | 快 |
+| **DETR / DINO-DETR** | 学术 baseline | ❌ | 中 |
+| **Grounding DINO** | 文本 → bbox | ✅ | 中 |
+| **OWLv2** | 文本 → bbox | ✅ | 中 |
+| **YOLO-World** | 开放词汇 + 实时 | ✅ | 快 |
+| **Florence-2** | 统一 det + seg + caption | ✅ | 中 |
+
+### 4.4 Bbox 指标
+
+**IoU (Intersection-over-Union)**：
+
+$$
+\mathrm{IoU}(B_\text{pred}, B_\text{gt}) = \frac{|B_\text{pred} \cap B_\text{gt}|}{|B_\text{pred} \cup B_\text{gt}|}
+$$
+
+**mAP (mean Average Precision)** 按 IoU threshold 从 0.5~0.95 计算 AP 再平均（COCO 标准）。
+
+**GIoU / DIoU / CIoU**：DETR 家族训练 loss 用的广义 IoU，处理不重叠时的梯度问题：
+
+$$
+\mathrm{GIoU} = \mathrm{IoU} - \frac{|C \setminus (B_\text{pred} \cup B_\text{gt})|}{|C|}
+$$
+
+$C$ 是两个 bbox 的最小闭包。
+
+### 4.5 Bbox 训练加速
+
+| 技术 | 目的 | 收益 |
+|---|---|---|
+| **DETR-style set prediction + Hungarian matching** | 去 NMS | 训练 / 推理都干净 |
+| **Denoising Query**（DINO-DETR）| 加速收敛 | 12 epochs 即可，传统 DETR 需 500 |
+| **FP16 + FlashAttention** | 通用 | 2~3× |
+| **Mosaic / MixUp / Copy-Paste** | 数据增强 | 小目标 mAP +3~5 |
+| **EMA weights** | 稳定 | 最终 mAP +1~2 |
+
+### 4.6 Box Prompt 到 SAM 的三个常见坑
+
+1. **Bbox 太松**：SAM 会分割整个背景 → 用 **expand ratio ≤ 1.1**
+2. **Bbox 太紧**：SAM mask 被截断 → 给 detector 留 2~5 pixel margin
+3. **同类多对象 bbox 重叠**：需要**逐 bbox 独立跑 SAM**，不要一次喂多个——SAM 多 box 语义是"这些都属于同一个 mask"
+
+### 4.7 Bbox 自动生成 Mask 数据（SAM 式数据引擎关键一环）
+
+SA-1B / SA-V 数据引擎里，**bbox 是 mask 的第一来源之一**：
+- 人工或检测器出 bbox
+- SAM 自动生成 mask proposal
+- 人工筛选 / 修正
+- 回灌训练 → 数据引擎自循环
+
+**工程启示**：做垂直领域分割数据集时，**先训一个 detector 出 bbox**，比直接标 mask 效率高 5~10×。
+
+---
+
+## 五、Grounded-SAM / Florence-2：开放词汇分割
 
 ### 4.1 Grounded-SAM 二级 pipeline
 
@@ -165,7 +259,7 @@ graph LR
 
 ---
 
-## 五、训练加速
+## 六、训练加速
 
 ### 5.1 数据引擎（SAM 范式）
 
@@ -202,7 +296,7 @@ SA-V 视频平均 14 秒 × 30fps = 420 帧。全帧 BPTT 不现实。
 
 ---
 
-## 六、推理加速
+## 七、推理加速
 
 ### 6.1 Image Encoder 量化
 
@@ -244,7 +338,7 @@ $$
 
 ---
 
-## 七、Matting / 精细化分割
+## 八、Matting / 精细化分割
 
 粗分割（SAM 2 级别）对**毛发 / 半透明边缘**不够——Matting 任务独立：
 
@@ -263,7 +357,7 @@ $$
 
 ---
 
-## 八、Benchmark
+## 九、Benchmark
 
 ### 8.1 指标
 
@@ -289,7 +383,7 @@ $$
 
 ---
 
-## 九、2026 SOTA 配置
+## 十、2026 SOTA 配置
 
 ### 9.1 云端交互式分割
 
@@ -327,9 +421,14 @@ $$
 
 ---
 
-## 十、权威参考
+## 十一、权威参考
 
 **论文 / 技术报告**：
+- [DETR (Meta, 2020)](https://arxiv.org/abs/2005.12872)
+- [DINO-DETR (2022)](https://arxiv.org/abs/2203.03605)
+- [RT-DETR (2023)](https://arxiv.org/abs/2304.08069)
+- [YOLO-World (2024)](https://arxiv.org/abs/2401.17270)
+- [OWLv2 (Google, 2023)](https://arxiv.org/abs/2306.09683)
 - [SAM (Meta, 2023)](https://arxiv.org/abs/2304.02643)
 - [SAM 2 (Meta, 2024)](https://arxiv.org/abs/2408.00714)
 - [Grounding DINO (2023)](https://arxiv.org/abs/2303.05499)
