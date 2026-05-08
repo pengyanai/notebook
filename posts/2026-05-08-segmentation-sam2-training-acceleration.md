@@ -202,8 +202,9 @@ gantt
 | 模型 | 类型 | 开放词汇 | 延迟 | 2026 地位 |
 |---|---|---|---|---|
 | YOLOv5/v8 | Anchor-based | ❌ | 极快 | 存量大，但逐渐被替代 |
-| **YOLOv10 / v11** | Anchor-free + 去 NMS | ❌ | 极快 | 仍是 embedded 首选 |
-| **RT-DETR v2 / v3** | Transformer 实时 | ❌ | 极快 | **正在取代 YOLO 工业场景** |
+| YOLOv10 / v11 | Anchor-free + 去 NMS | ❌ | 极快 | 仍是 embedded 存量主力 |
+| **YOLO26 (Ultralytics, 2025)** | **NMS-free + DFL removal + MuSGD** | ❌ (有 YOLOE-26 开放词汇变体) | **CPU +43%** | **2026 Ultralytics 新旗舰** |
+| **RT-DETR v2 / v3** | Transformer 实时 | ❌ | 极快 | 工业场景持续渗透 |
 | DINO-DETR | 学术强 baseline | ❌ | 中 | COCO 榜单常驻 |
 | Grounding DINO 1.5 | 文本 → bbox | ✅ | 中 | Grounded-SAM 2 默认 |
 | OWLv2 | 文本 → bbox | ✅ | 中 | Google 系 |
@@ -213,10 +214,12 @@ gantt
 
 ### 4.5 2026 四个关键范式转移
 
-**① DETR 系彻底取代 YOLO（工业级）**
+**① NMS-free 成共识，YOLO / DETR 融合推进**
+- YOLOv10 首次把 NMS-free 做到实时 YOLO 里（清华吴奥 2024）
+- **YOLO26 (Ultralytics, 2025 Q3)** 延续并强化：**native end-to-end、DFL removal、MuSGD 优化器**（SGD + Muon 混合，灵感来自 Kimi K2），**CPU 推理比 YOLO11 快 43%**；小目标 / IoT / 边缘场景更友好
 - RT-DETR v3 在 COCO 同精度下延迟已和 YOLOv10 持平或更低
-- **去 NMS** 让部署链路更干净（无需调 NMS 阈值）
-- TensorRT / OpenVINO / Core ML 对 DETR 家族支持成熟
+- **去 NMS** 让部署链路更干净（无需调 NMS 阈值），TensorRT / OpenVINO / Core ML 支持成熟
+- **YOLOE-26**：YOLO26 家族里的**开放词汇实例分割**变体，把传统 YOLO 的闭集壁垒打破
 
 **② VLM 原生定位**（最大范式转移）
 
@@ -495,6 +498,7 @@ $$
 - [DETR (Meta, 2020)](https://arxiv.org/abs/2005.12872)
 - [RT-DETR (Baidu, 2023)](https://arxiv.org/abs/2304.08069)
 - [YOLOv10 (2024)](https://arxiv.org/abs/2405.14458)
+- [YOLO26 (Ultralytics, 2025)](https://arxiv.org/abs/2509.25164) · [官方文档](https://docs.ultralytics.com/models/yolo26/)
 - [Qwen2.5-VL (2025) — 原生 bbox 定位](https://arxiv.org/abs/2502.13923)
 - [Molmo (Allen AI, 2024) — pointing + bbox](https://arxiv.org/abs/2409.17146)
 - [BEVFormer (2022) — 3D bbox](https://arxiv.org/abs/2203.17270)
