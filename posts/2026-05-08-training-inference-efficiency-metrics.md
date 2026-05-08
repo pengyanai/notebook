@@ -120,6 +120,8 @@ $$
 
 ## 三、延迟类指标（推理专用）
 
+**逻辑关系图**（概念理解）：
+
 ```mermaid
 graph LR
     Req[用户请求] --> Prefill[Prefill 阶段<br/>全 prompt 并行]
@@ -137,6 +139,36 @@ graph LR
     style Decode fill:#D4E8CF,stroke:#94C18A
     style Done fill:#F6CED0,stroke:#D98F92
 ```
+
+**时序事实图**（时间比例真实，假设 prompt 512 tokens / 输出 200 tokens）：
+
+```mermaid
+gantt
+    title 单请求生命周期（毫秒，prompt=512, output=200, Qwen3-8B 示意）
+    dateFormat X
+    axisFormat %Lms
+
+    section 请求生命周期
+    Queue wait            :done,    q,   0, 30
+    Prefill compute       :active,  pf,  30, 170
+    First token emit      :crit,    ft,  200, 5
+    Decode token 2        :         d2,  205, 25
+    Decode token 3        :         d3,  230, 25
+    Decode tokens 4 to 199 skipped :       d4,  255, 4545
+    Decode token 200      :         dn,  4800, 25
+    Completion return     :done,    cp,  4825, 10
+```
+
+**颜色语义对齐 4 个指标**：
+
+| 指标 | 对应区间 | 颜色 |
+|---|---|---|
+| **TTFT** | 从请求入队到 First token emit（0 → 200ms） | 粉（`crit`）——用户最敏感 |
+| **TPOT** | 单个 decode token 宽度（≈ 25ms） | 蓝（`active`） |
+| **ITL** | decode 相邻 token 间距 | 同上 |
+| **E2E** | 全条最左到最右（≈ 4835ms） | 绿（`done`） |
+
+**关键直觉**：本图里 TTFT 只占 E2E 的 ~4%，**真正主导 E2E 的是 TPOT × N_output**。所以推理优化先问一句"你优化的是 TTFT 还是 TPOT"——优先级完全不同（见 §七 Goodput）。
 
 ### 3.1 TTFT — Time To First Token
 
@@ -371,7 +403,7 @@ $$
 | 显存 | Peak | $\text{Params+Grads+Opt+Act+Temp}$ | GB |
 | 显存 | KV cache | $2\cdot L\cdot H_{kv}\cdot d \cdot T_\text{seq} \cdot B \cdot \text{bytes}$ | GB |
 | 成本 | $/1M tokens | ${\text{Rate} \cdot T}/({N / 10^6})$ | USD |
-| 综合 | Goodput | $\#\{r: \text{TTFT}(r) < \text{SLO}\}/T$ | req/s |
+| 综合 | Goodput | $\lvert\{r: \text{TTFT}(r) < \text{SLO}\}\rvert / T$ | req/s |
 | 综合 | SLO Rate | $N_\text{within}/N_\text{total}$ | % |
 
 ---
