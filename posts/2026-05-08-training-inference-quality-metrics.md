@@ -35,26 +35,17 @@ mermaid: true
 
 真实场景：某团队上线 fused attention，训练 loss 曲线**完全吻合** baseline，MMLU 也没差。业务上线两周后发现**长上下文问答（> 8K tokens）的回答质量明显下降**——原来 mask 实现的一个细节差异，只在长序列场景触发。
 
-这说明：**效果指标要看一整套，不能只看训练 loss**。本文按"从**模型内部**到**对话输出**"的粒度组织。
+这说明：**效果指标要看一整套，不能只看训练 loss**。本文按"从**模型内部**到**对话输出**"的粒度组织，各层级对应的指标如下：
 
-```mermaid
-graph LR
-    A[模型内部] --> L1[Loss / Perplexity / KL]
-    B[单样本预测] --> L2[CE / NLL / logits 分布]
-    C[下游客观任务] --> L3[MMLU / GSM8K / HumanEval]
-    D[生成质量客观] --> L4[BLEU / ROUGE / CHRF / F1]
-    E[语音 / 转写] --> L5[WER / CER / MOS]
-    F[主观评价] --> L6[Elo / LLM-as-Judge / A/B]
-    G[安全 / 校准] --> L7[ECE / TruthfulQA / 幻觉率]
-
-    style A fill:#FDE8A9,stroke:#E7C56D
-    style B fill:#FDE8A9,stroke:#E7C56D
-    style C fill:#CFE0F3,stroke:#8AB0DB
-    style D fill:#CFE0F3,stroke:#8AB0DB
-    style E fill:#D4E8CF,stroke:#94C18A
-    style F fill:#F6CED0,stroke:#D98F92
-    style G fill:#F6CED0,stroke:#D98F92
-```
+| 粒度层级 | 典型指标 | 主要用途 | 加速场景关注点 |
+|---|---|---|---|
+| **模型内部** | Loss · Perplexity · KL Divergence | 训练健康 / 分布对齐 | 加速前后 KL < 1e-3 算对齐 |
+| **单样本预测** | CE · NLL · Logits 分布 · Top-1 Agreement | 精度对齐定量 | Top-1 agreement > 99.5% 算过关 |
+| **下游客观任务** | MMLU · GSM8K · HumanEval · BBH · IFEval | 知识 / 推理 / 代码 / 指令遵循 | 任何一项差 > 0.5% 需调查 |
+| **生成质量客观** | BLEU · ROUGE · CHRF · F1 · Exact Match | 翻译 / 摘要 / QA | 现代已被 LLM-as-Judge 部分替代 |
+| **语音 / 转写** | WER · CER · MOS · DNSMOS | ASR / TTS / 语音增强 | 中文用 CER，英文用 WER |
+| **主观评价** | Elo · LLM-as-Judge · Side-by-side A/B | 真实用户体验 | 胜率 ≥ 48% 视为 near tie |
+| **安全 / 校准** | ECE · TruthfulQA · 幻觉率 · 拒绝率 | 安全性 / 可靠性 | 加速后 refusal rate 必须保持 |
 
 ---
 
@@ -258,6 +249,9 @@ $$
 **示例**：reference "the quick brown fox"，hypothesis "the quick brown dog" → S=1, D=0, I=0, N=4 → WER=25%。
 
 **Whisper-large-v3 在 LibriSpeech**：~2.5% WER（示意）。
+
+![Whisper WER by language](https://raw.githubusercontent.com/openai/whisper/main/language-breakdown.svg)
+*图：Whisper 在 99 种语言上的 WER 分布。**同一个加速技术在不同语言上可能带来差异化退化**——低资源语言往往更敏感。来源：OpenAI Whisper GitHub*
 
 ### 5.2 CER — Character Error Rate
 

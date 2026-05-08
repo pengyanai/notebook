@@ -147,6 +147,16 @@ graph TD
 
 **颜色语义**：蓝 = 分布式 / 精度，绿 = 编译 / 融合，粉 = 显存 / 推理，黄 = 架构 / 系统。
 
+### 3.1 Fusion 阵营的扛旗者：Flash-Attention
+
+![Flash-Attention](https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/assets/flashattn_banner.jpg)
+*图：Flash-Attention 用 tile + online softmax 把 attention 从 memory-bound 拉到 compute-bound，是 2022 年以来单项影响最大的 kernel。来源：Dao-AILab/flash-attention*
+
+### 3.2 分布式训练的地基：DeepSpeed / ZeRO
+
+![DeepSpeed](https://raw.githubusercontent.com/microsoft/DeepSpeed/master/docs/assets/images/DeepSpeed_light.svg)
+*图：DeepSpeed 的 ZeRO 系列提出"参数 / 梯度 / 优化器按需 shard"的范式，后续 PyTorch FSDP 直接继承。来源：microsoft/DeepSpeed*
+
 ---
 
 ## 四、瓶颈 → 技术决策流
