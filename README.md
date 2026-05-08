@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [图像 Diffusion 训推加速深化：FLUX / SD3 / DMD2 / SageAttention 的 2024~2026 技术栈](posts/2026-05-08-image-diffusion-acceleration-flux-sd3-dmd2.md)
 - 2026-05-08 [MoE 教师 → Dense 学生：2024~2026 开源社区的落地范式](posts/2026-05-08-moe-to-dense-distillation.md)
 - 2026-05-08 [Speculative Decoding 实战：vLLM 框架下 EAGLE-3 原理与工程落地](posts/2026-05-08-speculative-decoding-eagle3-vllm.md)
 - 2026-05-08 [语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话的 2024~2026 技术栈](posts/2026-05-08-speech-audio-acceleration-stack.md)
