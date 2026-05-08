@@ -335,9 +335,17 @@ Baseline:    FLUX.1-dev 50 steps            → 25s
 |---|---|---|
 | **Diffusers** (HuggingFace) | 官方 Python SDK | 算法原型 / 研究 |
 | **ComfyUI** | 节点式 workflow | 创作者 / pipeline 组合 |
+| **kohya_ss / sd-scripts** | SD / SDXL / FLUX LoRA 训练事实标准 | 个人 / 社区 LoRA / DreamBooth 微调 |
 | **xDiT** | DiT 多卡并行 | 生产服务高并发 |
 | **DiffSynth-Studio** (魔搭) | 训推一站式，Wan/FLUX/SD3 | 国内生产部署 |
 | **Flash-SD3** | SD3 专用 one-step 方案 | 极致速度 |
+| **OneTrainer** | Diffusion 训练 GUI + 配置 | 初学者 / 无代码微调 |
+
+**补充说明**：**kohya_ss**（基于 sd-scripts）是社区 LoRA / DreamBooth / Full Fine-Tune 训练的**事实标准**。FLUX / SD3 / SDXL 的大部分开源 LoRA 都是用它训的。训练时的加速要点：
+- 支持 **bitsandbytes 8-bit AdamW** → 显存减半
+- 支持 **Gradient Checkpointing + xformers / SDPA / Flash-Attn**
+- 支持 **分层学习率**（U-Net / Text Encoder 分开）
+- FLUX 侧配套 **FLUX-Kohya scripts**，专门处理 FLUX 的双文本 encoder 和新 VAE
 
 ### 7.2 生产服务部署决策
 
@@ -458,6 +466,8 @@ Cache: TeaCache + DeepCache
 **代码**：
 - [Diffusers](https://github.com/huggingface/diffusers)
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+- [kohya_ss / sd-scripts](https://github.com/kohya-ss/sd-scripts)（LoRA / FineTune 事实标准）
+- [OneTrainer](https://github.com/Nerogar/OneTrainer)
 - [DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio)
 - [xDiT](https://github.com/xdit-project/xDiT)
 - [SageAttention](https://github.com/thu-ml/SageAttention)
