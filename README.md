@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [Qwen3-8B 下让 Gradient Checkpointing 收益最大化：选择性重算 + Pareto 曲线](posts/2026-05-08-gradient-checkpointing-qwen3-dense.md)
 - 2026-05-08 [替换 Fused Kernel 后如何对齐训推精度：7 类差异 + 3 道验证 Gate + 8 个技巧](posts/2026-05-08-fused-kernel-accuracy-alignment.md)
 - 2026-05-07 [训推加速 Qwen3 实战：从"调包"到手写 Triton Kernel（含 backward）](posts/2026-05-07-triton-kernel-fusion-practice.md)
 - 2026-05-07 [训推加速 Qwen3 实战：看懂模型结构 + 识别算子融合机会](posts/2026-05-07-qwen3-understand-model-identify-fusion.md)
