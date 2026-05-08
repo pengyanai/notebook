@@ -11,6 +11,13 @@ mermaid: true
 > 姊妹篇：[效率指标全景](/posts/2026-05-08-training-inference-efficiency-metrics.html) · [精度对齐实战](/posts/2026-05-08-fused-kernel-accuracy-alignment.html) · [GPU SOP](/posts/2026-05-07-training-inference-acceleration-troubleshooting-sop.html)
 >
 > 效率指标讲"多快"，效果指标讲"没变差"。加速最大的陷阱不是"跑不起来"，而是**跑起来了但效果悄悄掉了**。这篇梳理训推加速场景下所有常用效果指标——从 loss 和 perplexity 这些"模型自己考自己"的，到 MMLU/GSM8K 这些"下游任务"的，到 Elo 和 MOS 这些"人来判的"——一次讲清什么情况用什么。
+>
+> ⚠️ **时效声明（最后更新：2026-05-08）**：大模型评测集迭代极快——新 benchmark 每月都出、老 benchmark 饱和被淘汰、数据污染导致指标失真。本文清单反映**2026 年中的行业常用配置**，半年到一年后可能部分被取代。以下几个风向建议自行追更：
+> - [🤗 Open LLM Leaderboard](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard)（通用）
+> - [LMSYS Chatbot Arena](https://lmarena.ai/)（主观 Elo）
+> - [SWE-bench Leaderboard](https://www.swebench.com/)（Agent 编码）
+> - [τ-bench / OSWorld / GAIA 官方](https://github.com/sierra-research/tau-bench)（Agent 通用）
+> - [Open-X-Embodiment / LIBERO](https://robotics-transformer-x.github.io/)（Robotic VLA）
 
 ---
 
@@ -20,7 +27,7 @@ mermaid: true
 |---|---|---|
 | §一 | 引子：加速不能"静悄悄掉点" | 为什么要看效果指标 |
 | §二 | 训练侧指标 | Loss / CE / NLL / Perplexity / KL / Grad norm |
-| §三 | 下游客观指标 | MMLU / GSM8K / HumanEval / BBH + 中文集 |
+| §三 | 下游客观指标 | MMLU / GSM8K / HumanEval / BBH + 中文集 + **Agent / VLA / Multi-Agent** |
 | §四 | 生成质量客观指标 | BLEU / ROUGE / CHRF / F1 / EM |
 | §五 | 语音 / 转写指标 | **WER / CER** / MOS |
 | §六 | 主观评价 | Elo / Side-by-side / LLM-as-Judge |
@@ -195,15 +202,72 @@ lm_eval --model hf --model_args pretrained=Qwen/Qwen3-8B \
         --batch_size auto --output_path ./results
 ```
 
-### 3.4 "加速后跑哪些"——最小集
+### 3.4 Agent 评测（2024 后新兴，加速前必跑）
 
-不可能每次都跑 20 个 benchmark。最小集建议：
+随着 AI Agent 落地，**单轮问答的 MMLU 已经不能反映 Agent 能力**——需要在"多步工具调用 / 长链路推理 / 环境交互"的场景测。
 
-```
-必跑: MMLU + GSM8K + HumanEval + IFEval
-中文多跑: C-Eval + CMMLU
-长上下文加速多跑: LongBench / Needle-in-a-Haystack
-```
+| 评测 | 场景 | 题量 | 加速敏感度 |
+|---|---|---|---|
+| **SWE-bench / SWE-bench Verified** | 真实 GitHub issue 修复（代码 Agent） | 2.3k / 500 | 高（长上下文+多轮工具） |
+| **τ-bench (tau-bench)** | 零售 / 航旅业务的 tool-calling Agent | 动态 | 高（工具参数精度） |
+| **GAIA** | 通用助手 benchmark（Level 1-3） | 466 | 中（推理链长） |
+| **AgentBench** | 8 类环境多任务（OS/DB/Web 等） | ~1.4k | 中 |
+| **WebArena / VisualWebArena** | 真实网站的 web 操作 | 812 / 910 | 高（多模态） |
+| **OSWorld** | 桌面 OS 级任务（跨 app 操作） | 369 | 极高 |
+| **MINT** | 多轮工具调用 + 用户反馈 | 586 | 中 |
+| **ToolBench / APIBench** | API 调用正确性 | 数千 | 中 |
+
+**加速场景关注点**：
+- 量化 / 蒸馏对**长 Context 推理链**影响最大（SWE-bench / GAIA 首当其冲）
+- KV cache 量化可能让**工具参数中的数字/代码**精度漂（τ-bench 参数正确率 ↓）
+- Speculative decoding 在 Agent 场景增益比聊天场景低（Agent 输出更多代码 / JSON，分布尖锐，draft 接受率低）
+
+### 3.5 Multi-Agent / Agent Team 评测（2024 末~2025 新兴）
+
+单 Agent → Agent Team 的评测还在早期标准化。目前主流：
+
+| 评测 | 测什么 | 备注 |
+|---|---|---|
+| **AgentBoard** | Agent 行为的细粒度 error taxonomy（9 类错误）| 而非单一成功率 |
+| **AIOpsLab** | 真实运维环境下多 Agent 协作 | IBM 出品 |
+| **MultiAgentBench / BattleAgentBench** | Agent 之间协作 + 对抗 | 游戏 / 谈判场景 |
+| **ChatDev / MetaGPT 风格 benchmark** | 模拟软件开发团队 | 多 role 协作 |
+| **LiveCodeBench** | 持续更新代码题（无数据污染）| 单 agent 但实战强 |
+
+**时效警告**：Multi-Agent 评测 2025 才开始收敛；选型推荐**看当前 SOTA leaderboard**而非抄历史论文。
+
+### 3.6 Robotic VLA（Vision-Language-Action）评测
+
+具身智能 / 机器人 VLA 模型的评测集，和前面的 NLP benchmark 完全另一套体系：
+
+| 评测 | 场景 | 代表模型 |
+|---|---|---|
+| **LIBERO** | 长时程操作（spatial/object/goal/long） | OpenVLA, π0 |
+| **CALVIN** | 语言条件的连续机器人操作 | RT-2, RoboFlamingo |
+| **RLBench** | 100+ 仿真操作任务 | 通用 |
+| **SimplerEnv** | 真实世界实验 simulation mirror | Google RT 系列 |
+| **BEHAVIOR-1K** | 1000+ 家务任务，长时程 | 斯坦福 |
+| **Open-X-Embodiment** | 21 个 embodiment 跨平台数据 + benchmark | RT-X / OpenVLA |
+| **RoboCasa** | 厨房场景程序化生成 | 大规模任务池 |
+| **Isaac Lab / Isaac Sim** | NVIDIA 物理仿真评测环境 | sim-to-real |
+
+**VLA 加速的特殊考虑**：
+- VLA 模型的**实时性要求**比 LLM 严苛——常要 20~50 Hz 推理（50ms 内必须出 action）
+- 量化 / 剪枝容易让**精细操作（抓取成功率 / 插入精度）**下降，但聊天评测看不出来
+- 评测必须**在仿真 + 真机**都跑——sim2real gap 是 VLA 加速的主要风险源
+
+### 3.7 "加速后跑哪些"——最小集
+
+不可能每次都跑 20 个 benchmark。按模型类型分推荐：
+
+| 模型类型 | 必跑最小集 | 推荐补充 |
+|---|---|---|
+| 通用 LLM | MMLU + GSM8K + HumanEval + IFEval | C-Eval / CMMLU（中文）、LongBench（长上下文） |
+| 编码 Agent | SWE-bench Verified + LiveCodeBench | HumanEval / MBPP |
+| 通用 Agent | τ-bench + GAIA | OSWorld / WebArena |
+| Multi-Agent | AgentBoard + LiveCodeBench | 场景相关的自定义环境 |
+| VLA / 机器人 | LIBERO + SimplerEnv | 真机验证（小规模抽测） |
+| 语音 / ASR | LibriSpeech + CommonVoice（WER/CER） | 多语言细分 |
 
 ---
 
@@ -249,9 +313,6 @@ $$
 **示例**：reference "the quick brown fox"，hypothesis "the quick brown dog" → S=1, D=0, I=0, N=4 → WER=25%。
 
 **Whisper-large-v3 在 LibriSpeech**：~2.5% WER（示意）。
-
-![Whisper WER by language](https://raw.githubusercontent.com/openai/whisper/main/language-breakdown.svg)
-*图：Whisper 在 99 种语言上的 WER 分布。**同一个加速技术在不同语言上可能带来差异化退化**——低资源语言往往更敏感。来源：OpenAI Whisper GitHub*
 
 ### 5.2 CER — Character Error Rate
 

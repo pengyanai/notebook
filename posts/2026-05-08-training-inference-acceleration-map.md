@@ -85,76 +85,62 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 
 ## 三、训推加速全景图（核心）
 
+本文把训推加速技术按**大类 × 子技术**组成一张"棋盘表"。读者的典型工作流：先按自己的**瓶颈类型**（见 §四 决策流）定位到某一行 → 再在该行内选具体子技术 → 再找对应的代表实现 / 工具。
+
+| 大类 | 训练 / 推理 | 子技术 | 代表实现 / 工具 | 典型场景 |
+|---|:---:|---|---|---|
+| **分布式并行** | 训练 | DP · TP · PP · SP · EP · FSDP · ZeRO 1/2/3 · ZeRO++ · 通信 overlap | Megatron-LM · PyTorch FSDP · DeepSpeed · ColossalAI | 大模型多卡扩展 |
+| **低精度** | 训 + 推 | BF16 / FP16 混精 · FP8 训练 · INT8/FP8 推理 · INT4/FP4 weight-only · AWQ / GPTQ / GGUF | Transformer Engine · AWQ · bitsandbytes · llama.cpp | 显存压缩 / 算力利用率 |
+| **Kernel Fusion** | 训 + 推 | Flash-Attention 2/3 · Fused RMSNorm/RoPE/SwiGLU · 自写 Triton · 融合 cross-entropy | Flash-Attn · Liger Kernel · Apex · xFormers · Unsloth | 消除小 kernel / HBM 往返 |
+| **Graph Optim** | 训 + 推 | torch.compile · CUDA Graph · TensorRT engine · Inductor | PyTorch 2.x · TensorRT-LLM · torch.export | 消除 launch overhead |
+| **显存优化** | 训 | Gradient Checkpointing · Selective AC · Activation Offload · ZeRO Offload · Parameter Offload | PyTorch checkpoint · DeepSpeed Offload | OOM / 长 seqlen 训练 |
+| **推理专属** | 推 | Paged Attention · Continuous Batching · Chunked Prefill · Prefix / Sessions Cache · KV Quant / Compression | vLLM · SGLang · TensorRT-LLM · LMDeploy | LLM 高吞吐 serving |
+| **解码优化** | 推 | Speculative Decoding · Medusa · EAGLE · Lookahead Decoding · Jacobi | vLLM SD · SGLang SD · Medusa | Decode TPOT 降低 |
+| **架构优化** | 训 + 推 | GQA / MQA · MoE (Top-K / Switch / Mixtral) · SwiGLU · Rotary · Linear / State Space · Hybrid | Qwen3 / Llama / DeepSeek / Mamba / Jamba | 模型设计时就省算力 |
+| **系统调度** | 推 | 请求队列 · Load Balance · Autoscaling · 多模型共置 · K8s orchestration | Ray Serve · KServe · Triton Inference Server | 集群级 serving |
+| **IO / 数据侧** | 训 | webdataset · parquet/HDF5 · DALI · ffcv · Packing | NVIDIA DALI · mosaicml composer · streaming-datasets | DataLoader 瓶颈 |
+
+**怎么用这张表**：
+1. **找行**：按你的瓶颈（§二/§四）找对应大类
+2. **挑列**：在"子技术"列里选一个最接近你诉求的
+3. **定工具**：在"代表实现"列挑一个社区成熟度高的
+4. **验场景**：对照"典型场景"确认方向没跑偏
+
+### 3.1 该表的"阅读指南"——大类之间怎么组合
+
 ```mermaid
-graph TD
-    Root[训推加速技术栈]
+graph LR
+    Arch[架构优化<br/>GQA/MoE/SwiGLU] --> Dist[分布式并行<br/>FSDP/Megatron]
+    Dist --> Mem[显存优化<br/>Selective GC]
+    Mem --> Prec[低精度<br/>BF16 / FP8]
+    Prec --> Fuse[Kernel Fusion<br/>Flash-Attn/Liger]
+    Fuse --> Graph[Graph Optim<br/>compile / CUDA Graph]
 
-    Root --> Dist[分布式并行]
-    Root --> Prec[低精度]
-    Root --> Fuse[Kernel Fusion]
-    Root --> Graph[Graph Optim]
-    Root --> Mem[显存优化]
-    Root --> Infer[推理专属]
-    Root --> Arch[架构优化]
-    Root --> Sys[系统调度]
+    Infer[推理专属<br/>vLLM/SGLang] --> Dec[解码优化<br/>Speculative]
+    Graph --> Infer
+    Sys[系统调度] --> Infer
 
-    Dist --> D1[DP / TP / PP / SP / EP / FSDP]
-    Dist --> D2[ZeRO 1/2/3 ZeRO++]
-    Dist --> D3[通信 overlap]
-
-    Prec --> P1[BF16 / FP16 混精]
-    Prec --> P2[FP8 Training]
-    Prec --> P3[INT8 / FP8 Inference]
-    Prec --> P4[INT4 / FP4 Weight-only]
-
-    Fuse --> F1[Flash-Attention 2/3]
-    Fuse --> F2[Liger / Apex]
-    Fuse --> F3[Custom Triton]
-
-    Graph --> G1[torch.compile]
-    Graph --> G2[CUDA Graph]
-    Graph --> G3[TensorRT engine]
-
-    Mem --> M1[Gradient Checkpointing]
-    Mem --> M2[Activation Offload]
-    Mem --> M3[KV Cache Quant]
-    Mem --> M4[Paged Attention]
-
-    Infer --> I1[Speculative Decoding]
-    Infer --> I2[Continuous Batching]
-    Infer --> I3[Chunked Prefill]
-    Infer --> I4[Prefix Cache]
-
-    Arch --> A1[GQA / MQA]
-    Arch --> A2[MoE]
-    Arch --> A3[SwiGLU / Rotary]
-    Arch --> A4[Linear / State Space]
-
-    Sys --> S1[Scheduler]
-    Sys --> S2[Load Balancing]
-    Sys --> S3[Autoscaling]
-
-    style Root fill:#FDE8A9,stroke:#E7C56D
+    style Arch fill:#FDE8A9,stroke:#E7C56D
     style Dist fill:#CFE0F3,stroke:#8AB0DB
+    style Mem fill:#F6CED0,stroke:#D98F92
     style Prec fill:#CFE0F3,stroke:#8AB0DB
     style Fuse fill:#D4E8CF,stroke:#94C18A
     style Graph fill:#D4E8CF,stroke:#94C18A
-    style Mem fill:#F6CED0,stroke:#D98F92
     style Infer fill:#F6CED0,stroke:#D98F92
-    style Arch fill:#FDE8A9,stroke:#E7C56D
+    style Dec fill:#F6CED0,stroke:#D98F92
     style Sys fill:#FDE8A9,stroke:#E7C56D
 ```
 
-**颜色语义**：蓝 = 分布式 / 精度，绿 = 编译 / 融合，粉 = 显存 / 推理，黄 = 架构 / 系统。
+**颜色语义**：黄 = 架构 / 系统层，蓝 = 分布式 / 精度，绿 = 编译 / 融合，粉 = 显存 / 推理。上面这张图是"**典型上线路径**"——从模型设计开始逐层加上，每一步都是上一步的基础。
 
-### 3.1 Fusion 阵营的扛旗者：Flash-Attention
+### 3.2 Fusion 阵营的扛旗者：Flash-Attention
 
-![Flash-Attention](https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/assets/flashattn_banner.jpg)
+![Flash-Attention](https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/assets/flashattn_banner.jpg)  
 *图：Flash-Attention 用 tile + online softmax 把 attention 从 memory-bound 拉到 compute-bound，是 2022 年以来单项影响最大的 kernel。来源：Dao-AILab/flash-attention*
 
-### 3.2 分布式训练的地基：DeepSpeed / ZeRO
+### 3.3 分布式训练的地基：DeepSpeed / ZeRO
 
-![ZeRO memory partitioning](https://ar5iv.labs.arxiv.org/html/1910.02054/assets/x1.png)
+![ZeRO memory partitioning](https://ar5iv.labs.arxiv.org/html/1910.02054/assets/x1.png)  
 *图：ZeRO 论文 Figure 1——Baseline（每卡完整 P+G+Opt）→ P_os（按卡分 Optimizer States）→ P_os+g（再分 Gradients）→ P_os+g+p（最终所有都分）。7.5B 模型从 120GB / 卡 降到 1.9GB / 卡。PyTorch FSDP 直接继承这个范式。来源：Rajbhandari et al. 2020, arXiv:1910.02054*
 
 ---
