@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [RL 训练加速实战：Qwen3.5 + vLLM + veRL 的 fully-async 架构](posts/2026-05-08-rl-training-qwen3-vllm-verl.md)
 - 2026-05-08 [图像 Diffusion 训推加速深化：FLUX / SD3 / DMD2 / SageAttention 的 2024~2026 技术栈](posts/2026-05-08-image-diffusion-acceleration-flux-sd3-dmd2.md)
 - 2026-05-08 [MoE 教师 → Dense 学生：2024~2026 开源社区的落地范式](posts/2026-05-08-moe-to-dense-distillation.md)
 - 2026-05-08 [Speculative Decoding 实战：vLLM 框架下 EAGLE-3 原理与工程落地](posts/2026-05-08-speculative-decoding-eagle3-vllm.md)
