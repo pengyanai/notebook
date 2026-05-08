@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [Tailscale VPS Exit Node 实战：自定义 UDP 端口 + UDP GRO 调优 + DNS 防泄漏](posts/2026-05-08-tailscale-vps-exit-node-custom-port.md)
 - 2026-05-08 [Moonshot Kimi 系列技术洞察：从 K1.5 到 K2.6 的架构、优化器、训推工程](posts/2026-05-08-kimi-moonshot-technical-insights-wip.md)
 - 2026-05-08 [水印消除 / 图像编辑模型训练加速：Inpainting / Instruct-Edit / Flux Fill 的 2024~2026 栈](posts/2026-05-08-watermark-removal-image-editing-acceleration.md)
 - 2026-05-08 [视频图像分割模型技术洞察与训练加速：SAM 2 / SAM 3 / Grounded-SAM / 视频 Mask](posts/2026-05-08-segmentation-sam2-training-acceleration.md)
