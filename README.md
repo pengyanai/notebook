@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-08 [语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话的 2024~2026 技术栈](posts/2026-05-08-speech-audio-acceleration-stack.md)
 - 2026-05-08 [训推加速技术地图：三维分类 + 全景图 + 决策流 + 大模型加速术语表](posts/2026-05-08-training-inference-acceleration-map.md)
 - 2026-05-08 [训推加速模型效果指标全景：客观指标 + 主观评价 + 加速退化信号](posts/2026-05-08-training-inference-quality-metrics.md)
 - 2026-05-08 [训推加速效率指标全景：吞吐 / 延迟 / MFU / TGS / SLO（含数学公式）](posts/2026-05-08-training-inference-efficiency-metrics.md)
