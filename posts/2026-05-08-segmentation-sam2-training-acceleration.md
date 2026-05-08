@@ -166,19 +166,87 @@ graph LR
 - SAM 负责"**精细 mask**"（质量高）
 - 两阶段解耦，各自独立加速 / 替换
 
-### 4.3 检测侧的主流模型（2024~2026）
+### 4.3 检测范式的演进时间线
 
-| 模型 | 类型 | 开放词汇 | 延迟 |
-|---|---|---|---|
-| **YOLO v10 / v11** | 闭集检测 | ❌ | 极快 |
-| **RT-DETR** | Transformer 实时检测 | ❌ | 快 |
-| **DETR / DINO-DETR** | 学术 baseline | ❌ | 中 |
-| **Grounding DINO** | 文本 → bbox | ✅ | 中 |
-| **OWLv2** | 文本 → bbox | ✅ | 中 |
-| **YOLO-World** | 开放词汇 + 实时 | ✅ | 快 |
-| **Florence-2** | 统一 det + seg + caption | ✅ | 中 |
+Bbox 作为"表示"是老东西（2013 R-CNN 起步），但"**怎么得到 bbox**"的技术栈在 2024~2026 仍在快速迭代：
 
-### 4.4 Bbox 指标
+```mermaid
+gantt
+    title 检测范式演进 2013-2026
+    dateFormat YYYY-MM-DD
+    axisFormat %Y
+
+    section CNN 时代
+    R-CNN / Fast / Faster R-CNN      :r1, 2014-01-01, 1200d
+    YOLO v1~v3 / SSD / RetinaNet     :y1, 2016-01-01, 1500d
+    YOLOv4/v5 / EfficientDet          :y2, 2020-01-01, 1200d
+
+    section DETR 时代
+    DETR (去 NMS)                    :crit, d1, 2020-05-01, 900d
+    Deformable / DINO-DETR           :d2, 2021-06-01, 900d
+    RT-DETR (实时)                   :crit, d3, 2023-07-01, 900d
+
+    section 开放词汇
+    GLIP / OWL-ViT                   :g1, 2022-04-01, 900d
+    Grounding DINO                   :g2, 2023-03-01, 700d
+    YOLO-World                       :g3, 2024-01-01, 500d
+
+    section 2024-2026 范式转移
+    VLM 原生 bbox (Qwen-VL / Molmo)  :crit, v1, 2024-06-01, 600d
+    Florence-2 (统一)                :f1, 2024-06-01, 500d
+    SAM 3 (推测: 统一 det+seg)       :s1, 2025-11-01, 400d
+```
+
+### 4.4 2024~2026 主流检测模型对照
+
+| 模型 | 类型 | 开放词汇 | 延迟 | 2026 地位 |
+|---|---|---|---|---|
+| YOLOv5/v8 | Anchor-based | ❌ | 极快 | 存量大，但逐渐被替代 |
+| **YOLOv10 / v11** | Anchor-free + 去 NMS | ❌ | 极快 | 仍是 embedded 首选 |
+| **RT-DETR v2 / v3** | Transformer 实时 | ❌ | 极快 | **正在取代 YOLO 工业场景** |
+| DINO-DETR | 学术强 baseline | ❌ | 中 | COCO 榜单常驻 |
+| Grounding DINO 1.5 | 文本 → bbox | ✅ | 中 | Grounded-SAM 2 默认 |
+| OWLv2 | 文本 → bbox | ✅ | 中 | Google 系 |
+| **YOLO-World v2** | 开放词汇 + 实时 | ✅ | 快 | 实时开放检测主力 |
+| **Florence-2** | 统一 det + seg + OCR | ✅ | 中 | 0.23B 端侧也能跑 |
+| **Qwen2.5-VL / Molmo / InternVL3** | **VLM 原生 bbox** | ✅ | 慢 | **新范式：直接语言→坐标** |
+
+### 4.5 2026 四个关键范式转移
+
+**① DETR 系彻底取代 YOLO（工业级）**
+- RT-DETR v3 在 COCO 同精度下延迟已和 YOLOv10 持平或更低
+- **去 NMS** 让部署链路更干净（无需调 NMS 阈值）
+- TensorRT / OpenVINO / Core ML 对 DETR 家族支持成熟
+
+**② VLM 原生定位**（最大范式转移）
+
+Qwen2.5-VL / Molmo / InternVL 可直接输出：
+
+```
+<box>x1,y1,x2,y2</box>
+```
+
+格式的 bbox token。这意味着：
+- **一个模型搞定** detection + caption + QA + OCR + pointing
+- 传统 detector 在很多场景被 VLM 吞并（尤其是**开放词汇 + 长尾**）
+- 代价：延迟高（几百 ms 起），**不适合实时控制**
+
+工程取舍：**实时 → RT-DETR / YOLO-World；质量 + 开放 → VLM 原生定位**。
+
+**③ 3D / 视频 bbox 独立成派**
+
+| 子方向 | 代表 | 用途 |
+|---|---|---|
+| **BEV 3D 检测** | BEVFormer / StreamPETR | 自动驾驶 |
+| **OmniDet** | 环视 3D | 车载 |
+| **时序 bbox (tracking)** | ByteTrack / OC-SORT / **SAM 2 track** | VOS / 监控 |
+| **点云 3D bbox** | VoxelNext / Sparse4D | LiDAR |
+
+**④ SAM 3 方向（推测）**
+
+Meta 暗示下一代把 **检测 + 分割 + 跟踪** 统一进一个可提示 foundation。bbox 可能不再是独立阶段，而是 **concept prompt** 的多种输出形式之一（点 / 框 / mask / 3D 框）。
+
+### 4.6 Bbox 指标
 
 **IoU (Intersection-over-Union)**：
 
@@ -196,7 +264,7 @@ $$
 
 $C$ 是两个 bbox 的最小闭包。
 
-### 4.5 Bbox 训练加速
+### 4.7 Bbox 训练加速
 
 | 技术 | 目的 | 收益 |
 |---|---|---|
@@ -206,13 +274,13 @@ $C$ 是两个 bbox 的最小闭包。
 | **Mosaic / MixUp / Copy-Paste** | 数据增强 | 小目标 mAP +3~5 |
 | **EMA weights** | 稳定 | 最终 mAP +1~2 |
 
-### 4.6 Box Prompt 到 SAM 的三个常见坑
+### 4.8 Box Prompt 到 SAM 的三个常见坑
 
 1. **Bbox 太松**：SAM 会分割整个背景 → 用 **expand ratio ≤ 1.1**
 2. **Bbox 太紧**：SAM mask 被截断 → 给 detector 留 2~5 pixel margin
 3. **同类多对象 bbox 重叠**：需要**逐 bbox 独立跑 SAM**，不要一次喂多个——SAM 多 box 语义是"这些都属于同一个 mask"
 
-### 4.7 Bbox 自动生成 Mask 数据（SAM 式数据引擎关键一环）
+### 4.9 Bbox 自动生成 Mask 数据（SAM 式数据引擎关键一环）
 
 SA-1B / SA-V 数据引擎里，**bbox 是 mask 的第一来源之一**：
 - 人工或检测器出 bbox
@@ -425,6 +493,11 @@ $$
 
 **论文 / 技术报告**：
 - [DETR (Meta, 2020)](https://arxiv.org/abs/2005.12872)
+- [RT-DETR (Baidu, 2023)](https://arxiv.org/abs/2304.08069)
+- [YOLOv10 (2024)](https://arxiv.org/abs/2405.14458)
+- [Qwen2.5-VL (2025) — 原生 bbox 定位](https://arxiv.org/abs/2502.13923)
+- [Molmo (Allen AI, 2024) — pointing + bbox](https://arxiv.org/abs/2409.17146)
+- [BEVFormer (2022) — 3D bbox](https://arxiv.org/abs/2203.17270)
 - [DINO-DETR (2022)](https://arxiv.org/abs/2203.03605)
 - [RT-DETR (2023)](https://arxiv.org/abs/2304.08069)
 - [YOLO-World (2024)](https://arxiv.org/abs/2401.17270)
