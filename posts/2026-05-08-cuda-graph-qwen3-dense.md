@@ -63,6 +63,48 @@ graph LR
 
 Qwen3-8B 训练典型收益：**12~20% step time 下降**，纯靠消除 launch 开销。
 
+**公式化**：设单次 launch 开销 $L$、kernel 计算时间 $C_i$、每步 kernel 数量 $N$，则：
+
+$$
+T_\text{step}^\text{eager} = \sum_{i=1}^{N} (L + C_i) = NL + \sum_i C_i
+$$
+
+CUDA Graph 录制 $N$ 个 kernel 一次，replay 时只算 $\sum_i C_i$：
+
+$$
+T_\text{step}^\text{graph} = L_\text{replay} + \sum_i C_i \approx \sum_i C_i
+$$
+
+省下来的是 $NL$ 这块固定开销。Qwen3-8B 单 step $N \approx 3000$、H100 $L \approx 5\mu s$，理论上限是 $3000 \times 5\mu s = 15 ms$，和实测 12~18% 的收益吻合。
+
+下面这张时序图直观展示两者差别：
+
+```mermaid
+gantt
+    title Kernel Launch 时序对比（放大版 前 4 个 kernel）
+    dateFormat X
+    axisFormat %Lus
+
+    section Eager
+    Launch k1       :crit, e1a, 0, 5
+    Compute k1      :done, e1b, 5, 15
+    Launch k2       :crit, e2a, 20, 5
+    Compute k2      :done, e2b, 25, 20
+    Launch k3       :crit, e3a, 45, 5
+    Compute k3      :done, e3b, 50, 10
+    Launch k4       :crit, e4a, 60, 5
+    Compute k4      :done, e4b, 65, 15
+
+    section CUDA Graph
+    Replay dispatch :active, g0, 0, 3
+    Compute k1      :done, g1, 3, 15
+    Compute k2      :done, g2, 18, 20
+    Compute k3      :done, g3, 38, 10
+    Compute k4      :done, g4, 48, 15
+```
+
+Eager 每次 kernel 前都有 5μs launch 条；CUDA Graph 只在开头统一 dispatch 一次。累积几千次的差额就是 10~20ms。
+
 ---
 
 ## 二、适用 / 不适用决策

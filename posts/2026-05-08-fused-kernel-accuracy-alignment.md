@@ -31,6 +31,17 @@ mermaid: true
 
 浮点不是实数，float 运算**不满足结合律**（`(a+b)+c ≠ a+(b+c)`）。任何 kernel 改写只要运算顺序或精度路径变了，数值就会漂——这不是 bug，是数学事实。问题在于"漂得有多重"和"会不会被下游放大"。
 
+![bfloat16 格式位布局](https://upload.wikimedia.org/wikipedia/commons/0/0b/Bfloat16_format.svg)
+*图：bfloat16 = 1 sign + 8 exponent + 7 mantissa。只有 7 bit 尾数意味着相对精度约 `2^-7 ≈ 0.78%`——这直接决定了 Gate 2 的 tolerance 至少要放宽到 `1e-3`。来源：Wikimedia Commons*
+
+**非结合律的数学事实**：在 $\mathbb{R}$ 中 $(a+b)+c = a+(b+c)$，但在 IEEE 754 浮点集合 $\mathbb{F}$ 中，令 $\oplus$ 表示浮点加法：
+
+$$
+(a \oplus b) \oplus c \ne a \oplus (b \oplus c)
+$$
+
+一般不等。例如 bf16 下 $a=10^4, b=-10^4, c=1$：$(a\oplus b)\oplus c = 1$，而 $a\oplus(b\oplus c) = 0$（$b\oplus c$ 下溢到 $-10^4$）。Kernel 里改一下 reduction 顺序就可能触发这种差异。
+
 ### 1.1 7 类常见差异来源
 
 | # | 差异来源 | 原理 | 典型 magnitude（bf16） |
@@ -48,6 +59,14 @@ mermaid: true
 ### 1.2 一个容易忽视的点：fp32 master weight
 
 优化器（AdamW / Adafactor）的状态是 **fp32**。前向 bf16 算完 grad 是 bf16 → 传回主权重前会被 cast 到 fp32。你手写的 backward 如果**直接产出 bf16 grad 不注意精度**，主权重累积会比 reference 掉数量级。
+
+形式化：设 $w^{(t)} \in \mathbb{F}_{32}$ 是 fp32 master weight，step $t$ 的 bf16 梯度 $g^{(t)}$ 在上抛 fp32 再累加：
+
+$$
+w^{(t+1)} = w^{(t)} - \eta \cdot \mathrm{cast}_{\text{fp32}}(g^{(t)})
+$$
+
+如果你的 kernel 内部规约提前把中间量塞成 bf16，$g^{(t)}$ 本身就已经丢精度；再 cast 回 fp32 也救不回。**规则**：kernel 内部**所有 reduction 用 fp32 buffer**，输出 bf16 之前保留 fp32 一次。
 
 ```python
 # ❌ Backward 里 dw 全程 bf16 累加
@@ -82,6 +101,15 @@ graph LR
 ```
 
 ### Gate 1：`torch.autograd.gradcheck`（fp64 严格）
+
+`gradcheck` 的原理：用数值微分 $\tilde{g}$ 近似真实梯度 $g$，对照你的解析 backward 的输出：
+
+$$
+\tilde{g}_i = \frac{f(x + \varepsilon e_i) - f(x - \varepsilon e_i)}{2\varepsilon}, \quad \varepsilon = 10^{-6}
+$$
+
+对每个维度 $i$ 和解析 grad $g_i$ 比较 $\|\tilde{g}_i - g_i\| < \text{atol} + \text{rtol}\cdot|g_i|$。只在 fp64 下做才能保证 $\varepsilon=10^{-6}$ 不被浮点截断。
+
 
 ```python
 from torch.autograd import gradcheck
@@ -243,13 +271,36 @@ for name in refs:
 
 ### 4.4 渐进式替换
 
-**一次只换一个算子**。全套换完只能靠二分排查。
+**一次只换一个算子**。全套换完只能靠二分排查。典型 4 周替换节奏：
 
+```mermaid
+gantt
+    title Qwen3 fused kernel 渐进替换推进节奏
+    dateFormat YYYY-MM-DD
+    axisFormat Day %d
+
+    section RMSNorm
+    写 kernel + gradcheck    :a1, 2026-05-08, 2d
+    bf16 数值对照            :a2, 2026-05-10, 1d
+    200 step loss 曲线       :a3, 2026-05-11, 1d
+    提交 + 上线              :done, a4, 2026-05-12, 1d
+
+    section RoPE
+    写 kernel + gradcheck    :b1, 2026-05-13, 2d
+    数值 + 曲线              :b2, 2026-05-15, 2d
+    提交                     :done, b3, 2026-05-17, 1d
+
+    section SwiGLU
+    写 kernel + gradcheck    :c1, 2026-05-18, 3d
+    数值 + 曲线              :c2, 2026-05-21, 2d
+    提交                     :done, c3, 2026-05-23, 1d
+
+    section 联动回归
+    MMLU / 业务指标 A/B       :crit, d1, 2026-05-24, 3d
+    上生产                    :done, d2, 2026-05-27, 1d
 ```
-步骤 1: 替换 RMSNorm → Gate 1/2/3 过 → 提交
-步骤 2: 再替换 RoPE  → Gate 1/2/3 过 → 提交
-步骤 3: 再替换 SwiGLU → Gate 1/2/3 过 → 提交
-```
+
+**节奏要点**：每个算子替换至少留一天缓冲跑 loss 曲线；三个算子换完统一跑一次业务指标回归，**不要每换一个就上生产**——可能三个累计才出现指标下掉。
 
 ### 4.5 Baseline 自身先可复现
 

@@ -48,7 +48,41 @@ graph LR
     style E fill:#D4E8CF,stroke:#94C18A
 ```
 
-**数学直觉**：假设训练一步 forward T 秒、backward 2T 秒（backward 约 2x forward），默认总 3T；开 gradient checkpointing 后变成 forward T + recompute T + backward 2T = 4T，即 **+33% 时间**。作为交换，中间 activation 显存降 30~70%（依 checkpoint 粒度）。
+**数学直觉**：设 forward 耗时 $T_f$、backward 耗时 $T_b \approx 2T_f$、重算一次 forward 耗时 $T_f$。
+
+- 不开 GC：单步总时间 $T_\text{step} = T_f + T_b = 3T_f$，activation 显存 $M_a$
+- 开 GC（粗粒度）：$T_\text{step}' = T_f + T_f + T_b = 4T_f \Rightarrow$ **+33% 时间**，换取 activation 显存降到 $\alpha M_a$（$\alpha \in [0.3, 0.7]$）
+
+**Selective GC 的公式**：只对 AI 低（重算便宜）的 op 重算，AI 高的保留。设低 AI op 前向耗时占比 $\beta \in [0.1, 0.3]$（多数情况），则：
+
+$$
+T_\text{step}^{\text{sel}} = T_f + \beta T_f + T_b = (3 + \beta) T_f
+$$
+
+即时间代价只 **+10~15%**，显存节省依然保留大部分。这是 Pareto 最优的来源。
+
+下面这张时序图直观展示三种配置的区别：
+
+```mermaid
+gantt
+    title Forward / Recompute / Backward 时序对比（Qwen3-8B 单 step）
+    dateFormat X
+    axisFormat %Sms
+
+    section 不开 GC
+    Forward               :done, n1, 0, 200
+    Backward              :crit, n2, 200, 400
+
+    section 粗粒度 GC
+    Forward               :done, g1, 0, 200
+    Recompute FWD         :active, g2, 200, 200
+    Backward              :crit, g3, 400, 400
+
+    section Selective GC
+    Forward               :done, s1, 0, 200
+    Partial recompute     :active, s2, 200, 50
+    Backward              :crit, s3, 250, 400
+```
 
 **这个交易值不值得做？取决于你的瓶颈**：
 
@@ -137,6 +171,17 @@ class CustomQwen3Layer(nn.Module):
 ### 3.3 Selective：按 AI 挑
 
 最细粒度：**按 [访存比 (AI)](/posts/2026-05-07-qwen3-understand-model-identify-fusion.html#访存比arithmetic-intensity与-roofline) 来选**——AI 低的算子重算便宜（反正是 memory-bound），AI 高的算子重算贵（要重跑 compute）。
+
+![Roofline 模型](https://upload.wikimedia.org/wikipedia/commons/4/41/Roofline_model.png)
+*图：Roofline 模型。横轴是访存比 $AI = \text{FLOPs}/\text{Bytes}$，纵轴是性能 (FLOP/s)。低 AI 算子卡在斜线（带宽上限），高 AI 算子顶到屋顶（算力上限）。来源：Wikimedia Commons*
+
+**决策规则**：设算子 $o$ 的访存比 $AI_o$、重算时间 $R_o$、保留 activation 显存 $M_o$。定义重算"性价比"：
+
+$$
+\text{RecomputeROI}(o) = \frac{M_o}{R_o}
+$$
+
+**RecomputeROI 越高越值得丢掉重算**——低 AI 算子的 $R_o$ 极小而 $M_o$ 不一定小，ROI 通常很高。这就是"按 AI 挑"的理论依据。
 
 | Qwen3 算子 | AI | 重算代价 | 是否要保留 activation |
 |---|---|---|---|
