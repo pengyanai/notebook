@@ -516,9 +516,27 @@ MuonClip 是 2025~2026 从 Moonshot 外溢到最多领域的创新。公开可�
 
 ### 7.2 LLM fine-tune 社区对比
 
-HuggingFace 博客《Muon vs MuonClip vs Muon+AdamW for Fine-Tuning》（社区实测，非官方）指出：
-- 小模型 SFT 场景：**Muon + AdamW 混合**（Muon 处理矩阵权重，AdamW 处理 embedding / norm）是主流做法
-- **MuonClip 的 QK-Clip** 主要在 **预训练 / 大规模长训** 中有效，**短 SFT 收益不显著**——这是 MuonClip 诞生动机（"解 Muon 大规模炸 logit"）决定的
+HuggingFace 博客《Muon vs MuonClip vs Muon+AdamW for Fine-Tuning》（社区实测，非官方）给出了一组关键对照实验：
+
+![Muon vs MuonClip vs Muon+AdamW 收敛曲线](https://cdn-uploads.huggingface.co/production/uploads/6612aedf09f16e7347dfa7e1/7lnZOnazT-yBURvK4N5SO.png)  
+
+**实测结论**（引自原文）：
+
+> Muon and Muon+AdamW have **outperformed the MuonClip**. We can clearly see they are outperforming MuonClip in convergence, the main reason is the Clipping. As the clipping is more optimal and stable for **longer training duration**.
+>
+> That's also the reason the **mean token accuracy of MuonClip is also low**.
+>
+> As we can see in starting the **Muon Only is converging faster initially** than Muon+AdamW catch up.
+>
+> — *HF blog: Muon vs MuonClip vs Muon+AdamW for Fine-Tuning*
+
+**工程洞察**：
+- **短 SFT 场景 MuonClip 反而吃亏**：QK-Clip 抑制 logit 增长，在 fine-tune 几百~几千 step 的短训中体现为 *更慢的收敛 + 更低的 mean token accuracy*
+- **Muon only 初期最快**：不加 AdamW 也不加 clip，在短步数下纯矩阵更新最直接
+- **Muon + AdamW 混合最稳**：Muon 管矩阵权重 / AdamW 管 embedding / norm，初期略慢但后段追上
+- **MuonClip 的价值窗口在"长训 + 大规模"**：K2 的 15.5T token 预训练正是其诞生动机；短训配方里用它反而得不偿失
+
+所以 **MuonClip 不是"全场景更好的 Muon"**，而是**专门为超大规模预训练稳定性设计的变体**——选型时要严格按任务规模匹配。
 
 ### 7.3 长尾学习与多 domain 研究
 
