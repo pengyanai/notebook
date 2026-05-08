@@ -104,7 +104,7 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 | **解码优化** | 推 | Speculative Decoding · Medusa · **EAGLE / EAGLE-2 / EAGLE-3** · **DFlash (Draft-Flash fused)** · **PLD (Prompt Lookup Decoding)** · **SpecInfer** · **Ouroboros** · Lookahead Decoding · Jacobi | vLLM SD · SGLang SD · Medusa · **EAGLE-3 官方** · TensorRT-LLM SD | Decode TPOT 降低 2~5x |
 | **架构优化** | 训 + 推 | GQA / MQA · **MLA (Multi-head Latent Attention)** · MoE (Top-K / Switch / Mixtral / **DeepSeek Aux-loss-free** / **DeepSeek-V4 细粒度 expert**) · SwiGLU · Rotary / **NoPE / YaRN** · **DeepSeek-V4 Hybrid Attention (CSA + HCA)** · Linear / State Space / Mamba / Mamba-2 · **Sliding Window + Global Attention** | Qwen3 / Llama / **DeepSeek-V3 / V4** / Mamba / Jamba / **MiniMax-01 (Lightning Attention)** / **Gemma-3 (Hybrid)** | 模型设计时就省算力 |
 | **MoE 训练加速** | 训练 | **DeepEP (Expert Parallel)** · **Grouped GeMM** · **Aux-Loss-Free Load Balance** · All-to-all / comp 重叠 · Expert 量化 · **NoPE MoE** | DeepSeek DeepEP · Megatron-Core MoE · vLLM MoE · Mixtral infra · **Tutel** | MoE 预训练 / SFT 通信瓶颈 |
-| **Diffusion 专属加速** | 训 + 推 | **步数蒸馏 (DMD / DMD2 / LCM / SDXL-Lightning / HyperSD / PCM / TCD)** · **FP8 / INT8 Attention (SageAttention / SVDQuant / Q-Diffusion)** · **Feature Caching (DeepCache / TGATE / TeaCache / FBCache)** · **CFG 跳过 / Adaptive CFG** · Schnell / Turbo 变体 · **FLA for Video** · **Diffusion Transformer (DiT) 并行** | Diffusers · ComfyUI · xDiT · **FLUX / FLUX.1 [dev/schnell/pro]** · **SD3 / SD3.5 / SDXL** · **Wan 2.1 / HunyuanVideo / CogVideoX / Mochi / Sora-style** · **Stable Video Diffusion** · Qwen-Image | 图像 / 视频生成秒级出图（FLUX.1 [schnell] 4 步已是 SOTA） |
+| **Diffusion 专属加速** | 训 + 推 | **Flow Matching / Rectified Flow (新基座)** · **步数蒸馏 (DMD / DMD2 / LCM / SDXL-Lightning / HyperSD / PCM / TCD / MeanFlow)** · **可训练稀疏 Attention (VSA / SLA)** · **Flash-Sparse-Attention (DiT 稀疏 attn)** · **FP8 / INT8 Attention (SageAttention / SVDQuant / Q-Diffusion)** · **Feature Caching (DeepCache / TGATE / TeaCache / FBCache)** · **CFG 跳过 / Adaptive CFG** · **FastVideo / FastWan / FastDiT 训练加速栈** · **Flash Stable Diffusion 3** · **推理稀疏 + DMD 蒸馏联合** · **FLA for Video** · **DiT 多卡并行 (sequence / model parallel)** | Diffusers · ComfyUI · xDiT · **DiffSynth-Studio (阿里魔搭)** · **FastVideo (UC Berkeley)** · **FLUX / FLUX.1 [dev/schnell/pro]** · **SD3 / SD3.5 / Flash-SD3 / SDXL** · **Wan 2.1 / Wan 2.2 / FastWan**（阿里万象，其中 Wan 2.1 用 **VSA finetune** 加速）· **HunyuanVideo / CogVideoX / Mochi / Seed-Video** · **Stable Video Diffusion** · **Qwen-Image / Qwen3-Image** | 图像 / 视频生成秒级出图（FLUX.1 [schnell] 4 步、FastVideo/FastWan 让视频生成跨入亚分钟级，**VSA/SLA + DMD 可再快 2~5×**） |
 | **RL 训练栈** | 训练 | **Fully-async PPO / GRPO / DAPO / GSPO / SAPO** · Actor-Critic 异步 · Reward model 并行 · Rollout-train 解耦 · **KL Free / Ref-model optional** · Group-relative advantage · **Step-wise advantage** | **veRL (字节)** · **AReaL (蚂蚁)** · **ROLL (阿里)** · **OpenRLHF** · **SkyRL (UC Berkeley)** · **NeMo-RL** · TRL · **verl-async** | RLHF / RLAIF / Reasoning RL (o1 式) |
 | **MoE → Dense 蒸馏** | 训练 | **Logit Distillation (Top-K vocab 截断)** · **On-Policy / Off-Policy KD** · **Rejection Sampling SFT** · **合成数据 pipeline (teacher 造数据)** · **Teacher FP8 推理加速** · **KV cache 复用** · Layer-drop · Depth / Width reduction | MiniLLM · DistillKit · DistiLLM-2 · **vLLM / SGLang 批量 rollout** · Liger-KD · **Qwen3-Distill** · **Gemma-Distill** | 大 MoE teacher → 小 dense student（Qwen3.5-MoE → Qwen3.5-8B / MiniCPM / Gemma-Small） |
 | **PEFT 微调** | 训练 | **LoRA** · **QLoRA (NF4 + LoRA)** · **DoRA (weight-decomposed)** · **PiSSA (principal singular init)** · **LoRA+ (lr 分组)** · **VeRA (shared random)** · **rsLoRA (rank stable)** · **LoftQ (量化 + 初始化)** · **Prefix / Prompt / IA³ Tuning** · **GaLore / Q-GaLore (低秩梯度)** · **AdaLoRA** · **Mixture of LoRA (MoLA)** · **LoRA hot-swap** | **PEFT (HF)** · **Unsloth** · **LLaMA-Factory** · **ms-swift** · **Axolotl** · **bitsandbytes** · **torchtune** | 消费级显卡 / 少样本微调 / 多任务适配 |
@@ -320,6 +320,7 @@ graph TD
 - **DFlash** = 2025 提出的 Speculative Decoding 变体，把 draft 模型 + verify 阶段融合到单 kernel，适合轻量部署。
 - **Disaggregated Prefill/Decode** = Mooncake / DistServe 提出，把 prefill 和 decode 部署到不同 GPU pool，各自用最优 batch/parallelism 配置。
 - **DMD / DMD2 (Distribution Matching Distillation)** = 扩散模型的"多步 → 几步"蒸馏，DMD2 去掉 regression loss 进一步提速。
+- **DiffSynth-Studio** = 阿里魔搭开源的 Diffusion 训练 + 推理全家桶，支持 Wan / FLUX / SD3 / HunyuanVideo 等主流模型及其步数蒸馏。
 - **DoRA (Weight-Decomposed LoRA)** = 把权重分解为方向 + 幅度，只对方向做 LoRA，效果接近全参微调。
 - **DPO (Direct Preference Optimization)** = 不要 reward model 的 RLHF 替代。
 
@@ -327,9 +328,14 @@ graph TD
 
 - **EAGLE / EAGLE-2 / EAGLE-3** = Speculative Decoding 的 tree-based 方案，EAGLE-3 在 decode 速度和质量上再刷新 SOTA（相对 EAGLE-2 再提 30~50%）。
 - **ExecuTorch** = PyTorch 官方端侧推理运行时，目标取代 TFLite / CoreML 的部分场景。
+- **FastVideo** = UC Berkeley 开源的视频 Diffusion 训练 + 推理加速栈，主打 FastMochi / FastHunyuan 蒸馏。
+- **FastWan** = 阿里 Wan 团队发布的 Wan 模型步数蒸馏加速栈，把视频生成时间从分钟级压到亚分钟。
 - **FLA (Fast Linear Attention)** = flash-linear-attention 项目，Mamba / Linear-attention 系列的统一 kernel 仓库。
-- **FLUX / FLUX.1** = Black Forest Labs（原 Stability AI 核心团队）的 DiT 基座文生图模型，[dev] / [schnell] / [pro] 三档；schnell 基于 LCM 蒸馏，4 步出图。
+- **Flash-Sparse-Attention** = DiT 专用的稀疏 attention kernel，适配 image/video 生成里的稀疏 pattern。
+- **Flash Stable Diffusion 3** = SD3 的一步 / 四步蒸馏版本，推理接近 FLUX.1 schnell 级别。
 - **Flash-Attention** = Tri Dao 的 attention 算子，tile + online softmax。v1/v2/v3 逐代优化。
+- **Flow Matching / Rectified Flow** = 替代传统 Diffusion 的生成范式，FLUX / SD3 / Wan 2.2 均采用。训练更稳定，推理步数更少。
+- **FLUX / FLUX.1** = Black Forest Labs（原 Stability AI 核心团队）的 DiT 基座文生图模型，[dev] / [schnell] / [pro] 三档；schnell 基于 LCM 蒸馏，4 步出图。
 - **FLA (Fast Linear Attention)** = flash-linear-attention 项目，Mamba / Linear-attention 系列的统一 kernel 仓库。
 - **FSDP (Fully Sharded Data Parallel)** = PyTorch 版 ZeRO-3，参数 / 梯度 / 优化器全部 shard。
 - **FSDP2** = PyTorch 2.x 第二代 FSDP，基于 **DTensor + DeviceMesh**，比 FSDP1 更灵活，支持细粒度 shard / 2D 并行组合。
@@ -411,6 +417,11 @@ graph TD
 - **Tutel** = 微软开源的 MoE 训练加速库，主打 all-to-all 调度 + grouped GeMM。
 - **veRL** = 字节 ByteDance 开源的 async RL 训练框架，面向 reasoning / SWE-bench 等 agentic 场景，现已成为 GRPO / DAPO 研究基准。
 - **vLLM** = UC Berkeley 的开源推理引擎，Paged Attention 原创。
+- **VSA (Video Sparse Attention)** = 视频 Diffusion 的"可训练稀疏 attention"方案。在 Wan 2.1 等模型上 finetune 后，attention 仅保留少量关键 token，推理耗时 2~5× 下降。常与 DMD 步数蒸馏联用（"推理稀疏 + 少步蒸馏"双 buff）。
+- **SLA (Sparse Local Attention)** = 视频 Diffusion 的局部稀疏 attention 变体，和 VSA 并列的同方向工作。
+- **TCD (Trajectory Consistency Distillation)** = Diffusion 步数蒸馏的一个变体，强调训练稳定性。
+- **MeanFlow** = 一步 Flow Matching 推理的蒸馏方案之一。
+- **Wan 2.x / 万象** = 阿里的开源视频生成模型系列（Wan 2.1 / 2.2），配套 FastWan 训推加速栈；Wan 2.1 可用 VSA finetune 后再上 DMD，组合收益显著。
 - **WER / CER (Word/Character Error Rate)** = 语音识别评测。[公式](/posts/2026-05-08-training-inference-quality-metrics.html)
 - **xDiT** = 扩散模型的并行推理框架，专做 SD / Flux / CogVideoX 的多卡加速。
 - **YaRN** = RoPE 的长度外推方案之一，Qwen2.5-long / Llama-3.1 均采用。
