@@ -52,18 +52,72 @@ graph LR
     style U fill:#CFE0F3,stroke:#8AB0DB
 ```
 
-### 1.2 时间占比
+### 1.2 veRL 的 4 个关键耗时阶段
 
-真实 RL 训练（Qwen3.5-8B + GRPO + math reasoning 场景）的耗时分布：
+veRL 把一个 RL training step 拆成**严格的 4 个推理 / 计算阶段** + **2 个更新阶段**，调优前必须搞清楚各自占多少时间。
 
-| 阶段 | 占比 | 耗时主因 |
-|---|---|---|
-| **Rollout 生成** | **60~75%** | 长 output（数学题 1K~5K tokens）+ 多样本（N=8~16）+ 大模型推理 |
-| Reward 打分 | 5~15% | RM / Judge 推理 |
-| Critic forward | 5~10% | （DAPO / GSPO 可以省掉） |
-| Actor / Critic 反向 | 15~20% | training backward |
+```mermaid
+graph LR
+    P[Prompt Batch] --> S1[① Rollout Generation<br/>actor 生成 response<br/>via vLLM]
+    S1 --> S2[② old_log_probs<br/>actor 对 rollout 再 forward<br/>算当前 policy 的 log prob]
+    S2 --> S3[③ ref_log_probs<br/>reference model forward<br/>用于 KL 惩罚]
+    S3 --> S4[④ values / reward<br/>critic forward（仅 PPO）<br/>+ RM / rule reward]
+    S4 --> U[update_actor / update_critic<br/>backward + optimizer]
+
+    style S1 fill:#F6CED0,stroke:#D98F92
+    style S2 fill:#FDE8A9,stroke:#E7C56D
+    style S3 fill:#FDE8A9,stroke:#E7C56D
+    style S4 fill:#CFE0F3,stroke:#8AB0DB
+    style U fill:#D4E8CF,stroke:#94C18A
+```
+
+**典型耗时分布**（Qwen3.5-8B + GRPO + math reasoning，H100 8 卡 实际量级）：
+
+| 阶段 | 占比 | 做什么 | 加速手段 |
+|---|---|---|---|
+| **① Rollout (generate_sequences)** | **60~70%** | actor 生 N×G 个 responses，长 decode | **vLLM + EAGLE-3 + Prefix Cache** |
+| **② old_log_probs** | 5~10% | actor 对 rollouts 再 forward，算 $\pi_{\theta_\text{old}}$ | 用 training-dtype 跑（bf16）|
+| **③ ref_log_probs** | 5~10% | reference model forward 算 $\pi_\text{ref}$ | **FP8 ref 模型** / offload 到 CPU / 甚至移除 ref（KL-free 变体）|
+| **④ values / reward** | 3~10% | Critic forward（PPO 需要）+ reward 计算 | **GRPO 省 Critic**；Rule-based reward 只要 CPU |
+| ⑤ update_actor | 10~15% | actor backward + optimizer step | bf16 + FSDP + GC |
+| ⑥ update_critic（若有）| 5~10% | critic backward | 同上，GRPO 不需要 |
+
+### 1.3 为什么这 4 个阶段都是加速目标
+
+每一步都是**独立瓶颈候选**，工程上要逐个 profile：
+
+1. **Rollout**（大头）：vLLM 是必须的，否则直接卡死在这里——下一节专讲
+2. **old_log_probs**：容易被忽略——它用的是**训练 dtype 的 actor forward**，和 rollout 用的 vLLM engine **不共享权重和 KV**，需要重算一遍
+3. **ref_log_probs**：ref model 只做 forward 不训练，是纯推理负担；但 ref 通常和 actor 同尺寸（7B~70B），占显存 + 算力都大
+4. **reward / values**：rule-based reward 很快；RM / Judge 本身是 LLM 推理，接近 rollout 的问题
+
+**工程经验**：①②③ 合起来常占 **80%+** 时间，四个阶段都要针对性优化。
+
+### 1.4 优化各阶段的具体手段
+
+| 阶段 | 具体优化 |
+|---|---|
+| Rollout | vLLM + Prefix Cache + EAGLE-3 + FP8 KV；high parallelism |
+| old_log_probs | 和 actor training 共卡；bf16；分 chunk forward 省显存 |
+| ref_log_probs | ref 参数量化 FP8 / INT8；offload；或 **KL-free 变体**（新派 GRPO 直接扔掉 ref，靠 advantage 自身约束）|
+| reward | Rule-based 优先；RM 可量化可 offload |
+| update | 常规 FSDP / ZeRO 打法，和 SFT 无异 |
+
+### 1.5 时间占比的核心定律
+
+$$
+T_\text{RL step} = T_\text{①rollout} + T_\text{②old\_lp} + T_\text{③ref\_lp} + T_\text{④reward} + T_\text{⑤⑥update}
+$$
 
 **Rollout 是瓶颈**——这就是为什么 **vLLM / SGLang 成为 RL 训练的核心组件**。没有它们，Rollout 阶段的吞吐会掉到 transformers naive 推理的 1/10~1/50。
+
+但如果只优化 rollout，②③ 会变相抬升为新瓶颈——典型"**Amdahl 定律**"场景：
+
+$$
+\text{Speedup}_\text{overall} = \frac{1}{(1 - p_\text{rollout}) + \frac{p_\text{rollout}}{s_\text{rollout}}}
+$$
+
+rollout 占 70%、加速 5× 时，整体只提速到 $\frac{1}{0.3 + 0.14} \approx 2.27\times$——**其他阶段必须跟上**，不然 rollout 越快 ②③④ 的相对占比越大，反而成为新瓶颈。
 
 ### 1.3 RL 训练贵的数学本质
 
