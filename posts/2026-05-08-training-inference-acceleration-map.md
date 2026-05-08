@@ -104,7 +104,7 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 | **解码优化** | 推 | Speculative Decoding · Medusa · **EAGLE / EAGLE-2 / EAGLE-3** · **DFlash (Draft-Flash fused)** · **PLD (Prompt Lookup Decoding)** · **SpecInfer** · **Ouroboros** · Lookahead Decoding · Jacobi | vLLM SD · SGLang SD · Medusa · **EAGLE-3 官方** · TensorRT-LLM SD | Decode TPOT 降低 2~5x |
 | **架构优化** | 训 + 推 | GQA / MQA · **MLA (Multi-head Latent Attention)** · MoE (Top-K / Switch / Mixtral / **DeepSeek Aux-loss-free** / **DeepSeek-V4 细粒度 expert**) · SwiGLU · Rotary / **NoPE / YaRN** · **DeepSeek-V4 Hybrid Attention (CSA + HCA)** · Linear / State Space / Mamba / Mamba-2 · **Sliding Window + Global Attention** | Qwen3 / Llama / **DeepSeek-V3 / V4** / Mamba / Jamba / **MiniMax-01 (Lightning Attention)** / **Gemma-3 (Hybrid)** | 模型设计时就省算力 |
 | **MoE 训练加速** | 训练 | **DeepEP (Expert Parallel)** · **Grouped GeMM** · **Aux-Loss-Free Load Balance** · All-to-all / comp 重叠 · Expert 量化 · **NoPE MoE** | DeepSeek DeepEP · Megatron-Core MoE · vLLM MoE · Mixtral infra · **Tutel** | MoE 预训练 / SFT 通信瓶颈 |
-| **Diffusion 专属加速** | 训 + 推 | **Flow Matching / Rectified Flow (新基座)** · **步数蒸馏 (DMD / DMD2 / LCM / SDXL-Lightning / HyperSD / PCM / TCD / MeanFlow)** · **可训练稀疏 Attention (VSA / SLA)** · **Flash-Sparse-Attention (DiT 稀疏 attn)** · **FP8 / INT8 Attention (SageAttention / SVDQuant / Q-Diffusion)** · **Feature Caching (DeepCache / TGATE / TeaCache / FBCache)** · **CFG 跳过 / Adaptive CFG** · **FastVideo / FastWan / FastDiT 训练加速栈** · **Flash Stable Diffusion 3** · **推理稀疏 + DMD 蒸馏联合** · **FLA for Video** · **DiT 多卡并行 (sequence / model parallel)** | Diffusers · ComfyUI · xDiT · **DiffSynth-Studio (阿里魔搭)** · **FastVideo (UC Berkeley)** · **FLUX / FLUX.1 [dev/schnell/pro]** · **SD3 / SD3.5 / Flash-SD3 / SDXL** · **Wan 2.1 / Wan 2.2 / FastWan**（阿里万象，其中 Wan 2.1 用 **VSA finetune** 加速）· **HunyuanVideo / CogVideoX / Mochi / Seed-Video** · **Stable Video Diffusion** · **Qwen-Image / Qwen3-Image** | 图像 / 视频生成秒级出图（FLUX.1 [schnell] 4 步、FastVideo/FastWan 让视频生成跨入亚分钟级，**VSA/SLA + DMD 可再快 2~5×**） |
+| **Diffusion 专属加速** | 训 + 推 | **DMD2 · VSA · Flow Matching** 三个最关键 ←← · 其它：步数蒸馏家族 (DMD / LCM / SDXL-Lightning / HyperSD / PCM / TCD / MeanFlow) · SLA · Flash-Sparse-Attention · SageAttention / SVDQuant / Q-Diffusion · Feature Caching (DeepCache / TGATE / TeaCache / FBCache) · Adaptive CFG · FastVideo / FastWan 训练栈 · Flash-SD3 · "推理稀疏 + DMD 联合" · DiT 多卡并行 | **Wan 2.2 + FastWan / VSA**（阿里万象，2025 视频生成 SOTA）· **FLUX.1 [schnell/dev]**（BFL，4 步图像 SOTA）· **DiffSynth-Studio**（魔搭一站式）· 其它：Diffusers · ComfyUI · xDiT · FastVideo · SD3 / SD3.5 / Flash-SD3 · HunyuanVideo / CogVideoX / Mochi / Seed-Video · SVD · Qwen3-Image | 图像秒级出图（FLUX.1 schnell 4 步）· 视频亚分钟级（FastWan / FastVideo + VSA + DMD 组合可再快 2~5×） |
 | **RL 训练栈** | 训练 | **Fully-async PPO / GRPO / DAPO / GSPO / SAPO** · Actor-Critic 异步 · Reward model 并行 · Rollout-train 解耦 · **KL Free / Ref-model optional** · Group-relative advantage · **Step-wise advantage** | **veRL (字节)** · **AReaL (蚂蚁)** · **ROLL (阿里)** · **OpenRLHF** · **SkyRL (UC Berkeley)** · **NeMo-RL** · TRL · **verl-async** | RLHF / RLAIF / Reasoning RL (o1 式) |
 | **MoE → Dense 蒸馏** | 训练 | **Logit Distillation (Top-K vocab 截断)** · **On-Policy / Off-Policy KD** · **Rejection Sampling SFT** · **合成数据 pipeline (teacher 造数据)** · **Teacher FP8 推理加速** · **KV cache 复用** · Layer-drop · Depth / Width reduction | MiniLLM · DistillKit · DistiLLM-2 · **vLLM / SGLang 批量 rollout** · Liger-KD · **Qwen3-Distill** · **Gemma-Distill** | 大 MoE teacher → 小 dense student（Qwen3.5-MoE → Qwen3.5-8B / MiniCPM / Gemma-Small） |
 | **PEFT 微调** | 训练 | **LoRA** · **QLoRA (NF4 + LoRA)** · **DoRA (weight-decomposed)** · **PiSSA (principal singular init)** · **LoRA+ (lr 分组)** · **VeRA (shared random)** · **rsLoRA (rank stable)** · **LoftQ (量化 + 初始化)** · **Prefix / Prompt / IA³ Tuning** · **GaLore / Q-GaLore (低秩梯度)** · **AdaLoRA** · **Mixture of LoRA (MoLA)** · **LoRA hot-swap** | **PEFT (HF)** · **Unsloth** · **LLaMA-Factory** · **ms-swift** · **Axolotl** · **bitsandbytes** · **torchtune** | 消费级显卡 / 少样本微调 / 多任务适配 |
@@ -113,7 +113,8 @@ Kernel 层  ├─ Library (Flash-Attn / Liger / Apex / xFormers)
 | **端侧小模型加速** | 推 | **INT4 / NF4 / GGUF / AWQ 量化** · **CoreML / NNAPI / LiteRT 原生推理** · **KV cache INT8 / INT4** · **Distill to small dense** · **LoRA adapter 动态加载** · **NPU 调度 (Apple ANE / 高通 Hexagon / 联发科 APU)** | **llama.cpp** · **MLX (Apple)** · **MLC-LLM** · **ExecuTorch** · **TensorRT** · **ONNX Runtime** · **NCNN / MNN / Paddle Lite** · **Qwen3-0.5B / SmolLM / Phi-4-mini / Gemma-3n / Gemma-4 edge** · **SigLIP / CLIP / DINOv3** · **MobileNet v5 / EfficientNet-v2** | 手机 / 笔记本 / 嵌入式推理 |
 | **长上下文专项** | 训 + 推 | **位置外推 (YaRN / NTK / LongRoPE / SelfExtend)** · **Ring Attention / Striped Attention / BlockWise** · **Context Parallel** · **StreamingLLM (attention sink)** · **MInference / SampleAttention / Quest (稀疏 pattern)** · **KV 驱逐 (H2O / SnapKV / PyramidKV / ScissorHands)** · **KV 量化 (KIVI / KVQuant / LMCache)** · **DuoAttention / StarAttention** · **Disaggregated Prefill/Decode (Mooncake)** · **Prefix cache across requests** | **vLLM 长上下文模式** · **SGLang RadixAttention** · **Mooncake (月之暗面)** · **LMCache** · **MInference (MSR)** · **LServe** · **Qwen3-Long / Llama-3.1-405B-long / Gemini 1.5 1M / Qwen3.5-Long** | 128K~10M token 上下文训推 |
 | **系统调度** | 推 | 请求队列 · Load Balance · Autoscaling · 多模型共置 · K8s orchestration | Ray Serve · KServe · Triton Inference Server | 集群级 serving |
-| **IO / 数据侧** | 训 | webdataset · parquet/HDF5 · DALI · ffcv · Packing | NVIDIA DALI · mosaicml composer · streaming-datasets | DataLoader 瓶颈 |
+| **IO / 数据侧** | 训 | **LMDB / RocksDB** · **mmap 零拷贝加载** · **webdataset / WDS** · **parquet / HDF5** · **Packing / Token Packing / Sample Packing** · **Sequence / Doc Packing with proper mask** · **tfrecord** · DALI / ffcv 预处理 · **Streaming Dataset** | **LMDB** · **NVIDIA DALI** · **mosaicml streaming** · **HuggingFace datasets** · **torchtune packed** · **Megatron-Energon** · **webdataset / tar** · **DuckDB / Arrow** | DataLoader 瓶颈 / 超大数据集 / 长样本利用率 |
+| **批处理策略（推理）** | 推 | **Static Batching** · **Dynamic Batching** · **Continuous / In-flight Batching** · **Chunked Prefill + Decode 混批** · **Speculative Batching** · **Priority Scheduling** · **Long-short 拆批** | vLLM · SGLang · TensorRT-LLM · **Triton Inference Server (dynamic)** · Ray Serve | 吞吐 / 延迟平衡 |
 
 **怎么用这张表**：
 1. **找行**：按你的瓶颈（§二/§四）找对应大类
@@ -322,6 +323,7 @@ graph TD
 - **DMD / DMD2 (Distribution Matching Distillation)** = 扩散模型的"多步 → 几步"蒸馏，DMD2 去掉 regression loss 进一步提速。
 - **DiffSynth-Studio** = 阿里魔搭开源的 Diffusion 训练 + 推理全家桶，支持 Wan / FLUX / SD3 / HunyuanVideo 等主流模型及其步数蒸馏。
 - **DoRA (Weight-Decomposed LoRA)** = 把权重分解为方向 + 幅度，只对方向做 LoRA，效果接近全参微调。
+- **Dynamic Batching** = 推理服务中把动态到达的请求攒到一个 batch 的策略，典型 window ~10ms。与 **Continuous Batching** 的区别：Dynamic 是"攒一批才跑"；Continuous / In-flight 则是"已在跑的 batch 中途塞新请求"。
 - **DPO (Direct Preference Optimization)** = 不要 reward model 的 RLHF 替代。
 
 ### F–L
@@ -357,6 +359,7 @@ graph TD
 - **LCM (Latent Consistency Model)** = 扩散模型的步数蒸馏路线之一，4 步推理可用。
 - **Liger Kernel** = LinkedIn 为 Qwen/Llama 家族做的 fused kernel 集合。
 - **LLaMA-Factory** = 开源 LLM 微调框架，封装 SFT / DPO / PPO，国内用户多。
+- **LMDB (Lightning Memory-Mapped Database)** = 单文件、基于 mmap 的 K-V 存储，小样本大数据集（图片 / 特征）训练读写的经典方案，比海量小文件快 10~100×。
 - **LongRoPE** = 微软提出的 RoPE 长度外推方案，可扩展到 2M context。
 - **LoRA** = Low-Rank Adaptation，PEFT 主流之一。
 - **LoRA+ / rsLoRA / AdaLoRA / VeRA / LoftQ / PiSSA** = LoRA 的 2024-2025 变体族：LoRA+ 分组学习率、rsLoRA 稳定 rank、AdaLoRA 自适应 rank、VeRA 共享随机基、LoftQ 联合量化初始化、PiSSA 奇异值初始化。
@@ -370,6 +373,7 @@ graph TD
 - **M-Bridge (Megatron-Bridge)** = NVIDIA 2025 推出的 HuggingFace ↔ Megatron 格式桥接库，支持一键把 HF Transformers 模型转成 Megatron-Core 训练（省掉自己写转换脚本），主打"HF 研究员无缝享受 Megatron 训练效率"。
 - **MInference** = MSR 2024 提出的长上下文稀疏 attention pattern 选择算法，1M token 推理快 10×。
 - **MLX** = Apple 针对 M 系列 芯片的 ML 框架，支持 Unified Memory，端侧 LLM 首选之一。
+- **mmap (memory-mapped I/O)** = 操作系统把文件映射到进程虚拟地址空间，按需分页加载。大型 parquet / safetensors / LMDB 加载首选，避免一次全读入内存。
 - **Mooncake** = 月之暗面开源的 disaggregated KV cache + scheduler 方案，长上下文服务的代表性栈。
 - **MFU (Model FLOPs Utilization)** = 模型 FLOPs 与硬件峰值 FLOPs 比值。
 - **MLA (Multi-head Latent Attention)** = DeepSeek-V2/V3 提出的 attention 变体，压缩 KV 到 latent 空间，显存显著降低。
