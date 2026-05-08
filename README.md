@@ -1,6 +1,7 @@
 <!-- Blog content is generated from posts/ directory. -->
 
-- 2026-05-08 [音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio 的 2024~2026 技术栈](posts/2026-05-08-music-audio-generation-acceleration.md)
+- 2026-05-08 [机器人 VLA 训推加速：OpenVLA / π0 / RDT-1B / GR00T 的实时控制工程](posts/2026-05-08-robotic-vla-training-inference-acceleration.md)
+- 2026-05-08 [音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio ](posts/2026-05-08-music-audio-generation-acceleration.md)
 - 2026-05-08 [端侧多模态端到端加速：MiniCPM-o / Gemma 3n / Qwen3-Omni ](posts/2026-05-08-edge-multimodal-end-to-end.md)
 - 2026-05-08 [MoE 训练加速实战：DeepEP + Grouped GeMM + Aux-Loss-Free 的 Qwen3.5 配方](posts/2026-05-08-moe-training-acceleration-deepep-qwen3.md)
 - 2026-05-08 [视频 & 3D 扩散训推加速：Wan 2.2 / HunyuanVideo / VSA / Gaussian Splatting ](posts/2026-05-08-video-3d-diffusion-acceleration.md)
