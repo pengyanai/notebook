@@ -38,6 +38,56 @@ function Am(e) {
 
 ---
 
+## 零、官方文档速查
+
+动手之前先把官方给的两条路径和 schema 关键字段过一遍，后面每一节都是围绕这些展开的。详细说明请看 [Config Advanced](https://developers.openai.com/codex/config-advanced) 和 [Configuration Reference](https://developers.openai.com/codex/config-reference)。
+
+### 第三方 gateway — 官方给的两条路径
+
+**路径 1：只换 URL**（[docs 推荐最简方案](https://developers.openai.com/codex/config-advanced#config-and-state-locations)）
+
+> *"If you just need to point the built-in OpenAI provider at an LLM proxy, router, or data-residency enabled project, set `openai_base_url` in `config.toml` instead of defining a new provider."*
+
+```toml
+openai_base_url = "https://us.api.openai.com/v1"
+```
+
+对应本文[方式 A](#三方式-a只改-built-in-openai-provider-的-base-url最简)。
+
+**路径 2：自建 `[model_providers.<id>]`**（[docs: Custom model providers](https://developers.openai.com/codex/config-advanced#custom-model-providers)）
+
+```toml
+model = "gpt-5.4"
+model_provider = "proxy"
+
+[model_providers.proxy]
+name = "OpenAI using LLM proxy"
+base_url = "http://proxy.example.com"
+env_key = "OPENAI_API_KEY"
+```
+
+对应本文[方式 B](#四方式-b自定义-model_providersid完整方案)。Header / query / 动态 token 扩展见[方式 C](#五方式-c自定义-http-headers) / [方式 D](#六方式-d命令式动态-token高阶)。
+
+### 第三方模型 — 两种常用落地
+
+1. **任意 OpenAI 兼容后端**：自建 provider + `base_url` + `env_key`（DeepSeek、Moonshot、阿里百炼、第三方聚合网关等都落这类）
+2. **本地 Ollama / LM Studio**：保留 ID `ollama` / `lmstudio`，或用 `--oss` 模式 + 顶层 `oss_provider = "ollama"` 做默认
+
+### Schema 关键字段（[完整清单](https://developers.openai.com/codex/config-reference#model-providersid)）
+
+| 字段 | 默认值 | 说明 |
+|---|---|---|
+| `wire_api` | `"responses"` | 目前唯一支持的值，**可省略** |
+| `request_max_retries` | `4` | HTTP 请求重试次数 |
+| `stream_max_retries` | `5` | SSE 流中断重试次数 |
+| `stream_idle_timeout_ms` | `300000` | SSE 空闲超时（5 min）|
+| `supports_websockets` | `false` | Responses API WebSocket 传输，默认关，一般不用显式写 |
+| `requires_openai_auth` | `false` | 用 ChatGPT OAuth token 作 bearer，与 `env_key` / `auth.command` 互斥 |
+
+**保留 provider ID 有四个**：`openai`、`ollama`、`lmstudio`、`amazon-bedrock`，自建 provider 不能重名。
+
+---
+
 ## 一、重要前置：你的网关必须支持 Responses API
 
 这是 Codex 和 Claude Code 最大的差异点：
@@ -47,7 +97,7 @@ function Am(e) {
 | Claude Code | Anthropic `/v1/messages` |
 | **Codex** | **OpenAI `/v1/responses` (Responses API)** |
 
-Codex 的 `wire_api` 配置项目前**官方只支持 `responses` 一个值**，不支持 Chat Completions (`/v1/chat/completions`)。很多自建网关（如 one-api、LiteLLM 某些版本、OpenRouter 旧版）**默认只开 Chat Completions**，需要你：
+Codex 的 `wire_api` 字段默认就是 `responses`，也是[官方 schema](https://developers.openai.com/codex/config-reference#model-providersidwire_api) 目前**唯一支持的值**（早期版本有过 `chat` 分支，已移除），不支持 Chat Completions (`/v1/chat/completions`)。很多自建网关（如 one-api、LiteLLM 某些版本、OpenRouter 旧版）**默认只开 Chat Completions**，需要你：
 - 确认网关版本支持 Responses API，或
 - 在网关前加转换层（较新版 LiteLLM 支持 `/v1/responses` 适配），或
 - 升级网关
@@ -298,6 +348,80 @@ codex --profile official "..."  # 临时切回官方账号
 
 ---
 
+## 八-bis、配置文件作用域 & 官方/第三方切换
+
+在官方和第三方网关之间来回切的时候，踩坑大多不是"怎么配"，而是"切回来没切干净"。先看清每个配置文件各管什么，再挑合适的切换方式。
+
+### 1. 每个文件 / 字段的作用域
+
+| 文件 / 字段 | 管什么 | 切网关时是否要动 |
+|---|---|---|
+| `~/.codex/auth.json` | 认证：`auth_mode`（`chatgpt` OAuth 或 `apikey`）、缓存 token、`last_refresh` | 通常不用动，ChatGPT OAuth 登录后一直有效 |
+| `config.toml` 顶层 `openai_base_url` | 改 built-in `openai` provider 的 URL | 方式 A 才用，切回官方要删掉 |
+| `config.toml` `[model_providers.<id>]` | 新建一个独立 provider | 方式 B 用，切回官方不用删，留着不影响 |
+| `config.toml` 顶层 `model_provider` / `profile` | 当前默认走哪个 provider / profile | 切换时真正要动的就是这两行 |
+| `config.toml` `[shell_environment_policy]` | 子进程能看到哪些 env var | 跟 provider 无关，配一次基本不再动 |
+
+简单记：**`auth.json` 管你是谁，`config.toml` 管请求打去哪里、带什么 key**。大多数场景切回官方只要改 config.toml 的默认指针，`auth.json` 不用动。
+
+### 2. 方式 A 和方式 B 在"切回来"这件事上差很多
+
+**方式 A（`openai_base_url` + `OPENAI_API_KEY`）**：一行搞定，但你改的是 built-in `openai` 本身。切回官方必须把 `openai_base_url` 从 config 里删掉，可能还要把 `OPENAI_API_KEY` 从代理 key 改回官方 key。两套配置没法共存。
+
+**方式 B（自建 `[model_providers.bluerouter]` + `[profiles.bluerouter]`）**：新 provider 独立存在，built-in `openai` 不受影响。切回官方只改顶层 `profile`，或者 `-c model_provider="openai"` 跑一次都行。两套配置可以长期放在同一份 config 里。
+
+一句话：只试一下某个网关就删，方式 A 够了；要长期来回切，直接上方式 B。
+
+### 3. 三种切法怎么选
+
+**Profile 切换** —— 首选
+
+```bash
+codex --profile bluerouter "..."
+codex --profile official "..."
+```
+
+两边都稳定了之后的日常切换用这个，不改任何文件。
+
+**`-c` 一次性覆盖** —— 临时
+
+```bash
+codex -c 'model_provider="openai"' "just this one turn"
+```
+
+只想这一次走别的 provider，不想写 profile，也不想改文件。
+
+**文件级备份替换** —— 兜底
+
+方式 A 配乱了想回滚，或者改出一份不知道坏在哪的 config 想回到已知好的快照，才用这个。日常切换不用这个方式。
+
+要存 bak 的话，起个能看懂的名字：
+
+```bash
+# 看得懂
+config.toml.bluecode_20260509-112045
+config.toml.official_20260324-101200
+
+# 半年后自己都猜不出
+config.toml.bak
+config.toml.bak-1778125474
+```
+
+写成 shell 函数省事：
+
+```bash
+codex-snap() { cp -p ~/.codex/config.toml ~/.codex/config.toml.${1:-snap}_$(date +%Y%m%d-%H%M%S); }
+codex-snap bluecode    # → config.toml.bluecode_20260509-112045
+```
+
+### 4. 几个常见踩法
+
+- 切回官方时去 `codex login`。其实 `auth.json` 里的 OAuth token 一直有效，问题在 `config.toml` 指针。
+- 方式 A 下 `OPENAI_API_KEY` 被换成代理 key，切回官方忘了改回来，下次跑直接 401（见坑 2.1）。
+- 顶层默认写死 `profile = "bluerouter"`，以为 `--profile official` 能盖住就行。能盖住，但忘了带 `--profile` 就默默走回第三方。建议顶层不设 `profile`，每次显式传，或者在 shell 里准备两个 alias。
+
+---
+
 ## 九、单次一次性覆盖：`-c/--config`
 
 临时拿别的网关或别的 key 跑一次，不想写 profile：
@@ -374,14 +498,13 @@ unexpected status 401 Unauthorized: {"error":"invalid api key"}, url: http://127
 如果你把 provider 临时切成 `openai`，但只设置了 `BLUEROUTER_API_KEY`，就会稳定 401。  
 实战建议：要么保持自定义 provider；要么确保 `OPENAI_API_KEY` 也同步注入。
 
-### 坑 2.2：`supports_websockets` 没关导致重连抖动
+### 坑 2.2：`supports_websockets` 被显式打开导致重连抖动
 
-很多本地网关只兼容 HTTP/SSE，不兼容 Responses WebSocket。实测建议在自定义 provider 明确设置：
+`supports_websockets` 默认就是 `false`（见 [schema](https://developers.openai.com/codex/config-reference#model-providersidsupports_websockets)），通常不用写这行。如果你之前为了某个云厂商把它打开过，而当前网关只兼容 HTTP/SSE，会触发反复升级失败。显式关掉或删除这一行即可：
 
 ```toml
 [model_providers.bluerouter]
-supports_websockets = false
-wire_api = "responses"
+supports_websockets = false   # 其实默认就是 false，留这行只为可读性
 ```
 
 ### 坑 3：SSE 流式响应卡住
@@ -398,9 +521,9 @@ stream_idle_timeout_ms = 900000   # 15 min
 stream_max_retries = 10
 ```
 
-### 坑 4：内置 `openai` / `ollama` / `lmstudio` 这三个 provider ID 改不了
+### 坑 4：内置 `openai` / `ollama` / `lmstudio` 这几个 provider ID 改不了
 
-官方写死的，改了 Codex 会忽略。想改 built-in openai 的 URL 走 `openai_base_url` 顶层键，不要建 `[model_providers.openai]`。
+官方写死的保留 ID（见 [docs](https://developers.openai.com/codex/config-advanced#custom-model-providers)：*"Custom providers can't reuse the reserved built-in provider IDs"*），自建 provider 重名会被忽略。想改 built-in openai 的 URL 走 `openai_base_url` 顶层键，不要建 `[model_providers.openai]`。
 
 ### 坑 4.1：Codex App 的模型下拉不是“后端返回啥就显示啥”
 
