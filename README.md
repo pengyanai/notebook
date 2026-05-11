@@ -1,5 +1,14 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-05-10 [Tailscale 接家里 NAS 踩坑全记录：SSH 免密 / DERP / NAT 打洞 / Peer Relay](posts/2026-05-10-tailscale-synology-nas-real-world.md)
+- 2026-05-10 [家庭 NAS 翻墙实战：GFW 连通性审计 + mihomo 分层代理](posts/2026-05-10-synology-nas-gfw-audit-mihomo.md)
+- 2026-05-10 [家用 NAS 从裸奔到合规：12 项风险的完整审计与加固](posts/2026-05-10-synology-nas-security-hardening.md)
+- 2026-05-10 [一次重启引发的血案：SATA 瞬断如何拖垮 RAID / scemd / synopkg](posts/2026-05-10-synology-nas-reboot-drill.md)
+- 2026-05-10 [RAID (E) 标记与 volume2 只读：一次 SATA 物理层雪崩的复盘](posts/2026-05-10-synology-nas-pool2-recovery.md)
+- 2026-05-10 [给 NAS 做一次"体检"：Btrfs 压缩、scrub 排程与 SSD 缓存审计](posts/2026-05-10-synology-nas-storage-optimization.md)
+- 2026-05-10 [家用 NAS 进阶路线图：Python API + Docker 生态 + 自托管清单](posts/2026-05-10-synology-nas-advanced-exploration.md)
+- 2026-05-10 [Cloud Sync 静默丢文件：一个 NFD/NFC 编码踩出的坑](posts/2026-05-10-synology-nas-nfd-cloud-sync.md)
+- 2026-05-10 [Docker 镜像加速站 2026 实测：14 站还剩几家能用？](posts/2026-05-10-docker-registry-mirrors-china.md)
 - 2026-05-08 [Tailscale VPS Exit Node 实战：自定义 UDP 端口 + UDP GRO 调优 + DNS 防泄漏](posts/2026-05-08-tailscale-vps-exit-node-custom-port.md)
 - 2026-05-08 [Moonshot Kimi 系列技术洞察：从 K1.5 到 K2.6 的架构、优化器、训推工程](posts/2026-05-08-kimi-moonshot-technical-insights-wip.md)
 - 2026-05-08 [水印消除 / 图像编辑模型训练加速：Inpainting / Instruct-Edit / Flux Fill 的 2024~2026 栈](posts/2026-05-08-watermark-removal-image-editing-acceleration.md)
