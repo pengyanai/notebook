@@ -551,6 +551,121 @@ logingracetime 120
 
 ---
 
+## 给 "信用免费额度耗尽" 装一道物理开关：Budget Action 自动 stop EC2
+
+很多人用的 AWS 账户带 $100 / $300 免费额度，180 天后过期。这段时间里最大的风险不是 credit 用完，而是**某天半夜流量爆了**（trojan 被当出口、tailscale 跑大带宽、或单纯 DDoS）——等你早上睁眼打开邮件，账单已经两位数美金了。
+
+两种防线：
+
+**① 告警：Budget 通知**（被动）
+```bash
+ACCT=$(aws sts get-caller-identity --query Account --output text)
+
+# 删掉账户上所有旧 budgets，避免噪音
+for B in $(aws budgets describe-budgets --account-id $ACCT --query 'Budgets[].BudgetName' --output text); do
+  aws budgets delete-budget --account-id $ACCT --budget-name "$B"
+done
+
+cat > /tmp/budget.json <<'EOF'
+{
+  "BudgetName": "credit-5usd-left",
+  "BudgetLimit": {"Amount": "95", "Unit": "USD"},
+  "BudgetType": "COST",
+  "TimeUnit": "ANNUALLY",
+  "TimePeriod": {"Start": "2026-05-12T00:00:00Z", "End": "2026-11-30T23:59:59Z"},
+  "CostTypes": {"IncludeCredit": false, "IncludeTax": true, "UseBlended": false}
+}
+EOF
+
+cat > /tmp/notifs.json <<'EOF'
+[{
+  "Notification": {
+    "NotificationType": "ACTUAL",
+    "ComparisonOperator": "GREATER_THAN",
+    "Threshold": 100.0,
+    "ThresholdType": "PERCENTAGE"
+  },
+  "Subscribers": [{"SubscriptionType": "EMAIL", "Address": "you@example.com"}]
+}]
+EOF
+
+aws budgets create-budget --account-id $ACCT \
+  --budget file:///tmp/budget.json \
+  --notifications-with-subscribers file:///tmp/notifs.json
+```
+
+关键：`IncludeCredit: false` —— 这样 budget 追踪的是"如果没有 credit 原本会被计费的金额"，到 $95 时意味着 credit 实际消耗了 $95，剩余 $5。如果开了 `IncludeCredit: true`，因为 credit 在 cover 费用，你永远看不到 actual spend 涨上来，等 credit 用完突然一下子爆。
+
+**② 物理开关：Budget Action 自动 stop EC2**（主动）
+
+Budget 通知只会给你发邮件。真正让你睡得着的是 **Budget Action** —— AWS 在阈值触发时**代你执行一个预设动作**：
+
+```bash
+# IAM role that AWS Budgets service will assume
+cat > /tmp/trust.json <<'EOF'
+{"Version":"2012-10-17","Statement":[{"Effect":"Allow",
+  "Principal":{"Service":"budgets.amazonaws.com"},
+  "Action":"sts:AssumeRole"}]}
+EOF
+
+cat > /tmp/perm.json <<'EOF'
+{"Version":"2012-10-17","Statement":[{
+  "Effect":"Allow",
+  "Action":["ec2:StopInstances","ec2:DescribeInstances","ec2:DescribeInstanceStatus",
+            "ssm:StartAutomationExecution","ssm:GetAutomationExecution"],
+  "Resource":"*"
+}]}
+EOF
+
+aws iam create-role --role-name BudgetsStopEC2Role \
+  --assume-role-policy-document file:///tmp/trust.json
+aws iam put-role-policy --role-name BudgetsStopEC2Role \
+  --policy-name StopEC2 --policy-document file:///tmp/perm.json
+sleep 10    # wait IAM propagation
+
+cat > /tmp/action.json <<'EOF'
+{
+  "AccountId": "123456789012",
+  "BudgetName": "credit-5usd-left",
+  "NotificationType": "ACTUAL",
+  "ActionType": "RUN_SSM_DOCUMENTS",
+  "ActionThreshold": {"ActionThresholdValue": 100.0, "ActionThresholdType": "PERCENTAGE"},
+  "Definition": {
+    "SsmActionDefinition": {
+      "ActionSubType": "STOP_EC2_INSTANCES",
+      "Region": "ap-southeast-1",
+      "InstanceIds": ["i-xxxxxxxxxxxxxxxxx"]
+    }
+  },
+  "ExecutionRoleArn": "arn:aws:iam::123456789012:role/BudgetsStopEC2Role",
+  "ApprovalModel": "AUTOMATIC",
+  "Subscribers": [{"SubscriptionType":"EMAIL","Address":"you@example.com"}]
+}
+EOF
+
+aws budgets create-budget-action --cli-input-json file:///tmp/action.json
+```
+
+注意：
+
+- `ActionSubType: STOP_EC2_INSTANCES` 用的是 AWS 托管的 SSM Automation document（`AWS-StopEC2Instance`），**不需要 instance 上装 ssm-agent**，只是调用 EC2 API
+- `ApprovalModel: AUTOMATIC` —— 不用人工点确认。如果你想要二次确认，改成 `MANUAL`，邮件里会给一个链接
+- 阈值触发后 Action 状态从 `STANDBY` → `PENDING` → `EXECUTED`。Action 只会触发一次，之后要手动 reset
+- 这个 Action 的副作用：实例 stop 后，trojan 和 tailscale 都下线。所以它是"最后一道物理开关"，不是日常 throttling 工具
+
+### 为什么不是"摘信用卡"
+
+我最开始的直觉是：既然 credit 用完会开始扣卡，那直接把卡摘了不就行了？**错**。AWS 的风控是：
+
+1. 账单到期扣不到卡 → "past due" 状态
+2. 催收邮件 30-60 天
+3. 期间**服务不会立刻 stop**，费用继续累积
+4. 最终 suspend + collection → 国际卡有上征信的风险
+
+真正干净的做法是上面这个 Budget Action —— **让费用根本产生不出来**，而不是"产生了之后扣不到钱"。
+
+---
+
 ## 事后清单（下次同类操作前过一遍）
 
 - [ ] 确认源实例 IP 是否有业务依赖（DNS / 客户端配置 / 防火墙白名单）
