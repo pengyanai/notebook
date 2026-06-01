@@ -1,5 +1,6 @@
 <!-- Blog content is generated from posts/ directory. -->
 
+- 2026-06-01 [普通人如何用好 Claude 协作办公：开发环境优化实战](posts/2026-06-01-claude-as-dev-environment-optimizer.md)
 - 2026-05-12 [跨区迁移 EC2 + 一条命令把自己 SSH 踢出门：Ubuntu 24.04 socket activation 踩坑全程](posts/2026-05-12-ec2-cross-region-migration-ssh-self-lockout.md)
 - 2026-05-10 [Tailscale 接家里 NAS 踩坑全记录：SSH 免密 / DERP / NAT 打洞 / Peer Relay](posts/2026-05-10-tailscale-synology-nas-real-world.md)
 - 2026-05-10 [家庭 NAS 翻墙实战：GFW 连通性审计 + mihomo 分层代理](posts/2026-05-10-synology-nas-gfw-audit-mihomo.md)
