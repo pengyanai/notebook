@@ -147,7 +147,65 @@
           script.async = true;
           script.crossOrigin = 'anonymous';
           script.onload = function() {
-            mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+            mermaid.initialize({
+              startOnLoad: false,
+              theme: 'base',
+              themeVariables: {
+                // Core palette — Material Blue + Purple + Green
+                primaryColor: '#e3f2fd',
+                primaryTextColor: '#1565c0',
+                primaryBorderColor: '#42a5f5',
+                secondaryColor: '#f3e5f5',
+                secondaryTextColor: '#6a1b9a',
+                secondaryBorderColor: '#ab47bc',
+                tertiaryColor: '#e8f5e9',
+                tertiaryTextColor: '#2e7d32',
+                tertiaryBorderColor: '#66bb6a',
+                // Lines and labels
+                lineColor: '#546e7a',
+                textColor: '#37474f',
+                // Flowchart
+                mainBkg: '#e3f2fd',
+                nodeBorder: '#42a5f5',
+                clusterBkg: '#fafafa',
+                clusterBorder: '#b0bec5',
+                // Sequence diagram
+                actorBkg: '#e3f2fd',
+                actorBorder: '#42a5f5',
+                actorTextColor: '#1565c0',
+                actorLineColor: '#78909c',
+                signalColor: '#37474f',
+                signalTextColor: '#263238',
+                activationBkgColor: '#bbdefb',
+                activationBorderColor: '#42a5f5',
+                sequenceNumberColor: '#ffffff',
+                // Gantt chart
+                sectionBkgColor: '#e3f2fd',
+                altSectionBkgColor: '#f3e5f5',
+                sectionBkgColor2: '#e8f5e9',
+                taskBkgColor: '#42a5f5',
+                taskTextColor: '#ffffff',
+                taskTextLightColor: '#ffffff',
+                taskBorderColor: '#1e88e5',
+                doneTaskBkgColor: '#66bb6a',
+                doneTaskBorderColor: '#43a047',
+                activeTaskBkgColor: '#ab47bc',
+                activeTaskBorderColor: '#8e24aa',
+                gridColor: '#cfd8dc',
+                todayLineColor: '#ef5350',
+                // Quadrant chart
+                quadrant1Fill: '#e8f5e9',
+                quadrant2Fill: '#fff8e1',
+                quadrant3Fill: '#fbe9e7',
+                quadrant4Fill: '#f3e5f5',
+                quadrant1TextFill: '#2e7d32',
+                quadrant2TextFill: '#f57f17',
+                quadrant3TextFill: '#d84315',
+                quadrant4TextFill: '#6a1b9a',
+                quadrantPointFill: '#1e88e5',
+                quadrantPointTextFill: '#1a237e'
+              }
+            });
             document.querySelectorAll('pre code.language-mermaid').forEach(function(code) {
               var pre = code.closest('pre');
               var div = document.createElement('div');
