@@ -36,6 +36,7 @@ exclude:
   - run.py
   - scripts
   - .github
+  - vendor
 
 # Custom settings
 show_excerpts: false
