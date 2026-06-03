@@ -1,5 +1,8 @@
 image: ruby:3.2
 
+stages:
+  - deploy
+
 variables:
   JEKYLL_ENV: production
   BUNDLE_PATH: vendor
@@ -12,6 +15,7 @@ before_script:
   - bundle install
 
 pages:
+  stage: deploy
   tags:
     - docker
   script:
