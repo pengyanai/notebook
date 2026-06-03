@@ -1,0 +1,23 @@
+image: ruby:3.2
+
+variables:
+  JEKYLL_ENV: production
+  BUNDLE_PATH: vendor
+
+cache:
+  paths:
+    - vendor/
+
+before_script:
+  - bundle install
+
+pages:
+  tags:
+    - docker
+  script:
+    - JEKYLL_ENV=production bundle exec jekyll build -d public --baseurl "/notebook"
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
