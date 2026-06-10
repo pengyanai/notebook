@@ -61,81 +61,25 @@
       </div>
     </main>
 
-    {%- comment -%} MathJax for math formula rendering - conditionally loaded only when math detected {%- endcomment -%}
+    {%- comment -%} MathJax for math formula rendering {%- endcomment -%}
     <script>
-      (function() {
-        function loadMathJax() {
-          // Configure MathJax before loading
-          window.MathJax = {
-            tex: {
-              inlineMath: [['$', '$'], ['\\(', '\\)']],
-              displayMath: [['$$', '$$'], ['\\[', '\\]']],
-              processEscapes: true,
-              processEnvironments: true
-            },
-            options: {
-              skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-              ignoreHtmlClass: 'tex2jax_ignore',
-              processHtmlClass: 'tex2jax_process'
-            },
-            chtml: {
-              fontURL: '{{ site.cdn.mathjax_fonts }}',
-              adaptiveCSS: true,
-              matchFontHeight: true,
-              mtextInheritFont: true,
-              merrorInheritFont: true
-            },
-            startup: {
-              typeset: false,
-              ready: function() {
-                MathJax.startup.defaultReady();
-                MathJax.typesetPromise();
-              }
-            }
-          };
-
-          // Load MathJax script
-          var script = document.createElement('script');
-          script.id = 'MathJax-script';
-          script.src = '{{ site.cdn.mathjax }}';
-          script.async = true;
-          script.crossOrigin = 'anonymous';
-          document.head.appendChild(script);
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        chtml: {
+          fontURL: '{{ site.cdn.mathjax_fonts }}',
+          adaptiveCSS: true,
+          matchFontHeight: true
         }
-
-        // Detect if page contains math formulas (inline $...$ or display $$...$$)
-        function hasMathFormulas() {
-          // Check post content area first (more reliable)
-          var postContent = document.querySelector('.post-content');
-          var content = postContent ? postContent.textContent || postContent.innerText : '';
-          
-          // Fallback to body content if no post-content found
-          if (!content) {
-            content = document.body.textContent || document.body.innerText || '';
-          }
-          
-          // Check for inline math: $...$ (but not $$ which is display math)
-          var hasInlineMath = /[^$]\$[^$]/.test(content) || /\\\(/.test(content);
-          // Check for display math: $$...$$ or \[...\]
-          var hasDisplayMath = /\$\$[\s\S]*?\$\$/.test(content) || /\\\[/.test(content);
-          return hasInlineMath || hasDisplayMath;
-        }
-
-        // Wait for DOM to be ready before checking
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', function() {
-            if (hasMathFormulas()) {
-              loadMathJax();
-            }
-          });
-        } else {
-          // DOM already loaded
-          if (hasMathFormulas()) {
-            loadMathJax();
-          }
-        }
-      })();
+      };
     </script>
+    <script id="MathJax-script" async src="{{ site.cdn.mathjax }}"></script>
 
     {%- comment -%} Mermaid.js for flowchart, sequence diagram, etc. - lazy loaded {%- endcomment -%}
     <script>

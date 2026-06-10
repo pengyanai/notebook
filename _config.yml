@@ -24,11 +24,9 @@ incremental: false  # Do NOT enable — prevents detection of new files in _post
 encoding: utf-8
 
 # --- Kramdown ---
+# No math_engine — let MathJax process $$...$$ directly in the browser
+# kramdown's "mathjax" engine converts $$ to \[ which breaks MathJax 3 rendering
 kramdown:
-  math_engine: mathjax
-  math_engine_opts:
-    preview: true
-    preview_as_code: false
   parse_block_html: true
   parse_span_html: true
   syntax_highlighter: rouge
