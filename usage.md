@@ -1,137 +1,102 @@
-# Blog framework usage
+# Developer Reference
 
-Jekyll blog with client-side search, Mermaid diagrams, and MathJax support. Posts are standard `_posts/YYYY-MM-DD-slug.md` files — the homepage list auto-generates from `site.posts`.
-
----
-
-## Prerequisites
-
-- **Ruby** + Bundler: `bundle install`
-- **Python 3**: for `run.py` scripts
-- **GitHub CLI** (`gh`): only for `run.py generate` (fetch issues)
+Detailed technical docs for this Jekyll blog. For project overview, see [README.md](README.md).
 
 ---
 
-## Project tree
+## Project structure
 
 ```
-.
-├── _config.yml              # Jekyll config
-├── _includes/
-│   ├── head.html            # <head> with preload hints
-│   ├── header.html          # Navbar + search trigger + mobile menu
-│   └── search-modal.html    # Client-side search (Fuse.js)
-├── _layouts/
-│   ├── default.html         # Base layout (MathJax + Mermaid + progress bar)
-│   └── post.html            # Article layout (title + meta + Schema.org)
-├── _posts/                  # Blog posts (YYYY-MM-DD-slug.md)
-├── assets/
-│   ├── css/style.scss       # All styles (shadcn/ui tokens)
-│   ├── images/              # Post images
-│   └── scripts/             # Supplementary scripts (e.g. NAS tools)
-├── scripts/                 # Python build helpers
-│   ├── generate.py          # Fetch issues → write posts (CI only)
-│   └── add_image_attrs.py   # Add lazy loading to _site/ images
-├── index.html               # Homepage — renders post list from site.posts
-├── search.json              # Search index template (Liquid)
-├── run.py                   # CLI entry for scripts/
-├── README.md                # Project description (GitHub display only)
-├── .gitlab-ci.yml           # GitLab Pages deploy
-└── .github/workflows/       # GitHub Pages deploy + issue-driven PR
+_config.yml               ← All config (single source of truth)
+_data/navigation.yml      ← Nav links (data-driven)
+_includes/                ← head.html, header.html, search-modal.html
+_layouts/                 ← default.html, post.html
+_posts/                   ← Articles (YYYY-MM-DD-slug.md)
+assets/css/style.scss     ← Styles (shadcn/ui tokens)
+search.json               ← Search index template (Liquid)
+scripts/                  ← generate.py, add_image_attrs.py
+run.py                    ← CLI entry for scripts/
 ```
+
+---
+
+## Key configuration (_config.yml)
+
+| Section | Purpose |
+|---------|---------|
+| `cdn:` | CDN URLs for MathJax, Mermaid, Fuse.js — referenced by templates as `site.cdn.xxx` |
+| `features:` | Feature flags — `site.features.xxx` for conditional loading |
+| `defaults:` | Auto-applied to all posts (layout, author, reading_progress) |
+| `permalink:` | URL structure: `/:year/:month/:day/:slug:output_ext` |
+
+---
+
+## Navigation
+
+Edit `_data/navigation.yml` to add/remove nav links. Active state auto-applied via `page.url` comparison.
+
+---
+
+## Writing posts
+
+Add `YYYY-MM-DD-slug.md` to `_posts/`:
+
+```yaml
+---
+title: "Your Title"
+date: 2026-06-10
+categories: [深度学习]
+tags: [tag1, tag2]
+mermaid: true    # lazy-load Mermaid
+---
+```
+
+`layout: post` and `author: Austin` are auto-applied via `defaults:` — no need to specify.
+
+Internal links use permalink format: `[text](/2026/06/10/slug.html)`
 
 ---
 
 ## Local dev
 
 ```bash
-# Install deps
 bundle install
-
-# Serve with live reload (macOS needs --force_polling for new file detection)
-bundle exec jekyll serve --watch --force_polling
-
-# Access at http://localhost:4000
+bundle exec jekyll serve --watch --force_polling   # macOS needs --force_polling
 ```
 
 ---
 
-## Write a post
-
-Create `_posts/YYYY-MM-DD-slug.md`:
-
-```yaml
----
-layout: post
-title: "Your Title"
-date: 2026-06-10
-author: Austin
-categories: [深度学习, 工具]
-tags: [tag1, tag2]
-mermaid: true    # enable Mermaid diagrams
----
-
-Your content here.
-```
-
-The homepage list updates automatically — no manual index maintenance.
-
----
-
-## Run a full rebuild
+## Build & deploy
 
 ```bash
-# Kill old server
-lsof -ti:4000 | xargs kill -9
+# Clean rebuild
+rm -rf _site .sass-cache && bundle exec jekyll build
 
-# Clean build
-rm -rf _site .sass-cache
-bundle exec jekyll build
-
-# Optional: optimize images
+# Post-process images (CI does this)
 python3 run.py add-image-attrs
-
-# Restart
-bundle exec jekyll serve --watch --force_polling
 ```
+
+**CI**: GitLab (`.gitlab-ci.yml`) and GitHub (`.github/workflows/`) both build on push to `main`.
 
 ---
 
-## run.py commands
+## Scripts (run.py)
 
 | Command | Description |
 |---------|-------------|
-| `generate` | Fetch GitHub issues with label `blog`, write `_posts/*.md`. CI only. |
+| `generate` | Fetch GitHub Issues with label `blog` → write `_posts/*.md`. CI only. |
 | `add-image-attrs` | Add `loading="lazy"` to `<img>` in `_site/`. Run after build. |
 
 ---
 
-## CI/CD
+## Features
 
-- **GitHub**: `deploy.yml` — on push to main, build → add-image-attrs → deploy to GitHub Pages
-- **GitLab**: `.gitlab-ci.yml` — on push to main, `jekyll build --baseurl "/notebook"` → deploy to GitLab Pages
-- **Issue-driven**: `main.yml` — on issue events, `run.py generate` → open PR
-
----
-
-## Search
-
-Client-side search powered by Fuse.js. Index is built from `search.json` (Liquid template). Eagerly preloaded during idle time — opens instantly.
-
----
-
-## RSS / Atom Feed
-
-Auto-generated by `jekyll-feed` at `/feed.xml`. Auto-discovery `<link>` tag is in `<head>` — RSS readers will detect it automatically.
-
----
-
-## Sitemap
-
-Auto-generated by `jekyll-sitemap` at `/sitemap.xml`. Referenced in `robots.txt`.
-
----
-
-## Mermaid + MathJax
-
-Both are lazy-loaded only when the page contains diagrams (`pre code.language-mermaid`) or math formulas (`$...$` / `$$...$$`). No configuration needed — just use standard markdown.
+| Feature | How it works |
+|---------|-------------|
+| **Search** | Fuse.js client-side search. Index from `search.json`. Eagerly preloaded. |
+| **RSS** | `/feed.xml` (Atom) via `jekyll-feed`. Auto-discovery in `<head>`. |
+| **Sitemap** | `/sitemap.xml` via `jekyll-sitemap`. Referenced in `robots.txt`. |
+| **MathJax** | Lazy-loaded when `$...$` or `$$...$$` detected. |
+| **Mermaid** | Lazy-loaded when `pre code.language-mermaid` detected. HF color theme. |
+| **Reading progress** | Top bar progress indicator on article pages. |
+| **SEO** | `jekyll-seo-tag` generates meta tags. |

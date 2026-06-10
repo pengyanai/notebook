@@ -67,7 +67,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
-  - intro.md
   - usage.md
 
 # --- Include (force processing) ---
