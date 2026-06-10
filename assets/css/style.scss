@@ -1385,21 +1385,14 @@ a:hover {
   overflow-x: auto;
   text-align: center;
   padding: 1.5rem;
-  background: #fafafa;
-  border: 1px solid #e5e5e5;
-  border-radius: 0.5rem;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .post-content .mermaid svg {
   max-width: 100%;
   height: auto;
-}
-
-@media (prefers-color-scheme: dark) {
-  .post-content .mermaid {
-    background: hsl(0, 0%, 7%);
-    border-color: hsl(0, 0%, 18%);
-  }
 }
 
 /* --- Dark mode: sticky header background --- */
