@@ -69,6 +69,24 @@
     });
   }
 
+  // Eagerly load search index during idle time (no first-search latency)
+  function eagerLoad() {
+    if (index && fuse) return;
+    Promise.all([
+      loadFuseJS(),
+      fetch('{{ "/search.json" | relative_url }}').then(function(r) { return r.json(); })
+    ]).then(function(results) {
+      index = results[1];
+      return processSearchData(index);
+    }).catch(function() {});
+  }
+
+  if (window.requestIdleCallback) {
+    requestIdleCallback(eagerLoad, { timeout: 5000 });
+  } else {
+    setTimeout(eagerLoad, 2000);
+  }
+
   function processSearchData(data) {
     // Use requestIdleCallback or setTimeout to avoid blocking main thread
     return new Promise(function(resolve) {
@@ -800,6 +818,21 @@
     if (e.target.classList.contains('search-result-item')) {
       closeSearch();
     }
+  });
+
+  // Prefetch target page on hover (eliminates navigation delay)
+  var prefetchCache = {};
+  resultsEl.addEventListener('mouseover', function(e) {
+    var item = e.target.closest ? e.target.closest('.search-result-item') : null;
+    if (!item) return;
+    var href = item.getAttribute('href');
+    if (!href || prefetchCache[href]) return;
+    prefetchCache[href] = true;
+    var link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = href;
+    link.as = 'document';
+    document.head.appendChild(link);
   });
 })();
 </script>
