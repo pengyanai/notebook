@@ -1,144 +1,35 @@
-<!-- Blog content is generated from posts/ directory. -->
+# Joseph's Notebook
 
-- 2026-06-10 [不写一行代码，用 AI Agent 10 分钟搭建你的私人搜索引擎](_posts/2026-06-10-non-coder-deploy-private-search-with-ai-agent.md)
-- 2026-06-10 [自部署 SearXNG 私有元搜索引擎：从零到 JSON API 可用的完整实战](_posts/2026-06-10-searxng-private-metasearch-deploy.md)
-- 2026-06-10 [Vocab 100K 吃掉模型 10% 参数：一个 Tokenizer 决策如何锁死后续所有训练](_posts/2026-06-10-tokenizer-vocab-design-tradeoffs.md)
-- 2026-06-10 [up_proj 和 gated_proj 共享权重减 50% FFN 参数：16 个验证集全部退化的干净失败](_posts/2026-06-10-mglu-shared-weight-negative-result.md)
-- 2026-06-10 [Token Superposition Training：2.5x 预训练加速但重新初始化 embedding 就翻车](_posts/2026-06-10-tst-token-superposition-training-speedup.md)
-- 2026-06-10 [上线才发现的坑：Token Budget 设计、Function Calling 格式战争与 Proxy Metric 翻车](_posts/2026-06-10-llm-engineering-pitfalls-awareness.md)
-- 2026-06-10 [T=6 涨了 0.029、加入更多教师反而掉了 0.985：多教师蒸馏的温度工程与 Budget Dilution](_posts/2026-06-10-mopd-multi-teacher-distillation-temperature.md)
-- 2026-06-10 [SwiftKV 12 层 loss 最低但选了 16 层：端侧首词提速 35% 的工程决策](_posts/2026-06-10-swiftkv-layer-count-device-speed.md)
-- 2026-06-10 [SWA128 Loss 更低但评测掉了 2.3%：Sliding Window + Gated Attention 的反直觉实验](_posts/2026-06-10-swa-gated-attention-loss-vs-downstream.md)
-- 2026-06-10 [SWA + Gated Attention loss 降了 0.013：从一个 3B 模型实验看 Attention 演化的工程选择](_posts/2026-06-10-attention-mechanism-engineering-perspective.md)
-- 2026-06-10 [seq_len 从 4K 推到 16K、CP=2 一开就慢了 20%：Ulysses Context Parallelism 的工程取舍全记录](_posts/2026-06-10-ulysses-context-parallelism-long-training.md)
-- 2026-06-10 [Router 梯度和 Expert 梯度分开裁剪，Loss Spike 频率降了 80%：MuonClip 的 MoE 优化器视角](_posts/2026-06-10-muonclip-moe-optimizer-loss-spike.md)
-- 2026-06-10 [RMSNorm scalar 漂移到 56 训练 Loss 却不动：Softmax 的量化照妖镜与温度调控术](_posts/2026-06-10-softmax-temperature-numerical-stability.md)
-- 2026-06-10 [RMSNorm 后的 Layer Scalar 漂移到 56 但训练 Loss 纹丝不动：Adam 优化器的隐形 Bug](_posts/2026-06-10-layer-scalar-adam-drift-quantization.md)
-- 2026-06-10 [multi_doc_qa 从 0.086 涨到 0.200：SWA + LowRank Gated + Hybrid RoPE 的长文配方](_posts/2026-06-10-swa-lowrank-gated-hybrid-rope-longcontext.md)
-- 2026-06-10 [MTP 白送 1.8x 加速、接受率还能当质量探针：从辅助 Loss 到推理加速的意外收获](_posts/2026-06-10-decoding-strategies-serving-tradeoffs.md)
-- 2026-06-10 [MoE 做 RL 训练时 Routing 决策飘了：零成本 Replay 方案消除精度不一致](_posts/2026-06-10-moe-rl-routing-replay-r3.md)
-- 2026-06-10 [Loss Spike 频率降了 80%：从 Adam 到 MuonClip，万亿参数 MoE 的优化器进化实战](_posts/2026-06-10-muon-optimizer-beyond-adam.md)
-- 2026-06-10 [Layer Scalar 漂到 56 但 Bias 安然无恙：一个具体数字推导为什么 Bias 不需要 Weight Decay](_posts/2026-06-10-bias-weight-decay-mathematical-proof.md)
-- 2026-06-10 [KV Cache 砍 90%、推理提速 7x：六个正交架构创新如何叠加生效](_posts/2026-06-10-llm-architecture-design-taste.md)
-- 2026-06-10 [KV Cache 共享后文本榜单掉了 1.9%：SwiftKV 从预训练到 RL 恢复的完整工程叙事](_posts/2026-06-10-swiftkv-kv-cache-cross-layer-prediction.md)
-- 2026-06-10 [KV Cache 共享让文本榜单掉了 1.9%，但 RL 四轮迭代后反超 baseline 1.4%：架构退化的 RL 补偿机制](_posts/2026-06-10-swiftkv-rl-recovery-lifecycle.md)
-- 2026-06-10 [GRPO 训了 3 天模型反而不调工具了：Tool Use RL 的 Interaction Collapse 与六个结构性修复](_posts/2026-06-10-rl-tool-use-interaction-collapse.md)
-- 2026-06-10 [Grad-norm 一直 0.21 突然飙到 50：从真实训练日志看梯度工程的六个生死细节](_posts/2026-06-10-gradient-engineering-training-stability.md)
-- 2026-06-10 [Embedding 占了模型 10% 参数却只做查表：从 tie-embeddings=yes 到 PLE 的工程演化](_posts/2026-06-10-embedding-lm-head-weight-tying.md)
-- 2026-06-10 [dP=64→128 参数翻倍 Loss 纹丝不动：PLE 参数扩展的"死区"现象与激活阈值](_posts/2026-06-10-ple-parameter-scaling-dead-zone.md)
-- 2026-06-10 [CoLA 放在 up_proj 收敛快 2.3 倍：FFN 内部低秩最优落点的定位实验](_posts/2026-06-10-cola-ffn-location-up-vs-down-proj.md)
-- 2026-06-10 [CoLA 论文说参数减 45% 不掉点，我们的 3B 实验说 6.85T tokens 才能追平](_posts/2026-06-10-cola-low-rank-ffn-negative-result.md)
-- 2026-06-10 [Attention Residual 拿了 0.025 loss 收益但 PyTorch 慢了 90%：Triton Kernel 两版迭代压到 14%](_posts/2026-06-10-block-attention-residual-triton-kernel.md)
-- 2026-06-10 [Activation Recomputation 不是免费午餐：recompute 24 层 vs 16 层导致 loss 显著偏高](_posts/2026-06-10-activation-recomputation-not-free-lunch.md)
-- 2026-06-10 [81% Sparsity 只掉 0.48 分却快了 7 倍：从 Flash Attention 到训练时稀疏的 IO-Aware 全景](_posts/2026-06-10-sparse-attention-flash-decoding-io-aware.md)
-- 2026-06-10 [7B 模型重复 8 次只保留 25% 有效信息：大模型比小模型对数据重复更敏感](_posts/2026-06-10-infolaw-repetition-model-size-sensitivity.md)
-- 2026-06-10 [512 Expert 里 80% 是死的：从 MuonClip 到 Expert Upcycling，MoE 训练稳定性的三个生死问题](_posts/2026-06-10-moe-expert-routing-training-stability.md)
-- 2026-06-10 [5 种方法全军覆没、cos_sim≈0：Visual PLE 为什么在 NTP-only 范式下注定失败](_posts/2026-06-10-visual-ple-failure-self-supervised-loop.md)
-- 2026-06-10 [5 个独立创新逐步叠加，从 loss 1.966 到 1.882 追平 Qwen3-4B：架构集成的工程叙事](_posts/2026-06-10-architecture-merge-five-innovations-qwen3.md)
-- 2026-06-10 [4K→1M 上下文扩展只用了 2000 步：三份真实长文训练配置的工程复盘](_posts/2026-06-10-long-context-training-rope-extension.md)
-- 2026-06-10 [30 条数据 + GRPO 就能涨 10 分：2025-2026 RL for LLM 的算法选型与框架实战](_posts/2026-06-10-grpo-sapo-verl-rl-training-landscape.md)
-- 2026-06-10 [为什么多模态训练不要 Warmup：从四份真实 LR 配置看学习率调度的工程哲学](_posts/2026-06-10-learning-rate-schedule-engineering.md)
-- 2026-06-10 [蒸馏就是 RL、学生能超越老师：On-Policy Distillation 统一框架与六个落地范式](_posts/2026-06-10-llm-rl-distillation-pipeline.md)
-- 2026-06-10 [把 point 当普通文本训练 UIAgent 指标直接崩了：多模态 Special Token 的隐形碰撞](_posts/2026-06-10-special-token-collision-multimodal.md)
-- 2026-06-10 [一个 Megatron Flag 把多模态梯度稀释了 17 倍：per-token-loss 的生产事故复盘](_posts/2026-06-10-per-token-loss-multimodal-gradient-dilution.md)
-- 2026-06-10 [训练 Loss 不动但模型已坏？Adam 漂移、Softmax 饱和、梯度稀释三大隐形杀手](_posts/2026-06-10-llm-training-dynamics-intuition.md)
-- 2026-06-10 [长文 Loss 突然涨了 0.004：一次 RoPE × SWA 的冲突复盘与位置编码扩展全解](_posts/2026-06-10-rope-positional-encoding-deep-dive.md)
-- 2026-06-10 [五次排除实验定位 Attention 门控最优解：Sink 无效、RoPE 反噬、小窗口翻车](_posts/2026-06-10-attention-variant-selection-five-experiments.md)
-- 2026-06-10 [只在 Answer 上算 Loss、MTP λ=0.3 到底带来多少：从实验配置反推 Loss 设计的工程决策](_posts/2026-06-10-loss-design-beyond-cross-entropy.md)
-- 2026-06-10 [格式切换的收益是比例调整的 8-60 倍：daVinci-LLM 200 次消融揭示的预训练数据工程三大定律](_posts/2026-06-10-davinci-data-processing-depth-curriculum.md)
-- 2026-06-10 [未定义变量减少 52.7%、没改一行模型代码：Sample Packing + Attention Masking 的预训练工程](_posts/2026-06-10-sample-packing-attention-masking-hallucination.md)
-- 2026-06-10 [新架构 34/35 验证集更好、ceval +2.67 pt，但 iter-time 慢了 3.17 倍：结构升级的效率代价决策](_posts/2026-06-10-architecture-upgrade-accuracy-vs-speed.md)
-- 2026-06-10 [同样的数据重复 20 遍不过拟合？数据配比中那些反直觉的 Scaling Law](_posts/2026-06-10-llm-data-engineering-methodology.md)
-- 2026-06-10 [后 16 层换 MoE、1/8 激活比丢了 17-19% 性能：Scaling Law 估算 Dense-MoE 迁移代价](_posts/2026-06-10-partial-moe-scaling-law-estimation.md)
-- 2026-06-10 [目标数据重复 15-20 遍不过拟合：混合训练的 Scaling Law 推翻了 4 epoch 定律](_posts/2026-06-10-mixture-scaling-law-repetition-tolerance.md)
-- 2026-06-10 [预训练最后 10% 步数用 SAM，量化退化直降 40%：Loss Landscape 几何决定可部署性](_posts/2026-06-10-sam-sharpness-pretraining-quantization.md)
-- 2026-06-10 [接受率从 0% 调到 90%：MTP 投机解码的工程调优全记录与 Drafter 质量诊断](_posts/2026-06-10-speculative-decoding-mtp-drafter.md)
-- 2026-06-01 [普通人如何用好 Claude 协作办公：开发环境优化实战](_posts/2026-06-01-claude-as-dev-environment-optimizer.md)
-- 2026-05-12 [跨区迁移 EC2 + 一条命令把自己 SSH 踢出门：Ubuntu 24.04 socket activation 踩坑全程](_posts/2026-05-12-ec2-cross-region-migration-ssh-self-lockout.md)
-- 2026-05-10 [Tailscale 接家里 NAS 踩坑全记录：SSH 免密 / DERP / NAT 打洞 / Peer Relay](_posts/2026-05-10-tailscale-synology-nas-real-world.md)
-- 2026-05-10 [家庭 NAS 翻墙实战：GFW 连通性审计 + mihomo 分层代理](_posts/2026-05-10-synology-nas-gfw-audit-mihomo.md)
-- 2026-05-10 [家用 NAS 从裸奔到合规：12 项风险的完整审计与加固](_posts/2026-05-10-synology-nas-security-hardening.md)
-- 2026-05-10 [一次重启引发的血案：SATA 瞬断如何拖垮 RAID / scemd / synopkg](_posts/2026-05-10-synology-nas-reboot-drill.md)
-- 2026-05-10 [RAID (E) 标记与 volume2 只读：一次 SATA 物理层雪崩的复盘](_posts/2026-05-10-synology-nas-pool2-recovery.md)
-- 2026-05-10 [给 NAS 做一次"体检"：Btrfs 压缩、scrub 排程与 SSD 缓存审计](_posts/2026-05-10-synology-nas-storage-optimization.md)
-- 2026-05-10 [家用 NAS 进阶路线图：Python API + Docker 生态 + 自托管清单](_posts/2026-05-10-synology-nas-advanced-exploration.md)
-- 2026-05-10 [Cloud Sync 静默丢文件：一个 NFD/NFC 编码踩出的坑](_posts/2026-05-10-synology-nas-nfd-cloud-sync.md)
-- 2026-05-10 [Docker 镜像加速站 2026 实测：14 站还剩几家能用？](_posts/2026-05-10-docker-registry-mirrors-china.md)
-- 2026-05-08 [Tailscale VPS Exit Node 实战：自定义 UDP 端口 + UDP GRO 调优 + DNS 防泄漏](_posts/2026-05-08-tailscale-vps-exit-node-custom-port.md)
-- 2026-05-08 [Moonshot Kimi 系列技术洞察：从 K1.5 到 K2.6 的架构、优化器、训推工程](_posts/2026-05-08-kimi-moonshot-technical-insights-wip.md)
-- 2026-05-08 [水印消除 / 图像编辑模型训练加速：Inpainting / Instruct-Edit / Flux Fill 的 2024~2026 栈](_posts/2026-05-08-watermark-removal-image-editing-acceleration.md)
-- 2026-05-08 [视频图像分割模型技术洞察与训练加速：SAM 2 / SAM 3 / Grounded-SAM / 视频 Mask](_posts/2026-05-08-segmentation-sam2-training-acceleration.md)
-- 2026-05-08 [机器人 VLA 训推加速：OpenVLA / π0 / RDT-1B / GR00T 的实时控制工程](_posts/2026-05-08-robotic-vla-training-inference-acceleration.md)
-- 2026-05-08 [音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio ](_posts/2026-05-08-music-audio-generation-acceleration.md)
-- 2026-05-08 [端侧多模态端到端加速：MiniCPM-o / Gemma 3n / Qwen3-Omni ](_posts/2026-05-08-edge-multimodal-end-to-end.md)
-- 2026-05-08 [MoE 训练加速实战：DeepEP + Grouped GeMM + Aux-Loss-Free 的 Qwen3.5 配方](_posts/2026-05-08-moe-training-acceleration-deepep-qwen3.md)
-- 2026-05-08 [视频 & 3D 扩散训推加速：Wan 2.2 / HunyuanVideo / VSA / Gaussian Splatting ](_posts/2026-05-08-video-3d-diffusion-acceleration.md)
-- 2026-05-08 [RL 训练加速实战：Qwen3.5 + vLLM + veRL 的 fully-async 架构](_posts/2026-05-08-rl-training-qwen3-vllm-verl.md)
-- 2026-05-08 [图像 Diffusion 训推加速深化：FLUX / SD3 / DMD2 / SageAttention ](_posts/2026-05-08-image-diffusion-acceleration-flux-sd3-dmd2.md)
-- 2026-05-08 [MoE 教师 → Dense 学生：2024~2026 开源社区的落地范式](_posts/2026-05-08-moe-to-dense-distillation.md)
-- 2026-05-08 [Speculative Decoding 实战：vLLM 框架下 EAGLE-3 原理与工程落地](_posts/2026-05-08-speculative-decoding-eagle3-vllm.md)
-- 2026-05-08 [语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话](_posts/2026-05-08-speech-audio-acceleration-stack.md)
-- 2026-05-08 [训推加速系列深化 9 篇（2026-05-08）](_posts/2026-05-08-training-inference-nine-more-posts-design.md)
-- 2026-05-07 [训推加速三新篇：精度对齐 / Gradient Checkpointing / CUDA Graph](_posts/2026-05-07-three-more-posts-accuracy-gc-cudagraph-design.md)
-- 2026-05-07 [训推加速系列：看懂 Qwen3 + Fusion 识别 + Triton 实战](_posts/2026-05-07-qwen3-fusion-triton-series-design.md)
-- 2026-05-08 [训推加速技术地图：三维分类 + 全景图 + 决策流 + 大模型加速术语表](_posts/2026-05-08-training-inference-acceleration-map.md)
-- 2026-05-08 [训推加速模型效果指标全景：客观指标 + 主观评价 + 加速退化信号](_posts/2026-05-08-training-inference-quality-metrics.md)
-- 2026-05-08 [训推加速效率指标全景：吞吐 / 延迟 / MFU / TGS / SLO（含数学公式）](_posts/2026-05-08-training-inference-efficiency-metrics.md)
-- 2026-05-08 [Qwen3-8B 下 CUDA Graph 的合理使用：训练 / 推理分场景 + 陷阱清单](_posts/2026-05-08-cuda-graph-qwen3-dense.md)
-- 2026-05-08 [Qwen3-8B 下让 Gradient Checkpointing 收益最大化：选择性重算 + Pareto 曲线](_posts/2026-05-08-gradient-checkpointing-qwen3-dense.md)
-- 2026-05-08 [替换 Fused Kernel 后如何对齐训推精度：7 类差异 + 3 道验证 Gate + 8 个技巧](_posts/2026-05-08-fused-kernel-accuracy-alignment.md)
-- 2026-05-07 [训推加速 Qwen3 实战：从"调包"到手写 Triton Kernel（含 backward）](_posts/2026-05-07-triton-kernel-fusion-practice.md)
-- 2026-05-07 [训推加速 Qwen3 实战：看懂模型结构 + 识别算子融合机会](_posts/2026-05-07-qwen3-understand-model-identify-fusion.md)
-- 2026-05-07 [训推加速 Python 侧排障 SOP：OOM / GIL / asyncio / DataLoader / IO](_posts/2026-05-07-python-cpu-bottleneck-troubleshooting-sop.md)
-- 2026-05-07 [训推加速问题定位 SOP 与 Know-how：从 GPU 低利用率到 NCCL hang 到推理吞吐](_posts/2026-05-07-training-inference-acceleration-troubleshooting-sop.md)
-- 2026-05-07 [训推工程师 & AI Agent 时代的高效 CLI 工具栈：从 zoxide 到 nvitop 到 Claude Code](_posts/2026-05-07-training-inference-engineer-cli-toolkit.md)
-- 2026-05-07 [语音模型基础篇：用预训练 ASR 模型搞定语音识别（从 Wav2Vec2 到 Whisper 实战）](_posts/2026-05-07-speech-models-fundamentals-pretrained-asr.md)
-- 2026-05-07 [语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR](_posts/2026-05-07-speech-recognition-architecture-evolution.md)
-- 2026-05-07 [语音模型预处理流程及常用术语详解：从声波到 Log-Mel 到 Audio-LLM](_posts/2026-05-07-speech-model-preprocessing-glossary.md)
-- 2026-05-07 [Cursor Free Plan 接入第三方 BlueRouter 网关调研（WIP）](_posts/2026-05-07-cursor-free-plan-bluerouter-gateway-wip.md)
-- 2026-05-07 [工程师的 Downloads 目录整理方法论：PARA + 时间线 + 工程实践](_posts/2026-05-07-engineer-file-organization-para.md)
-- 2026-05-07 [Codex App & CLI 接入第三方 API Key 和 Base URL 实战指南](_posts/2026-05-07-codex-cli-third-party-gateway.md)
-- 2026-05-07 [Claude Code CLI 接入第三方 API Key 和 Base URL 实战指南](_posts/2026-05-07-claude-code-cli-third-party-gateway.md)
-- 2026-05-07 [Claude Desktop for Mac 配置第三方 API Key 和 Base URL 完整指南](_posts/2026-05-07-claude-desktop-third-party-inference.md)
-- 2026-04-30 [Hermes Update 冲突排查：本地 Xiaomi MIMO 补丁的保全与重放](_posts/2026-04-30-hermes-mimo-update-conflict.md)
-- 2026-04-30 [Hermes Agent 完全 YOLO 模式：彻底关掉「approve this command?」确认框](_posts/2026-04-30-hermes-yolo-mode-approval-bypass.md)
-- 2026-04-30 [vLLM v0.20 显存优化与推理加速实战指南](_posts/2026-04-30-vllm-v020-optimization-guide.md)
-- 2026-04-30 [vLLM v0.20 架构深度解析：双引擎、调度器、KV Cache 与分布式推理](_posts/2026-04-30-vllm-v020-architecture.md)
-- 2026-04-29 [AI Coding Agent 的多 Agent 协作架构深度调研：从 Claude Code 到 Hermes Agent](_posts/2026-04-29-multi-agent-orchestration-deep-dive.md)
-- 2026-04-27 [Stash Availability Check Tiles：一键检测 AI 与流媒体服务可用性](_posts/2026-04-27-stash-availability-check-tiles.md)
-- 2026-04-27 [大陆高速访问 GitHub 资源：jsDelivr CDN 拼接技巧与镜像实测](_posts/2026-04-27-github-cdn-china-jsdelivr.md)
-- 2026-04-27 [Apple 子域名功能梳理与代理规则配置指南](_posts/2026-04-27-apple-domains-proxy-rules.md)
-- 2026-03-03 [Tailscale 家庭多设备与 VPS 组网：GPT 访问、出口节点与文件共享](_posts/2026-03-03-tailscale-home-multidevice-vps-gpt.md)
-- 2026-03-02 [配置驱动的训练框架：从 YAML 到模块实例化的设计与实践](_posts/2026-03-02-training-framework-config-driven-instantiation.md)
-- 2026-02-27 [大模型训推高质量社区、技术博客与资源索引](_posts/2026-02-27-llm-train-infer-communities-blogs.md)
-- 2026-02-26 [LLM 训练显存估算全指南：从 ZeRO 到 MoE](_posts/2026-02-26-llm-training-memory-estimation.md)
-- 2026-02-26 [训练大模型时，优化器状态到底在吃多少显存](_posts/2026-01-15-optimizer-states-in-llm-training.md)
-- 2026-02-26 [PyTorch Profiler 显存瓶颈分析全指南（实战版）](_posts/2026-02-26-162.md)
-- 2026-02-26 [PyTorch Profiler 瓶颈分析全指南（实战版）](_posts/2026-02-26-161.md)
-- 2026-02-26 [NVIDIA Nsight Systems 瓶颈分析全指南（实战版）](_posts/2026-02-26-160.md)
-- 2026-02-25 [中国营销中的央视平台投放：ROI分析、文化心理与洞察](_posts/2026-02-25-159.md)
-- 2026-02-25 [让 GPT 帮你从零梳理需求，最后产出一份高质量 Context Prompt 的实践笔记](_posts/2026-02-25-158.md)
-- 2026-02-12 [Cursor 模型与 Pro 额度的实战调研记录](_posts/2026-02-12-157.md)
-- 2026-02-11 [Transformer 前向流程与自注意力机制简述](_posts/2026-02-11-156.md)
-- 2026-02-11 [深度学习中的矩阵运算与线性代数基础](_posts/2026-02-11-155.md)
-- 2026-02-05 [OpenClaw 思考](_posts/2026-02-05-154.md)
-- 2026-01-04 [自主 Agent / 上下文工程资料索引](_posts/2026-01-04-150.md)
-- 2025-12-25 [Tinker RL 测试（含代码库）](_posts/2025-12-25-148.md)
-- 2025-09-22 [LLM 量化（GPTQ、GGUF）实战以及效果和推理性能实测](_posts/2025-09-22-143.md)
-- 2025-09-16 [使用Coding Agent 作为通用智能体完成 DeepResearch 任务](_posts/2025-09-16-141.md)
-- 2025-09-09 [不同硬件和推理引擎模型输出的精度差异](_posts/2025-09-09-137.md)
-- 2025-09-03 [免费 GPU 或廉价算力](_posts/2025-09-03-133.md)
-- 2025-07-10 [大语言模型高质量数据集汇总](_posts/2025-07-10-129.md)
-- 2025-07-08 [AI Tech Blog](_posts/2025-07-08-128.md)
-- 2025-01-29 [DeepSeek R1 阅读清单](_posts/2025-01-29-121.md)
-- 2024-10-26 [Embedding Model Fine-Tuning 案例](_posts/2024-10-26-118.md)
-- 2023-12-28 [中文 Emebedding & Reranker 模型选型](_posts/2023-12-28-111.md)
-- 2023-12-20 [Gemini Pro Vision 作为 表格 OCR 解决方案的简单测试](_posts/2023-12-20-109.md)
-- 2023-12-19 [大语言模型（LLM）推理性能优化以及推理框架、后端的评测](_posts/2023-12-19-107.md)
-- 2023-11-03 [Embedding 模型在 RAG 场景下的评估和微调](_posts/2023-11-03-104.md)
-- 2023-06-28 [实现基于 Github Issues 的博客](_posts/2023-06-28-100.md)
-- 2023-06-27 [大语言模型（LLM）学习路径和资料汇总](_posts/2023-06-27-97.md)
-- 2023-06-27 [中文模型 C-Eval 评测结果简单小评测](_posts/2023-06-27-96.md)
-- 2023-06-26 [大语言模型（LLM）后训练数据准备相关笔记](_posts/2023-06-26-95.md)
-- 2023-06-21 [值得关注的对中文支持较好的开源模型](_posts/2023-06-21-94.md)
-- 2023-05-12 [大语言模型（LLM）微调技术笔记](_posts/2023-05-12-92.md)
+Personal technical blog — LLM training/inference, systems engineering, tooling.
+
+**Live**: [pengyanai.github.io](https://pengyanai.github.io) · [GitLab Pages](https://11088830.gitlab.example.com/notebook/)
+
+## Stack
+
+- Jekyll 3.9 + minima theme
+- Custom shadcn/ui-style layout
+- Client-side search (Fuse.js)
+- Mermaid + MathJax support
+- Deployed via GitHub Pages + GitLab Pages CI
+
+## Local dev
+
+```bash
+bundle install
+bundle exec jekyll serve --watch --force_polling
+```
+
+## Write a post
+
+Add `YYYY-MM-DD-slug.md` to `_posts/` with front matter:
+
+```yaml
+---
+layout: post
+title: "Your Title"
+date: 2026-06-10
+author: Austin
+---
+```
+
+The post list on the homepage auto-updates from `site.posts`. No manual index maintenance needed.
