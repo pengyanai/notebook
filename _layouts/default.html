@@ -147,64 +147,55 @@
           script.async = true;
           script.crossOrigin = 'anonymous';
           script.onload = function() {
+            var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var lightVars = {
+              primaryColor: '#f5f5f5', primaryTextColor: '#1a1a1a', primaryBorderColor: '#d4d4d4',
+              secondaryColor: '#fafafa', secondaryTextColor: '#525252', secondaryBorderColor: '#e5e5e5',
+              tertiaryColor: '#fafafa', tertiaryTextColor: '#525252', tertiaryBorderColor: '#e5e5e5',
+              lineColor: '#a3a3a3', textColor: '#1a1a1a',
+              mainBkg: '#f5f5f5', nodeBorder: '#d4d4d4',
+              clusterBkg: '#fafafa', clusterBorder: '#e5e5e5', clusterTextColor: '#525252',
+              actorBkg: '#f5f5f5', actorBorder: '#d4d4d4', actorTextColor: '#1a1a1a', actorLineColor: '#a3a3a3',
+              signalColor: '#404040', signalTextColor: '#1a1a1a',
+              activationBkgColor: '#ebebeb', activationBorderColor: '#d4d4d4', sequenceNumberColor: '#ffffff',
+              noteBkgColor: '#fffbeb', noteBorderColor: '#d4d4d4', noteTextColor: '#1a1a1a',
+              sectionBkgColor: '#f5f5f5', altSectionBkgColor: '#fafafa', sectionBkgColor2: '#f5f5f5',
+              taskBkgColor: '#a3a3a3', taskTextColor: '#ffffff', taskTextLightColor: '#ffffff',
+              taskBorderColor: '#737373', doneTaskBkgColor: '#737373', doneTaskBorderColor: '#525252',
+              activeTaskBkgColor: '#404040', activeTaskBorderColor: '#262626',
+              gridColor: '#e5e5e5', todayLineColor: '#a3a3a3',
+              quadrant1Fill: '#f5f5f5', quadrant2Fill: '#fafafa', quadrant3Fill: '#fafafa', quadrant4Fill: '#f5f5f5',
+              quadrant1TextFill: '#404040', quadrant2TextFill: '#525252', quadrant3TextFill: '#525252', quadrant4TextFill: '#404040',
+              quadrantPointFill: '#404040', quadrantPointTextFill: '#1a1a1a',
+              pie1: '#d4d4d4', pie2: '#a3a3a3', pie3: '#737373', pie4: '#525252',
+              pieStrokeColor: '#ffffff', pieTextColor: '#1a1a1a'
+            };
+            var darkVars = {
+              primaryColor: '#262626', primaryTextColor: '#e5e5e5', primaryBorderColor: '#404040',
+              secondaryColor: '#1f1f1f', secondaryTextColor: '#a3a3a3', secondaryBorderColor: '#333333',
+              tertiaryColor: '#1f1f1f', tertiaryTextColor: '#a3a3a3', tertiaryBorderColor: '#333333',
+              lineColor: '#525252', textColor: '#e5e5e5',
+              mainBkg: '#262626', nodeBorder: '#404040',
+              clusterBkg: '#1f1f1f', clusterBorder: '#333333', clusterTextColor: '#a3a3a3',
+              actorBkg: '#262626', actorBorder: '#404040', actorTextColor: '#e5e5e5', actorLineColor: '#525252',
+              signalColor: '#a3a3a3', signalTextColor: '#e5e5e5',
+              activationBkgColor: '#333333', activationBorderColor: '#404040', sequenceNumberColor: '#ffffff',
+              noteBkgColor: '#333333', noteBorderColor: '#404040', noteTextColor: '#e5e5e5',
+              sectionBkgColor: '#262626', altSectionBkgColor: '#1f1f1f', sectionBkgColor2: '#262626',
+              taskBkgColor: '#525252', taskTextColor: '#ffffff', taskTextLightColor: '#ffffff',
+              taskBorderColor: '#737373', doneTaskBkgColor: '#737373', doneTaskBorderColor: '#a3a3a3',
+              activeTaskBkgColor: '#a3a3a3', activeTaskBorderColor: '#d4d4d4',
+              gridColor: '#333333', todayLineColor: '#525252',
+              quadrant1Fill: '#262626', quadrant2Fill: '#1f1f1f', quadrant3Fill: '#1f1f1f', quadrant4Fill: '#262626',
+              quadrant1TextFill: '#a3a3a3', quadrant2TextFill: '#a3a3a3', quadrant3TextFill: '#a3a3a3', quadrant4TextFill: '#a3a3a3',
+              quadrantPointFill: '#a3a3a3', quadrantPointTextFill: '#e5e5e5',
+              pie1: '#404040', pie2: '#525252', pie3: '#737373', pie4: '#a3a3a3',
+              pieStrokeColor: '#1a1a1a', pieTextColor: '#e5e5e5'
+            };
             mermaid.initialize({
               startOnLoad: false,
               theme: 'base',
-              themeVariables: {
-                // Core palette — Material Blue + Purple + Green
-                primaryColor: '#e3f2fd',
-                primaryTextColor: '#1565c0',
-                primaryBorderColor: '#42a5f5',
-                secondaryColor: '#f3e5f5',
-                secondaryTextColor: '#6a1b9a',
-                secondaryBorderColor: '#ab47bc',
-                tertiaryColor: '#e8f5e9',
-                tertiaryTextColor: '#2e7d32',
-                tertiaryBorderColor: '#66bb6a',
-                // Lines and labels
-                lineColor: '#546e7a',
-                textColor: '#37474f',
-                // Flowchart
-                mainBkg: '#e3f2fd',
-                nodeBorder: '#42a5f5',
-                clusterBkg: '#fafafa',
-                clusterBorder: '#b0bec5',
-                // Sequence diagram
-                actorBkg: '#e3f2fd',
-                actorBorder: '#42a5f5',
-                actorTextColor: '#1565c0',
-                actorLineColor: '#78909c',
-                signalColor: '#37474f',
-                signalTextColor: '#263238',
-                activationBkgColor: '#bbdefb',
-                activationBorderColor: '#42a5f5',
-                sequenceNumberColor: '#ffffff',
-                // Gantt chart
-                sectionBkgColor: '#e3f2fd',
-                altSectionBkgColor: '#f3e5f5',
-                sectionBkgColor2: '#e8f5e9',
-                taskBkgColor: '#42a5f5',
-                taskTextColor: '#ffffff',
-                taskTextLightColor: '#ffffff',
-                taskBorderColor: '#1e88e5',
-                doneTaskBkgColor: '#66bb6a',
-                doneTaskBorderColor: '#43a047',
-                activeTaskBkgColor: '#ab47bc',
-                activeTaskBorderColor: '#8e24aa',
-                gridColor: '#cfd8dc',
-                todayLineColor: '#ef5350',
-                // Quadrant chart
-                quadrant1Fill: '#e8f5e9',
-                quadrant2Fill: '#fff8e1',
-                quadrant3Fill: '#fbe9e7',
-                quadrant4Fill: '#f3e5f5',
-                quadrant1TextFill: '#2e7d32',
-                quadrant2TextFill: '#f57f17',
-                quadrant3TextFill: '#d84315',
-                quadrant4TextFill: '#6a1b9a',
-                quadrantPointFill: '#1e88e5',
-                quadrantPointTextFill: '#1a237e'
-              }
+              themeVariables: isDark ? darkVars : lightVars
             });
             document.querySelectorAll('pre code.language-mermaid').forEach(function(code) {
               var pre = code.closest('pre');
