@@ -1,0 +1,39 @@
+# Joseph's Notebook
+
+> Personal technical blog by Austin. LLM training/inference engineering, systems optimization, tooling. 142 articles, 2023–2026.
+
+## About
+
+AI/ML engineer focused on large language model training and inference acceleration. Writes deep technical articles on model architecture, training dynamics, performance optimization, and developer tooling. Also covers homelab/NAS setup, networking, and privacy tools.
+
+## Content Areas
+
+- **LLM Training Engineering** (~70 posts): MoE routing, optimizer design (Muon/MuonClip), scaling laws, gradient engineering, activation recomputation, learning rate schedules, data deduplication, sample packing
+- **Model Architecture** (~12 posts): attention variants (SWA, GQA, gated), RoPE extensions, speculative decoding (MTP, EAGLE-3), embedding/LM-head tying, tokenizer design
+- **Inference & Serving** (~15 posts): vLLM architecture, KV cache optimization (SwiftKV), flash decoding, sparse attention, decoding strategies, quantization (GPTQ/GGUF)
+- **Training Infrastructure** (~20 posts): CUDA Graph, Gradient Checkpointing, Triton kernel fusion, precision alignment, PyTorch Profiler, Nsight Systems
+- **RL & Distillation** (~8 posts): GRPO, SAPO, veRL framework, MoE→Dense distillation, multi-teacher temperature tuning
+- **Speech & Audio** (~5 posts): ASR architecture evolution (Wav2Vec2→Whisper→Qwen3-ASR), audio acceleration
+- **Homelab & Tooling** (~15 posts): Synology NAS, Tailscale networking, Docker, SearXNG, Claude Code, proxy configuration
+
+## Key Series
+
+- **训推加速技术地图**: [Overview map](/2026/05/08/training-inference-acceleration-map.html) with 9 deep-dive follow-ups on CUDA Graph, Gradient Checkpointing, MoE, RL, Speculative Decoding, etc.
+- **Qwen3 实战**: Model structure analysis → operator fusion → Triton kernel (3 posts)
+- **Speech 三部曲**: Preprocessing → Architecture evolution → Pretrained ASR
+- **NAS 系列**: Security hardening → Storage optimization → GFW audit → Tailscale networking (9 posts)
+
+## Metadata
+
+- Total posts: 142
+- Date range: 2023-05 to 2026-06
+- Languages: Chinese (primary), English (technical terms)
+- RSS: /feed.xml
+- Sitemap: /sitemap.xml
+- Search: Client-side Fuse.js (title + content, CJK-aware)
+
+## Links
+
+- GitHub: https://github.com/pengyanai
+- Blog: https://pengyanai.github.io
+- GitLab Pages: https://11088830.pages.example.com/notebook/
