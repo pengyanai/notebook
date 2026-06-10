@@ -1,126 +1,125 @@
 # Blog framework usage
 
-This repo is a Jekyll blog whose content is driven by **GitHub Issues** (with label `blog`). Tooling is a single Python entry point: `run.py`.
+Jekyll blog with client-side search, Mermaid diagrams, and MathJax support. Posts are standard `_posts/YYYY-MM-DD-slug.md` files — the homepage list auto-generates from `site.posts`.
 
 ---
+
 ## Prerequisites
 
-- **Ruby** (for Jekyll): install Ruby and Bundler, then run `bundle install` in the repo root.
-- **Python 3**: used by `run.py` for generate / image-optimization scripts.
-- **GitHub CLI** (`gh`): only needed when running `run.py generate` (fetch issues locally).
+- **Ruby** + Bundler: `bundle install`
+- **Python 3**: for `run.py` scripts
+- **GitHub CLI** (`gh`): only for `run.py generate` (fetch issues)
 
 ---
+
 ## Project tree
 
 ```
 .
-├── _config.yml          # Jekyll config (site title, baseurl, kramdown, exclude, etc.)
-├── _includes/           # Jekyll partials
-│   ├── head.html
-│   └── header.html
+├── _config.yml              # Jekyll config
+├── _includes/
+│   ├── head.html            # <head> with preload hints
+│   ├── header.html          # Navbar + search trigger + mobile menu
+│   └── search-modal.html    # Client-side search (Fuse.js)
 ├── _layouts/
-│   └── default.html     # Default layout for pages and posts
-├── _site/               # Generated output (created by `jekyll build`, do not edit)
+│   ├── default.html         # Base layout (MathJax + Mermaid + progress bar)
+│   └── post.html            # Article layout (title + meta + Schema.org)
+├── _posts/                  # Blog posts (YYYY-MM-DD-slug.md)
 ├── assets/
-│   └── css/
-│       └── style.scss  # Site styles
-├── posts/               # Blog posts (one .md per post, e.g. 155.md)
-├── index.html           # Home page (renders README.md as content)
-├── README.md            # Home page content + post list (links to posts/xxx.html)
-├── run.py               # Single entry for all blog tooling (see below)
-├── scripts/             # Python helpers (invoked via run.py only)
-│   ├── generate.py         # Fetch issues → write posts + README, autolink URLs
-│   ├── add_image_attrs.py  # Add lazy loading to images in _site/
-│   └── migrate_front_matter.py  # One-off migration of metadata to front matter
-├── Gemfile / Gemfile.lock
-├── CNAME                # Custom domain (if used)
-└── .github/workflows/
-    ├── main.yml         # On issue events: run generate, open PR
-    └── deploy.yml       # On push to main: Jekyll build → add-image-attrs → deploy to Pages
+│   ├── css/style.scss       # All styles (shadcn/ui tokens)
+│   ├── images/              # Post images
+│   └── scripts/             # Supplementary scripts (e.g. NAS tools)
+├── scripts/                 # Python build helpers
+│   ├── generate.py          # Fetch issues → write posts (CI only)
+│   └── add_image_attrs.py   # Add lazy loading to _site/ images
+├── index.html               # Homepage — renders post list from site.posts
+├── search.json              # Search index template (Liquid)
+├── run.py                   # CLI entry for scripts/
+├── README.md                # Project description (GitHub display only)
+├── .gitlab-ci.yml           # GitLab Pages deploy
+└── .github/workflows/       # GitHub Pages deploy + issue-driven PR
 ```
 
 ---
-## Build and local serve
 
-From the repo root:
+## Local dev
 
 ```bash
-# One-time: install Jekyll deps
+# Install deps
 bundle install
 
-# Build site into _site/
-bundle exec jekyll build
+# Serve with live reload (macOS needs --force_polling for new file detection)
+bundle exec jekyll serve --watch --force_polling
 
-# Optional: add lazy loading to images (same as in CI)
-python3 run.py add-image-attrs
-
-# Start local server (default port 4000)
-bundle exec jekyll serve --host 0.0.0.0 --port 4000
+# Access at http://localhost:4000
 ```
 
-- **URL:** http://localhost:4000/
-- Use `--watch` to auto-rebuild on file changes:  
-  `bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch`
+---
+
+## Write a post
+
+Create `_posts/YYYY-MM-DD-slug.md`:
+
+```yaml
+---
+layout: post
+title: "Your Title"
+date: 2026-06-10
+author: Austin
+categories: [深度学习, 工具]
+tags: [tag1, tag2]
+mermaid: true    # enable Mermaid diagrams
+---
+
+Your content here.
+```
+
+The homepage list updates automatically — no manual index maintenance.
 
 ---
-## Kill process on port 4000
 
-If something is already using port 4000 (e.g. an old `jekyll serve`):
+## Run a full rebuild
 
 ```bash
-# macOS / Linux
-lsof -ti:4000 | xargs kill -9
-```
-
-Then start `jekyll serve` again.
-
----
-## Full rebuild and restart
-
-```bash
-# 1. Free the port
+# Kill old server
 lsof -ti:4000 | xargs kill -9
 
-# 2. Rebuild
+# Clean build
+rm -rf _site .sass-cache
 bundle exec jekyll build
+
+# Optional: optimize images
 python3 run.py add-image-attrs
 
-# 3. Start server (with watch)
-bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch
-
-# quick start
-nohup bundle exec jekyll serve --livereload --drafts > /tmp/jekyll.log 2>&1 &
+# Restart
+bundle exec jekyll serve --watch --force_polling
 ```
 
 ---
+
 ## run.py commands
 
-All tooling is behind one entry point. Run from repo root:
-
-```bash
-python3 run.py
-```
-
-Shows:
-
 | Command | Description |
-|--------|-------------|
-| `generate` | Fetch open GitHub issues with label `blog`, write `posts/*.md` and `README.md`, then autolink bare URLs. Used in CI on issue events. |
-| `add-image-attrs` | Add `loading="lazy"` and `decoding="async"` to `<img>` in `_site/`. Run after `jekyll build` (CI does this in deploy). |
-| `migrate-front-matter` | One-off: move article metadata from blockquotes into Jekyll front matter. |
-
-Examples:
-
-```bash
-python3 run.py generate
-python3 run.py add-image-attrs
-python3 run.py migrate-front-matter
-```
+|---------|-------------|
+| `generate` | Fetch GitHub issues with label `blog`, write `_posts/*.md`. CI only. |
+| `add-image-attrs` | Add `loading="lazy"` to `<img>` in `_site/`. Run after build. |
 
 ---
-## CI overview
 
-- **main.yml**: On issue open/edit/label events, runs `python3 run.py generate` and opens a PR with updated `posts/` and `README.md`.
-- **deploy.yml**: On push to `main`/`master`, runs Jekyll build, then `python3 run.py add-image-attrs`, then deploys to GitHub Pages.
+## CI/CD
 
-No need to run `generate` locally unless you are testing issue-driven content; build + add-image-attrs + serve is enough for local preview.
+- **GitHub**: `deploy.yml` — on push to main, build → add-image-attrs → deploy to GitHub Pages
+- **GitLab**: `.gitlab-ci.yml` — on push to main, `jekyll build --baseurl "/notebook"` → deploy to GitLab Pages
+- **Issue-driven**: `main.yml` — on issue events, `run.py generate` → open PR
+
+---
+
+## Search
+
+Client-side search powered by Fuse.js. Index is built from `search.json` (Liquid template). Eagerly preloaded during idle time — opens instantly.
+
+---
+
+## Mermaid + MathJax
+
+Both are lazy-loaded only when the page contains diagrams (`pre code.language-mermaid`) or math formulas (`$...$` / `$$...$$`). No configuration needed — just use standard markdown.
