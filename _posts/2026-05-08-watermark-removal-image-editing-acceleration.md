@@ -2,7 +2,7 @@
 layout: post
 title: "水印消除 / 图像编辑模型训练加速：Inpainting / Instruct-Edit / Flux Fill 的 2024~2026 栈"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化, 图像编辑]
 tags: [Inpainting, Watermark Removal, InstructPix2Pix, Flux Fill, BrushNet, PowerPaint, SDEdit, ControlNet]
 mermaid: true

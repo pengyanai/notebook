@@ -2,7 +2,7 @@
 layout: post
 title: "AI Coding Agent 的多 Agent 协作架构深度调研：从 Claude Code 到 Hermes Agent"
 date: 2026-04-29
-author: Austin
+author: Joseph
 categories: [AI Agent, 架构]
 tags: [Multi-Agent, Claude Code, Codex, OpenCode, Hermes Agent, SubAgent, 调度, 上下文工程]
 ---

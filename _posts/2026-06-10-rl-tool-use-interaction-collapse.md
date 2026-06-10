@@ -2,7 +2,7 @@
 layout: post
 title: "GRPO 训了 3 天模型反而不调工具了：Tool Use RL 的 Interaction Collapse 与六个结构性修复"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 强化学习]
 tags: [RL, GRPO, Tool Use, Interaction Collapse, Credit Assignment, CTPO, GTPO]
 mermaid: true

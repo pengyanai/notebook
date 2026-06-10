@@ -2,7 +2,7 @@
 layout: post
 title: "Token Superposition Training：2.5x 预训练加速但重新初始化 embedding 就翻车"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 训练加速]
 tags: [TST, pretraining, efficiency, token-superposition, coarse-to-fine]

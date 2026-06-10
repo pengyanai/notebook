@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速 Qwen3 实战：从\"调包\"到手写 Triton Kernel（含 backward）"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [Triton, Qwen3, RMSNorm, Flash-Attention, Liger-Kernel, Fusion, autograd.Function, Backward Kernel]
 mermaid: true

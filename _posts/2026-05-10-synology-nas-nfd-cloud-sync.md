@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "Cloud Sync 静默丢文件：一个 NFD/NFC 编码踩出的坑"
 date: 2026-05-10
 categories: [homelab, storage]

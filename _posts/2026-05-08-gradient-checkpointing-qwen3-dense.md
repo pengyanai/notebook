@@ -2,7 +2,7 @@
 layout: post
 title: "Qwen3-8B 下让 Gradient Checkpointing 收益最大化：选择性重算 + Pareto 曲线"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [Gradient Checkpointing, Qwen3, Activation Memory, Selective Checkpointing, PyTorch, Flash-Attention, Liger Kernel]
 mermaid: true

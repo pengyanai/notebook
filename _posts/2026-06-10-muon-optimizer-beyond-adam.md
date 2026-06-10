@@ -2,7 +2,7 @@
 layout: post
 title: "Loss Spike 频率降了 80%：从 Adam 到 MuonClip，万亿参数 MoE 的优化器进化实战"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 优化器]
 tags: [Muon, Adam, AdamW, MuonClip, MoE, optimizer, training-stability, HyperP]
 mermaid: true

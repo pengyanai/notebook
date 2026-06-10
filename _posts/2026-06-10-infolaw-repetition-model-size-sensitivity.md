@@ -2,7 +2,7 @@
 layout: post
 title: "7B 模型重复 8 次只保留 25% 有效信息, 400M 保留 50%: 大模型比小模型对数据重复更敏感"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 数据工程]
 tags: [scaling-law, data-repetition, InfoLaw, overtraining, data-efficiency, information-theory]

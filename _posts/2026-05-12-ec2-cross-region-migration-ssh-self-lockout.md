@@ -3,7 +3,7 @@ layout: post
 title: "跨区迁移 EC2 + 一条命令把自己 SSH 踢出门：Ubuntu 24.04 socket activation 踩坑全程"
 excerpt: "把 VPS 跨区迁移 + SSH 改端口，三分钟把自己踢出门的完整复盘：Ubuntu 24.04 的 ssh.socket、ufw 双层防火墙、EBS detach 救援、三重保险改端口流程。"
 date: 2026-05-12
-author: Austin
+author: Joseph
 categories: [运维, AWS, 事故复盘]
 tags: [EC2, AWS, SSH, ssh.socket, socket activation, ufw, systemd, Ubuntu 24.04, Elastic IP, AMI, Trojan, Tailscale, 事故复盘]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "MoE 教师 → Dense 学生：2024~2026 开源社区的落地范式"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 训练加速]
 tags: [Knowledge Distillation, MoE, Dense, Qwen3-Distill, Gemma-Distill, On-Policy KD, vLLM Rollout]
 mermaid: true

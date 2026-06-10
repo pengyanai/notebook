@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速问题定位 SOP 与 Know-how：从 GPU 低利用率到 NCCL hang 到推理吞吐"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [PyTorch, NCCL, vLLM, Nsight, 性能分析, OOM, torch.compile, AI Agent, SOP]
 mermaid: true

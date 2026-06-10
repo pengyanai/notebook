@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速模型效果指标全景：客观指标 + 主观评价 + 加速退化信号"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 评测]
 tags: [评测, Perplexity, Cross-Entropy, KL, WER, MMLU, GSM8K, HumanEval, Elo, LLM-as-Judge, MOS]
 mermaid: true

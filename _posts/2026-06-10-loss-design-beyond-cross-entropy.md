@@ -2,7 +2,7 @@
 layout: post
 title: "只在 Answer 上算 Loss、MTP λ=0.3 到底带来多少：从实验配置反推 Loss 设计的工程决策"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [loss-function, cross-entropy, only-answer-loss, MTP, auxiliary-loss, multimodal, gradient-dilution, validation-monitoring]
 mermaid: true

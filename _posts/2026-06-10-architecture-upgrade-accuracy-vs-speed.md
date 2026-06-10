@@ -2,7 +2,7 @@
 layout: post
 title: "新架构 34/35 验证集更好、ceval +2.67 pt, 但 iter-time 慢了 3.17 倍: 结构升级的效率代价决策"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 模型架构]
 tags: [architecture-evolution, training-efficiency, iter-time, ablation, structure-validation]

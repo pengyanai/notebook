@@ -2,7 +2,7 @@
 layout: post
 title: "Sample Packing + Attention Masking：未定义变量减少 52.7% 的预训练工程细节"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 mermaid: true
 ---
 

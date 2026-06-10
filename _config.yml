@@ -11,7 +11,7 @@ description: "Personal technical blog — LLM training, systems engineering, too
 url: "https://pengyanai.github.io"
 baseurl: "/"
 lang: "en"
-author: "Austin"
+author: "Joseph"
 
 # --- URL structure ---
 permalink: /:year/:month/:day/:slug:output_ext
@@ -53,7 +53,7 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      author: "Austin"
+      author: "Joseph"
       show_reading_progress: true
 
 # --- Exclude from build ---

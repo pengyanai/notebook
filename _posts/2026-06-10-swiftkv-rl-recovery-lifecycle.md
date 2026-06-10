@@ -2,7 +2,7 @@
 layout: post
 title: "KV Cache 共享让文本榜单掉了 1.9%，但 RL 四轮迭代后反超 baseline 1.4%: 架构退化的 RL 补偿机制"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 强化学习]
 tags: [SwiftKV, KV-cache, RL, architecture-tradeoff, training-lifecycle, post-training]

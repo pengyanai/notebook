@@ -2,7 +2,7 @@
 layout: post
 title: "一个 Megatron flag 把多模态梯度稀释了 17 倍：--calculate-per-token-loss 的生产事故复盘"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 训练工程]
 tags: [loss-normalization, multimodal, gradient, Megatron, training-bug]

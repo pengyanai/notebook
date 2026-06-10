@@ -2,7 +2,7 @@
 layout: post
 title: "MoE 训练加速实战：DeepEP + Grouped GeMM + Aux-Loss-Free 的 Qwen3.5 配方"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化, MoE]
 tags: [MoE, DeepEP, Grouped GeMM, Aux-Loss-Free, Qwen3.5, DeepSeek-V3, Expert Parallelism, Megatron-Core]
 mermaid: true

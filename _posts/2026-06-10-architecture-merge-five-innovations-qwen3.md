@@ -2,7 +2,7 @@
 layout: post
 title: "5 个独立创新逐步叠加, 从 loss 1.966 到 1.882 追平 Qwen3-4B: 架构集成的工程叙事"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 模型架构]
 tags: [architecture-integration, PLE, SWA, gated-attention, FFN-expansion, scaling, ablation]

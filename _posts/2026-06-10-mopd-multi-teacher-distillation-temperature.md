@@ -2,7 +2,7 @@
 layout: post
 title: "多教师蒸馏的温度工程：从 T=1 到 per-teacher adaptive temperature 的实验叙事"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [训练策略, 蒸馏]
 tags: [distillation, temperature, multi-teacher, on-policy, MOPD]
 mermaid: true

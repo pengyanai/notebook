@@ -2,7 +2,7 @@
 layout: post
 title: "SWA + Gated Attention loss 降了 0.013：从一个 3B 模型实验看 Attention 演化的工程选择"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 模型架构]
 tags: [attention, GQA, SWA, gated-attention, sparse-attention, KV-cache, flash-attention]
 mermaid: true

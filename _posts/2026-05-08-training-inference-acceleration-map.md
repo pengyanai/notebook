@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速技术地图：三维分类 + 全景图 + 决策流 + 大模型加速术语表"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [训推加速, 技术地图, 术语表, Fused Kernel, Quantization, Speculative Decoding, PagedAttention, MoE, FSDP]
 mermaid: true

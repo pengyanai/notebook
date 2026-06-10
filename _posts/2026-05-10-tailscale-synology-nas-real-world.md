@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "Tailscale 接家里 NAS 踩坑全记录：SSH 免密 / DERP / NAT 打洞 / Peer Relay"
 date: 2026-05-10
 categories: [homelab, networking]

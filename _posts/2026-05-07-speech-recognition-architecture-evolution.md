@@ -2,7 +2,7 @@
 layout: post
 title: "语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [语音, 深度学习]
 tags: [ASR, Whisper, Qwen3-ASR, Wav2Vec2, HuBERT, Conformer, Audio-LLM, 架构演进]
 ---

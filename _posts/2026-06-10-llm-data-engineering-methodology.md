@@ -2,7 +2,7 @@
 layout: post
 title: "同样的数据重复 20 遍不过拟合？数据配比中那些反直觉的 Scaling Law"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 数据工程]
 tags: [LLM, 数据配比, Scaling Law, 多模态, 模型合并, 数据质量]
 mermaid: true

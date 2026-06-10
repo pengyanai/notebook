@@ -2,7 +2,7 @@
 layout: post
 title: "接受率从 0% 调到 90%：MTP 投机解码的工程调优全记录与 Drafter 质量诊断"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 推理优化]
 tags: [Speculative Decoding, MTP, Multi-Token Prediction, Draft Model, Acceptance Rate, Inference Acceleration]
 mermaid: true

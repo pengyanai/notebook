@@ -2,7 +2,7 @@
 layout: post
 title: "把 point 当普通文本训练, UIAgent 指标直接崩了: 多模态 Special Token 的隐形碰撞"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 多模态]
 tags: [tokenizer, special-token, multimodal, UIAgent, grounding, engineering-bug]

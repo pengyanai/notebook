@@ -2,7 +2,7 @@
 layout: post
 title: "Grad-norm 一直 0.21 突然飙到 50：从真实训练日志看梯度工程的六个生死细节"
 date: 2026-06-10 14:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [gradient, gradient-clipping, gradient-checkpointing, mixed-precision, loss-spike, training-stability]
 mermaid: true

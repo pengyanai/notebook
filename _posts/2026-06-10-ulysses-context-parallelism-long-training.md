@@ -2,7 +2,7 @@
 layout: post
 title: "seq_len 从 4K 推到 16K、CP=2 一开就慢了 20%：Ulysses Context Parallelism 的工程取舍全记录"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 分布式训练]
 tags: [Context Parallelism, Ulysses, Ring Attention, Long Context, Sequence Parallel, All-to-All, Recompute]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "工程师的 Downloads 目录整理方法论：PARA + 时间线 + 工程实践"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [效率, 方法论]
 tags: [PARA, 文件整理, Second Brain, Johnny.Decimal, workflow, HoudahSpot, Raycast]
 ---

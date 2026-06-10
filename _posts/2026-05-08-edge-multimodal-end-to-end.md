@@ -2,7 +2,7 @@
 layout: post
 title: "端侧多模态端到端加速：MiniCPM-o / Gemma 3n / Qwen3-Omni "
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化, 端侧部署]
 tags: [端侧, 多模态, MiniCPM-o, Gemma 3n, Qwen3-Omni, MLX, ExecuTorch, llama.cpp, NPU, ANE, Hexagon]
 mermaid: true

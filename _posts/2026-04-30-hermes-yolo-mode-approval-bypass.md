@@ -2,7 +2,7 @@
 layout: post
 title: "Hermes Agent 完全 YOLO 模式：彻底关掉「approve this command?」确认框"
 date: 2026-04-30
-author: Austin
+author: Joseph
 categories: [工具, Agent]
 tags: [Hermes, YOLO, 自动化, CLI, 配置, Agent]
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: "自部署 SearXNG 私有元搜索引擎：从零到 JSON API 可用的完整实战"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [工具, 运维, 自托管]
 tags: [SearXNG, Docker, 搜索引擎, Self-Hosted, Tailscale, 隐私, API]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "4K→1M 上下文扩展只用了 2000 步：三份真实长文训练配置的工程复盘"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 长上下文]
 tags: [Long Context, RoPE, YaRN, CSA, Sparse Attention, Position Encoding]
 mermaid: true

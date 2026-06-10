@@ -2,7 +2,7 @@
 layout: post
 title: "替换 Fused Kernel 后如何对齐训推精度：7 类差异来源 + 3 道验证 Gate + 8 个实战技巧"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [Triton, Fused Kernel, 精度对齐, gradcheck, autograd.Function, Liger Kernel, 数值稳定性]
 mermaid: true

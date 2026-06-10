@@ -2,7 +2,7 @@
 layout: post
 title: "Format Switch 的收益是 Ratio 调整的 8-60 倍: daVinci-LLM 200 次消融揭示的预训练数据工程三大定律"
 date: 2026-06-10 20:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 数据工程]
 tags: [data-processing, curriculum-learning, data-quality, ablation, pretraining, scaling]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "机器人 VLA 训推加速：OpenVLA / π0 / RDT-1B / GR00T 的实时控制工程"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 机器人, 性能优化]
 tags: [VLA, OpenVLA, π0, RDT-1B, GR00T, LIBERO, CALVIN, SimplerEnv, Action Head, Sim-to-Real]
 mermaid: true

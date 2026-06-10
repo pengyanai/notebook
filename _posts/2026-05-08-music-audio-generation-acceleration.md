@@ -2,7 +2,7 @@
 layout: post
 title: "音乐生成加速：Suno / MusicLM / UniAudio / Stable Audio "
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化, 生成模型]
 tags: [音乐生成, Suno, MusicLM, MusicGen, UniAudio, Stable Audio, EnCodec, DAC, AudioLM]
 mermaid: true

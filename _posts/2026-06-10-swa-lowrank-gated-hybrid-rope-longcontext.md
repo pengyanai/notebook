@@ -2,7 +2,7 @@
 layout: post
 title: "multi_doc_qa 从 0.086 涨到 0.200: SWA + LowRank Gated + Hybrid RoPE 的长文配方"
 date: 2026-06-10 20:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 长上下文]
 tags: [SWA, gated-attention, RoPE, long-context, fine-tuning, multi-document-QA]
 mermaid: true

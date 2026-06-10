@@ -2,7 +2,7 @@
 layout: post
 title: "vLLM v0.20 架构深度解析：双引擎、调度器、KV Cache 与分布式推理"
 date: 2026-04-30
-author: Austin
+author: Joseph
 categories: [LLM推理, 架构]
 tags: [vLLM, 推理引擎, KV Cache, Paged Attention, 分布式推理, Tensor Parallel, 投机解码, CUDA, FlashAttention]
 ---

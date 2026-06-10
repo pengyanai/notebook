@@ -2,7 +2,7 @@
 layout: post
 title: "训练 Loss 不动但模型已坏？Adam 漂移、Softmax 饱和、梯度稀释三大隐形杀手"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 训练动力学]
 tags: [Adam, softmax, 多模态, 量化, 知识蒸馏, loss设计]
 mermaid: true

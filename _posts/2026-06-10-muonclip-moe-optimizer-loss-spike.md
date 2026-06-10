@@ -2,7 +2,7 @@
 layout: post
 title: "Router 梯度和 Expert 梯度分开裁剪, Loss Spike 频率降了 80%: MoE 训练稳定性的优化器视角"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 训练工程]
 tags: [MoE, optimizer, MuonClip, loss-spike, training-stability, gradient-clipping, Muon]

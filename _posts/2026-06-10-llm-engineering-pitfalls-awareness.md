@@ -2,7 +2,7 @@
 layout: post
 title: "上线才发现的坑：Token Budget 设计、Function Calling 格式战争与 Proxy Metric 翻车"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 工程实践]
 tags: [LLM, 工程陷阱, Token Budget, Function Calling, Scaling Law, RL, Proxy Metric]
 mermaid: true

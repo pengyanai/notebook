@@ -2,7 +2,7 @@
 layout: post
 title: "Cursor Free Plan 接入第三方 BlueRouter 网关调研（WIP）"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [工具, LLM]
 tags: [Cursor, BYOK, 第三方网关, BlueRouter, OpenAI Compatible, WIP]
 ---

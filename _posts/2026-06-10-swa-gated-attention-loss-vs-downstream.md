@@ -2,7 +2,7 @@
 layout: post
 title: "SWA + Gated Attention — Loss 降了 0.013 但窗口越小评测越差的反直觉实验"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 mermaid: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Tailscale VPS Exit Node 实战：自定义 UDP 端口 + UDP GRO 调优 + DNS 防泄漏"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [网络, 运维, 工具]
 tags: [Tailscale, Exit Node, WireGuard, Ubuntu, ufw, DNS Leak, VPN, ethtool, UDP GRO]
 mermaid: true

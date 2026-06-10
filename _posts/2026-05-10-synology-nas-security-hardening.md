@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "家用 NAS 从裸奔到合规：12 项风险的完整审计与加固"
 date: 2026-05-10
 categories: [homelab, security]

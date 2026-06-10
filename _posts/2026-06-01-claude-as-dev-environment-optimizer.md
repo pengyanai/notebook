@@ -2,7 +2,7 @@
 layout: post
 title: "普通人如何用好 Claude 协作办公：开发环境优化实战"
 date: 2026-06-01
-author: Austin
+author: Joseph
 categories: [工具, LLM]
 tags: [Claude Code, AI 协作, 开发环境, Sublime Text, zsh, Warp, 效率]
 ---

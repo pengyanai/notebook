@@ -2,7 +2,7 @@
 layout: post
 title: "为什么多模态训练不要 Warmup：从四份真实 LR 配置看学习率调度的工程哲学"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [learning-rate, cosine-schedule, WSD, warmup, muP, hyperparameter-transfer]
 mermaid: true

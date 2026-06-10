@@ -2,7 +2,7 @@
 layout: post
 title: "Partial MoE Scaling Law: 后16层换MoE、1/8激活比丢了17-19%性能的真实代价"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 模型架构]
 tags: [MoE, scaling-law, dense-to-moe, activation-ratio, inference-speed, architecture-decision]

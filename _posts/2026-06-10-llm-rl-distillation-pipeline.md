@@ -2,7 +2,7 @@
 layout: post
 title: "蒸馏就是 RL、学生能超越老师：On-Policy Distillation 统一框架与六个落地范式"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 强化学习, 知识蒸馏]
 tags: [on-policy-distillation, reinforcement-learning, PPO, GRPO, knowledge-distillation, reward-shaping, length-penalty]
 mermaid: true

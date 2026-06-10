@@ -2,7 +2,7 @@
 layout: post
 title: "训推工程师 & AI Agent 时代的高效 CLI 工具栈：从 zoxide 到 nvitop 到 Claude Code"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [工具, 效率]
 tags: [CLI, zoxide, fzf, ripgrep, tmux, atuin, nvitop, nsys, py-spy, Claude Code, Codex, AI Agent, Terminal]
 mermaid: true

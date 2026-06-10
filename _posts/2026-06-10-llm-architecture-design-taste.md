@@ -2,7 +2,7 @@
 layout: post
 title: "KV Cache 砍 90%、推理提速 7x：六个正交架构创新如何叠加生效"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 模型架构]
 tags: [attention, kv-cache, sparse-attention, moe, architecture-design, training-efficiency]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速 Python 侧排障 SOP：OOM / GIL / asyncio / DataLoader / IO"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [Python, 性能优化]
 tags: [Python, numpy, GIL, asyncio, DataLoader, OOM, IO, multiprocessing, AI Agent, SOP]
 mermaid: true

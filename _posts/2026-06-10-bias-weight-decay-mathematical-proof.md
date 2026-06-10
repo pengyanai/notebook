@@ -2,7 +2,7 @@
 layout: post
 title: "Layer Scalar 不加 Weight Decay 漂到 56, 为什么 Bias 不加却安然无恙: 一个用具体数字说明的数学推导"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 训练工程]
 tags: [weight-decay, bias, optimizer, mathematical-derivation, training-dynamics, quantization]

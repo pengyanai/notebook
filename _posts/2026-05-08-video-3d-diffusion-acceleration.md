@@ -2,7 +2,7 @@
 layout: post
 title: "视频 & 3D 扩散训推加速：Wan 2.2 / HunyuanVideo / VSA / Gaussian Splatting "
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化, 视频生成]
 tags: [Video Diffusion, Wan 2.2, HunyuanVideo, VSA, SLA, 3D Gaussian Splatting, FastVideo, FastWan, CogVideoX, Mochi]
 mermaid: true

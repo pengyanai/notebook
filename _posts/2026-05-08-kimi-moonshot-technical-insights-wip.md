@@ -2,7 +2,7 @@
 layout: post
 title: "Moonshot Kimi 系列技术洞察：从 K1.5 到 K2.6 的架构、优化器、训推工程"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 公司技术洞察]
 tags: [Kimi, Moonshot, K1.5, K2, K2.6, K2-Thinking, Muon, MuonClip, MoE, MLA, MoonViT, Agent Swarm, Kimi-VL, Kimi-Audio]
 mermaid: true

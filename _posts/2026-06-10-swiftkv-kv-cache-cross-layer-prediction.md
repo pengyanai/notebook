@@ -2,7 +2,7 @@
 layout: post
 title: "SwiftKV — KV Cache 跨层预测从预训练到 RL 的完整工程叙事"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 mermaid: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速效率指标全景：吞吐 / 延迟 / MFU / TGS / SLO（含数学公式）"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [MFU, HFU, TGS, TTFT, TPOT, Goodput, Roofline, 吞吐, 延迟, SLO]
 mermaid: true

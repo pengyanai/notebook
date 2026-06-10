@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "家庭 NAS 翻墙实战：GFW 连通性审计 + mihomo 分层代理"
 date: 2026-05-10
 categories: [homelab, networking]

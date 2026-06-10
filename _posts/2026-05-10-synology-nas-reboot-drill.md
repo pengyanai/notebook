@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "一次重启引发的血案：SATA 瞬断如何拖垮 RAID / scemd / synopkg"
 date: 2026-05-10
 categories: [homelab, networking]

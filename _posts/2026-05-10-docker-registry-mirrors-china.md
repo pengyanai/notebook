@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "Docker 镜像加速站 2026 实测：14 站还剩几家能用？"
 date: 2026-05-10
 categories: [homelab, devops]

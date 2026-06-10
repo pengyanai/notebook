@@ -2,7 +2,7 @@
 layout: post
 title: "vLLM v0.20 显存优化与推理加速实战指南"
 date: 2026-04-30
-author: Austin
+author: Joseph
 categories: [LLM推理, 优化]
 tags: [vLLM, KV Cache, 量化, FP8, CUDA Graph, Speculative Decoding, 分布式, Paged Attention, 推理加速]
 ---

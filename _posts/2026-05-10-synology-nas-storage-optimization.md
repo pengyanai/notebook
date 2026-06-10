@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: '给 NAS 做一次"体检"：Btrfs 压缩、scrub 排程与 SSD 缓存审计'
 date: 2026-05-10
 categories: [homelab, storage]

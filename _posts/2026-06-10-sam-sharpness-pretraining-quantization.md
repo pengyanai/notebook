@@ -2,7 +2,7 @@
 layout: post
 title: "SAM in Annealing: Loss Landscape Geometry Determines Quantization Robustness"
 date: 2026-06-10 20:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [SAM, sharpness, quantization, forgetting, loss-landscape, pretraining, annealing]
 mermaid: true

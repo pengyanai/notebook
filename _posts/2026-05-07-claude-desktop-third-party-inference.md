@@ -2,7 +2,7 @@
 layout: post
 title: "Claude Desktop for Mac 配置第三方 API Key 和 Base URL 完整指南"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [工具, LLM]
 tags: [Claude, Claude Desktop, 第三方网关, BlueRouter, 自建代理, Anthropic]
 ---

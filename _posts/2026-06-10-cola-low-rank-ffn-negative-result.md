@@ -2,7 +2,7 @@
 layout: post
 title: "CoLA 说参数减 45% 不掉点，我们的 3B 实验说 6.85T tokens 才能追平：一个精确的负面结果"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 模型架构]
 tags: [CoLA, low-rank, FFN, negative-result, scaling, power-law]

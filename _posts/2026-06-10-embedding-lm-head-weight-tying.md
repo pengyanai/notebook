@@ -2,7 +2,7 @@
 layout: post
 title: "Embedding 占了模型 10% 参数却只做查表：从 tie-embeddings=yes 到 PLE 的工程演化"
 date: 2026-06-10 14:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 模型架构]
 tags: [embedding, lm_head, weight-tying, vocabulary, PLE, sparse-update, over-encoding]
 mermaid: true

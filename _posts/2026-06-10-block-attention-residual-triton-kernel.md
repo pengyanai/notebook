@@ -2,7 +2,7 @@
 layout: post
 title: "Attention Residual 拿了 0.025 的 loss 收益, 但 PyTorch 实现慢了 90%: Triton Kernel 怎么把开销压到 14%"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 训练工程]
 tags: [attention-residual, Triton, kernel-optimization, training-efficiency, architecture-search]

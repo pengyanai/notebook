@@ -2,7 +2,7 @@
 layout: post
 title: "PLE 参数扩展的死区现象：为什么 dP=64→128 完全不降 loss"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 ---
 

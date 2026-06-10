@@ -2,7 +2,7 @@
 layout: post
 title: "up_proj 和 gated_proj 共享权重减 50% FFN 参数: 16 个验证集全部退化的干净失败"
 date: 2026-06-10 20:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 模型架构]
 tags: [MGLU, FFN, weight-sharing, negative-result, SwiGLU, parameter-efficiency]
 mermaid: true

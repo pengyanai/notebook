@@ -2,7 +2,7 @@
 layout: post
 title: "MTP 白送 1.8x 加速、接受率还能当质量探针：从辅助 Loss 到推理加速的意外收获"
 date: 2026-06-10 16:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 推理优化]
 tags: [decoding, speculative-decoding, MTP, serving, acceptance-rate, length-penalty, RL]
 mermaid: true

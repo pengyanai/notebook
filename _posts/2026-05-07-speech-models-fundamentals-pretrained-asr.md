@@ -2,7 +2,7 @@
 layout: post
 title: "语音模型基础篇：用预训练 ASR 模型搞定语音识别（从 Wav2Vec2 到 Whisper 实战）"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [语音, 深度学习]
 tags: [ASR, Whisper, Wav2Vec2, CTC, Seq2Seq, HuggingFace, pipeline, 预训练模型, 长音频, 时间戳]
 mermaid: true

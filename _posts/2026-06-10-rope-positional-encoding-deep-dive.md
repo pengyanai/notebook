@@ -2,7 +2,7 @@
 layout: post
 title: "长文 Loss 突然涨了 0.004：一次 RoPE × SWA 的冲突复盘与位置编码扩展全解"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 位置编码]
 tags: [RoPE, positional-encoding, long-context, LongRoPE, YaRN, NTK, attention, transformer]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "训推加速 Qwen3 实战：看懂模型结构 + 识别算子融合机会"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [Qwen3, torch.profiler, torch.fx, torch.compile, Inductor, Fusion, RMSNorm, SwiGLU, RoPE, 训练加速]
 mermaid: true

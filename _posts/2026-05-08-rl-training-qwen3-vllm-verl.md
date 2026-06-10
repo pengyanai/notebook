@@ -2,7 +2,7 @@
 layout: post
 title: "RL 训练加速实战：Qwen3.5 + vLLM + veRL 的 fully-async 架构"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 强化学习, 性能优化]
 tags: [RLHF, GRPO, DAPO, GSPO, vLLM, veRL, OpenRLHF, Fully-async, Qwen3.5, Reasoning]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "Activation Recomputation 不是免费午餐：recompute 24 层 vs 16 层导致 loss 显著偏高"
 date: 2026-06-10 16:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [activation-recomputation, gradient-checkpointing, memory-optimization, numerical-precision, hardware-portability]
 mermaid: true

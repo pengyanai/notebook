@@ -2,7 +2,7 @@
 layout: post
 title: "81% Sparsity 只掉 0.48 分却快了 7 倍：从 Flash Attention 到训练时稀疏的 IO-Aware 全景"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 推理优化]
 tags: [Flash Attention, Sparse Attention, IO-Aware, Flash Decoding, KV Cache, Training Sparsity]
 mermaid: true

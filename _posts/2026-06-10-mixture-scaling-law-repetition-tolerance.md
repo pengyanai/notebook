@@ -2,7 +2,7 @@
 layout: post
 title: "目标数据重复 15-20 遍不过拟合：混合训练的 Scaling Law 推翻了'4 epoch 定律'"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 数据工程]
 tags: [scaling-law, data-mixing, repetition, curriculum-learning, data-efficiency]

@@ -2,7 +2,7 @@
 layout: post
 title: "Qwen3-8B 下 CUDA Graph 的合理使用：训练 / 推理分场景 + 陷阱清单"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [CUDA Graph, Qwen3, PyTorch, torch.compile, reduce-overhead, Flash-Attention, Triton, 推理加速]
 mermaid: true

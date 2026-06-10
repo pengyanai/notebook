@@ -2,7 +2,7 @@
 layout: post
 title: "不写一行代码，用 AI Agent 10 分钟搭建你的私人搜索引擎"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [工具, AI 协作, 自托管]
 tags: [SearXNG, AI Agent, Claude Code, 零代码, 搜索引擎, Docker, 产品经理, Prompt Engineering]
 mermaid: true

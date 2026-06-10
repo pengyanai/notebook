@@ -2,7 +2,7 @@
 layout: post
 title: "视频图像分割模型技术洞察与训练加速：SAM 2 / SAM 3 / Grounded-SAM / 视频 Mask 的 2024~2026 栈"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化, 分割]
 tags: [SAM, SAM2, SAM3, Grounded-SAM, Florence-2, Video Segmentation, Memory Attention, Matting]
 mermaid: true

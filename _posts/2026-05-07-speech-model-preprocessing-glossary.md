@@ -2,7 +2,7 @@
 layout: post
 title: "语音模型预处理流程及常用术语详解：从声波到 Log-Mel 到 Audio-LLM"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [语音, 深度学习]
 tags: [ASR, 语音识别, 预处理, Mel Spectrogram, MFCC, Whisper, Conformer, SpecAugment, CTC, WER]
 ---

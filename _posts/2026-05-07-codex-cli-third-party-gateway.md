@@ -2,7 +2,7 @@
 layout: post
 title: "Codex App & CLI 接入第三方 API Key 和 Base URL 实战指南"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [工具, LLM]
 tags: [Codex, CLI, OpenAI, 第三方网关, 代理, config.toml]
 ---

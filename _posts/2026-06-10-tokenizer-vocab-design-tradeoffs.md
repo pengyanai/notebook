@@ -2,7 +2,7 @@
 layout: post
 title: "Vocab 100K 吃掉模型 10% 参数：一个 Tokenizer 决策如何锁死后续所有训练"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, NLP基础]
 tags: [tokenizer, BPE, vocabulary, sentencepiece, multilingual, NLP, on-device]
 mermaid: true

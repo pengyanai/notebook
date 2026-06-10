@@ -2,7 +2,7 @@
 layout: post
 title: "SwiftKV 预测 12 层 loss 最低, 但最终选了 16 层: 端侧首词提速 35% 的工程决策"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 模型架构]
 tags: [SwiftKV, KV-cache, cross-layer-prediction, edge-inference, architecture-decision]

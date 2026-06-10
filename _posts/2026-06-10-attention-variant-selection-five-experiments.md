@@ -2,7 +2,7 @@
 layout: post
 title: "五次排除实验定位 Attention 门控最优解：Sink 无效、RoPE 反噬、小窗口翻车"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 模型架构]
 tags: [attention, gated-attention, SWA, sink-token, RoPE, GQA, MLA, flash-attention, architecture-selection]
 mermaid: true

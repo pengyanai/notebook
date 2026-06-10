@@ -2,7 +2,7 @@
 layout: post
 title: "RMSNorm 后的 Layer Scalar 漂移到 56 但训练 Loss 纹丝不动：一个 Adam 优化器的隐形 Bug"
 date: 2026-06-10 18:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [Adam, optimizer, weight-decay, RMSNorm, quantization, training-bug, Megatron]
 mermaid: true

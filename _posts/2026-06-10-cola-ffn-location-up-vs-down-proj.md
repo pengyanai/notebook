@@ -2,7 +2,7 @@
 layout: post
 title: "CoLA 放在 up_proj 收敛快 2.3 倍: FFN 内部低秩最优落点的定位实验"
 date: 2026-06-10
-author: Austin
+author: Joseph
 mermaid: true
 categories: [深度学习, 模型架构]
 tags: [CoLA, low-rank, FFN, SwiGLU, parameter-efficiency, ablation]

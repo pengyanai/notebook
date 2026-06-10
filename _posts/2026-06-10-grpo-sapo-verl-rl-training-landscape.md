@@ -2,7 +2,7 @@
 layout: post
 title: "30 条数据 + GRPO 就能涨 10 分：2025-2026 RL for LLM 的算法选型与框架实战"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 强化学习]
 tags: [GRPO, SAPO, veRL, RL, PPO, DPO, Binary Reward, Instruction Following]
 mermaid: true

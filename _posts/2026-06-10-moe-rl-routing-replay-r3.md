@@ -2,7 +2,7 @@
 layout: post
 title: "MoE 做 RL 训练时 Routing 决策飘了：一个零成本的 Replay 方案消除了精度不一致"
 date: 2026-06-10 20:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 训练工程]
 tags: [MoE, RL, routing, floating-point, training-consistency, R3]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "Speculative Decoding 实战：vLLM 框架下 EAGLE-3 原理与工程落地"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [深度学习, 性能优化]
 tags: [Speculative Decoding, EAGLE-3, vLLM, Decode 加速, Qwen3, TPOT, KV Cache]
 mermaid: true

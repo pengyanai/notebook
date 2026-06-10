@@ -2,7 +2,7 @@
 layout: post
 title: "RMSNorm scalar 漂移到 56 训练 Loss 却不动：Softmax 的量化照妖镜与温度调控术"
 date: 2026-06-10 10:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 数值计算]
 tags: [softmax, temperature, numerical-stability, gradient, distillation, logits, rmsnorm, bf16, quantization]
 mermaid: true

@@ -2,7 +2,7 @@
 layout: post
 title: "Visual PLE 五种方法全军覆没：NTP-only 范式下自监督闭环缺失的完整诊断"
 date: 2026-06-10 20:00:00 +0800
-author: Austin
+author: Joseph
 categories: [深度学习, 多模态]
 tags: [PLE, visual-tokens, VQ-VAE, LFQ, BSQ, DCT, SigLIP, self-supervised, NTP]
 mermaid: true

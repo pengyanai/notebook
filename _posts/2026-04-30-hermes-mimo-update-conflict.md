@@ -2,7 +2,7 @@
 layout: post
 title: "Hermes Update 冲突排查：本地 Xiaomi MIMO 补丁的保全与重放"
 date: 2026-04-30
-author: Austin
+author: Joseph
 categories: [工具, Agent]
 tags: [Hermes, MIMO, 小米, git, patch, 冲突解决, 本地补丁]
 ---

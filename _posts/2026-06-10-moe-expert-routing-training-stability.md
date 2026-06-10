@@ -2,7 +2,7 @@
 layout: post
 title: "512 Expert 里 80% 是死的：从 MuonClip 到 Expert Upcycling，MoE 训练稳定性的三个生死问题"
 date: 2026-06-10
-author: Austin
+author: Joseph
 categories: [深度学习, 模型架构]
 tags: [MoE, Expert Routing, MuonClip, Load Balancing, Training Stability, Upcycling]
 mermaid: true

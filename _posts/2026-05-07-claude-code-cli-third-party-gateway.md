@@ -2,7 +2,7 @@
 layout: post
 title: "Claude Code CLI 接入第三方 API Key 和 Base URL 实战指南"
 date: 2026-05-07
-author: Austin
+author: Joseph
 categories: [工具, LLM]
 tags: [Claude Code, CLI, 第三方网关, Anthropic, 代理, settings.json]
 ---

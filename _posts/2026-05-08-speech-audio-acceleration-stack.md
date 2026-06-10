@@ -2,7 +2,7 @@
 layout: post
 title: "语音 / 音频模型加速新常识：从 Audio Tokenizer 到 Full-duplex 对话"
 date: 2026-05-08
-author: Austin
+author: Joseph
 categories: [语音, 深度学习, 性能优化]
 tags: [ASR, TTS, Audio Tokenizer, Mimi, Qwen3-ASR, SenseVoice, F5-TTS, CosyVoice, HiFi-GAN, Moshi, Full-duplex, 语音大模型]
 mermaid: true

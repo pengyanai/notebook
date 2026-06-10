@@ -1,6 +1,6 @@
 ---
 layout: post
-author: Josep
+author: Joseph
 title: "RAID (E) 标记与 volume2 只读：一次 SATA 物理层雪崩的复盘"
 date: 2026-05-10
 categories: [homelab, storage]
