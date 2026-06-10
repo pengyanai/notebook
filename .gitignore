@@ -2,6 +2,7 @@
 .cursor/
 .idea/
 .vscode/
+.claude/
 
 # OS
 .DS_Store
@@ -33,3 +34,4 @@ debug.log
 
 __pycache__/
 *.pyc
+v2erminal/

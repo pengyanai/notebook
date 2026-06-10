@@ -19,7 +19,7 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO)
 
 GH = "gh"
-POSTS_DIR = Path("posts")
+POSTS_DIR = Path("_posts")
 LABELS = set(["blog"])
 TIMEOUT = 20
 
@@ -123,7 +123,7 @@ def main():
     # Use .md links for GitHub compatibility (Jekyll will convert to .html in index.html)
     with open("README.md", "w") as f:
         for issue in issues:
-            link = f"{POSTS_DIR}/{issue['number']}.md"
+            link = f"_posts/{issue['number']}.md"
             updated = issue["createdAt"].split("T")[0]
             f.write(f"- #{issue['number']} {updated} [{issue['title']}]({link})\n")
 
@@ -138,7 +138,7 @@ def main():
         logging.info("process issue: %s", issue)
         with open(POSTS_DIR / f"{issue['number']}.md", "w") as f:
             f.write("---\n")
-            f.write("layout: default\n")
+            f.write("layout: post\n")
             f.write(f'title: "{issue["title"]}"\n')
             f.write(f"author: {issue['author']['login']}\n")
             f.write(f"labels: {' '.join([label['name'] for label in issue['labels']])}\n")
