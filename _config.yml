@@ -4,6 +4,9 @@ description: "Joseph's Blog"
 url: "https://pengyanai.github.io"
 baseurl: "/"
 
+# URL structure — clean date-based paths, no categories
+permalink: /:year/:month/:day/:slug:output_ext
+
 # Build settings
 markdown: kramdown
 highlighter: rouge
