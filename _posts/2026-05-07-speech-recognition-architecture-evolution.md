@@ -7,7 +7,7 @@ categories: [语音, 深度学习]
 tags: [ASR, Whisper, Qwen3-ASR, Wav2Vec2, HuBERT, Conformer, Audio-LLM, 架构演进]
 ---
 
-> 本文是 [《语音模型预处理流程及常用术语详解》](/posts/2026-05-07-speech-model-preprocessing-glossary.html) 的姊妹篇。前一篇讲"输入怎么来"，这一篇讲"模型怎么吃"。把 2012 ~ 2026 十四年的 ASR 架构演进捋清楚，并且重点拆解最新的 **Qwen3-ASR（2026）**。
+> 本文是 [《语音模型预处理流程及常用术语详解》](/2026/05/07/speech-model-preprocessing-glossary.html) 的姊妹篇。前一篇讲"输入怎么来"，这一篇讲"模型怎么吃"。把 2012 ~ 2026 十四年的 ASR 架构演进捋清楚，并且重点拆解最新的 **Qwen3-ASR（2026）**。
 
 ---
 
@@ -541,7 +541,7 @@ Raw audio → [前端] Log-Mel 或 Raw Waveform + CNN
 - [Qwen3-ASR GitHub](https://github.com/QwenLM/Qwen3-ASR)
 - [NVIDIA NeMo — Conformer 实现](https://github.com/NVIDIA/NeMo)
 - [阿里 FunASR (Paraformer / SenseVoice)](https://github.com/modelscope/FunASR)
-- [前篇：语音模型预处理流程及常用术语详解](/posts/2026-05-07-speech-model-preprocessing-glossary.html)
+- [前篇：语音模型预处理流程及常用术语详解](/2026/05/07/speech-model-preprocessing-glossary.html)
 
 ---
 

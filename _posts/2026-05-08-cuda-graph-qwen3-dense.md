@@ -8,7 +8,7 @@ tags: [CUDA Graph, Qwen3, PyTorch, torch.compile, reduce-overhead, Flash-Attenti
 mermaid: true
 ---
 
-> 系列姊妹篇：[看懂 Qwen3 + 识别算子融合机会](/posts/2026-05-07-qwen3-understand-model-identify-fusion.html) · [Triton Kernel 实战](/posts/2026-05-07-triton-kernel-fusion-practice.html) · [精度对齐实战](/posts/2026-05-08-fused-kernel-accuracy-alignment.html) · [Gradient Checkpointing 最大化](/posts/2026-05-08-gradient-checkpointing-qwen3-dense.html)
+> 系列姊妹篇：[看懂 Qwen3 + 识别算子融合机会](/2026/05/07/qwen3-understand-model-identify-fusion.html) · [Triton Kernel 实战](/2026/05/07/triton-kernel-fusion-practice.html) · [精度对齐实战](/2026/05/08/fused-kernel-accuracy-alignment.html) · [Gradient Checkpointing 最大化](/2026/05/08/gradient-checkpointing-qwen3-dense.html)
 >
 > CUDA Graph 是训推最后一个"免费午餐"——但前提是你**知道什么时候用、什么时候别碰**。动态 shape / 长度变化 / Python 控制流都会把它变成负收益。本篇按训练和推理两个场景分别讲 Qwen3-8B 下的合理用法 + 常见陷阱。
 
@@ -464,11 +464,11 @@ Layer 3: 跨 step 优化（仅训练）
 - [SGLang CUDA Graph Benchmark](https://sgl-project.github.io/references/benchmark_and_profiling.html)
 - [PyTorch 2.x GPT-Fast 博客（CUDA Graph + torch.compile 实战）](https://pytorch.org/blog/accelerating-generative-ai-2/)
 - 系列文：
-  - [看懂 Qwen3 + 识别算子融合机会](/posts/2026-05-07-qwen3-understand-model-identify-fusion.html)
-  - [从"调包"到手写 Triton Kernel](/posts/2026-05-07-triton-kernel-fusion-practice.html)
-  - [替换 Fused Kernel 后的精度对齐](/posts/2026-05-08-fused-kernel-accuracy-alignment.html)
-  - [Gradient Checkpointing 最大化](/posts/2026-05-08-gradient-checkpointing-qwen3-dense.html)
-  - [GPU/NCCL SOP](/posts/2026-05-07-training-inference-acceleration-troubleshooting-sop.html)
+  - [看懂 Qwen3 + 识别算子融合机会](/2026/05/07/qwen3-understand-model-identify-fusion.html)
+  - [从"调包"到手写 Triton Kernel](/2026/05/07/triton-kernel-fusion-practice.html)
+  - [替换 Fused Kernel 后的精度对齐](/2026/05/08/fused-kernel-accuracy-alignment.html)
+  - [Gradient Checkpointing 最大化](/2026/05/08/gradient-checkpointing-qwen3-dense.html)
+  - [GPU/NCCL SOP](/2026/05/07/training-inference-acceleration-troubleshooting-sop.html)
 
 ---
 

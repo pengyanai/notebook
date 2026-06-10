@@ -8,7 +8,7 @@ tags: [ASR, Whisper, Wav2Vec2, CTC, Seq2Seq, HuggingFace, pipeline, 预训练模
 mermaid: true
 ---
 
-> 本文是"语音模型三部曲"的**基础篇**。前两篇分别讲 [预处理与术语](/posts/2026-05-07-speech-model-preprocessing-glossary.html)（讲输入怎么来）和 [架构演进](/posts/2026-05-07-speech-recognition-architecture-evolution.html)（讲模型代际）。这一篇换个视角——**动手用预训练 ASR 模型**，把两大经典架构 Wav2Vec2（CTC）和 Whisper（Seq2Seq）的特性、差异、长音频处理全跑一遍。
+> 本文是"语音模型三部曲"的**基础篇**。前两篇分别讲 [预处理与术语](/2026/05/07/speech-model-preprocessing-glossary.html)（讲输入怎么来）和 [架构演进](/2026/05/07/speech-recognition-architecture-evolution.html)（讲模型代际）。这一篇换个视角——**动手用预训练 ASR 模型**，把两大经典架构 Wav2Vec2（CTC）和 Whisper（Seq2Seq）的特性、差异、长音频处理全跑一遍。
 >
 > 内容整合自 [HuggingFace Audio Course Unit 5](https://huggingface.co/learn/audio-course/en/chapter5/asr_models)，用中文重写并补充 mermaid 流程图与实战坑点。
 
@@ -419,8 +419,8 @@ graph LR
 - [Wav2Vec 2.0 Paper (Baevski et al., 2020)](https://arxiv.org/abs/2006.11477)
 - [OpenAI Whisper GitHub](https://github.com/openai/whisper)
 - [Whisper Model Card – Usage](https://huggingface.co/openai/whisper-base#usage)
-- [前篇（一）：语音模型预处理流程及常用术语详解](/posts/2026-05-07-speech-model-preprocessing-glossary.html)
-- [前篇（二）：语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR](/posts/2026-05-07-speech-recognition-architecture-evolution.html)
+- [前篇（一）：语音模型预处理流程及常用术语详解](/2026/05/07/speech-model-preprocessing-glossary.html)
+- [前篇（二）：语音识别模型架构演进：从 HMM-GMM 到 Whisper 到 Qwen3-ASR](/2026/05/07/speech-recognition-architecture-evolution.html)
 
 ---
 
