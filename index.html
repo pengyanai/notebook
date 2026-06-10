@@ -1,13 +1,11 @@
 ---
 layout: default
 ---
-{% assign post_count = site.posts.size %}
 <ul class="post-list">
 {% for post in site.posts %}
   <li>
     <span class="post-list-date">{{ post.date | date: "%Y-%m-%d" }}</span>
     <a class="post-list-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-    <span class="post-list-num">#{{ post_count | minus: forloop.index0 }}</span>
   </li>
 {% endfor %}
 </ul>

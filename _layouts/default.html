@@ -220,20 +220,6 @@
       })();
     </script>
 
-    <!-- Post list: auto-generate reverse-order numbers -->
-    <script>
-      (function() {
-        var items = document.querySelectorAll(".page-content .wrapper > ul:first-of-type li");
-        if (!items.length) return;
-        var total = items.length;
-        items.forEach(function(li, i) {
-          var num = document.createElement("span");
-          num.className = "post-list-num";
-          num.textContent = "#" + (total - i);
-          li.insertBefore(num, li.firstChild);
-        });
-      })();
-    </script>
   </body>
 
 </html>
