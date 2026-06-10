@@ -5,9 +5,7 @@ date: 2026-05-07
 author: Austin
 ---
 
-# Design Spec — 训推加速三新篇：精度对齐 / Gradient Checkpointing / CUDA Graph
-
-- 作者：Austin
+---- 作者：Austin
 - 日期：2026-05-07
 - 状态：draft（approved outline）
 

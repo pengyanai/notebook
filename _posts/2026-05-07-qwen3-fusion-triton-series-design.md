@@ -5,9 +5,7 @@ date: 2026-05-07
 author: Austin
 ---
 
-# Design Spec — 训推加速系列：看懂 Qwen3 + Fusion 识别 + Triton 实战
-
-- 作者：Austin
+---- 作者：Austin
 - 日期：2026-05-07
 - 状态：draft（approved outline，待实施）
 

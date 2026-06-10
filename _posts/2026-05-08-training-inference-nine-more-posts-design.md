@@ -5,9 +5,7 @@ date: 2026-05-08
 author: Austin
 ---
 
-# Design Spec — 训推加速系列深化 9 篇（2026-05-08）
-
-- 作者：Austin
+---- 作者：Austin
 - 状态：draft（outlines approved，待实施）
 - 关联：基于 [训推加速技术地图 post](/posts/2026-05-08-training-inference-acceleration-map.html) 的各行展开深化
 
