@@ -836,11 +836,8 @@ body {
   padding-bottom: 3rem;
 }
 
-/* Render optimization: skip off-screen content until near viewport */
-.post-content {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
-}
+/* Note: content-visibility: auto breaks MathJax rendering for off-screen formulas.
+   Do NOT enable on .post-content — MathJax needs layout access to all math elements. */
 
 /* Home: post list — only apply to homepage first ul */
 .page-content .wrapper > ul:first-of-type {
