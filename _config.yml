@@ -13,7 +13,7 @@ highlighter: rouge
 theme: minima
 
 # Performance: incremental rebuild (only changed files)
-incremental: true
+incremental: false
 
 # Kramdown settings for math formula support
 kramdown:
