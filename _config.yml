@@ -12,7 +12,9 @@ markdown: kramdown
 highlighter: rouge
 theme: minima
 
-# Performance: incremental rebuild (only changed files)
+# Performance: full rebuild on change (~1.5s for 88 posts)
+# Do NOT enable incremental: true — it prevents detection of new files in _posts/
+# Use: bundle exec jekyll serve --watch --force_polling
 incremental: false
 
 # Kramdown settings for math formula support
