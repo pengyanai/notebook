@@ -60,7 +60,7 @@
         return;
       }
       var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js';
+      script.src = '{{ site.cdn.fusejs }}';
       script.async = true;
       script.crossOrigin = 'anonymous';
       script.onload = function() { resolve(); };

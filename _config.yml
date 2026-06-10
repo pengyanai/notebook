@@ -1,23 +1,29 @@
-# Jekyll configuration — optimized for performance + live reload
+# ============================================================
+# Joseph's Notebook — Jekyll Configuration
+# ============================================================
+# Single source of truth. Templates reference site.xxx variables.
+# Local override: _config.local.yml (gitignored, for dev overrides)
+# ============================================================
+
+# --- Site metadata ---
 title: "Joseph's Notebook"
-description: "Joseph's Blog"
+description: "Personal technical blog — LLM training, systems engineering, tooling"
 url: "https://pengyanai.github.io"
 baseurl: "/"
+lang: "en"
+author: "Austin"
 
-# URL structure — clean date-based paths, no categories
+# --- URL structure ---
 permalink: /:year/:month/:day/:slug:output_ext
 
-# Build settings
+# --- Build ---
 markdown: kramdown
 highlighter: rouge
 theme: minima
+incremental: false  # Do NOT enable — prevents detection of new files in _posts/
+encoding: utf-8
 
-# Performance: full rebuild on change (~1.5s for 88 posts)
-# Do NOT enable incremental: true — it prevents detection of new files in _posts/
-# Use: bundle exec jekyll serve --watch --force_polling
-incremental: false
-
-# Kramdown settings for math formula support
+# --- Kramdown ---
 kramdown:
   math_engine: mathjax
   math_engine_opts:
@@ -25,18 +31,32 @@ kramdown:
     preview_as_code: false
   parse_block_html: true
   parse_span_html: true
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
 
-# SASS: compress output for smaller CSS
+# --- SASS ---
 sass:
   style: compressed
 
-# Plugins
+# --- Plugins ---
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
 
-# Exclude files from processing
+# --- Defaults (applied to all posts automatically) ---
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Austin"
+      show_reading_progress: true
+
+# --- Exclude from build ---
 exclude:
   - run.py
   - scripts
@@ -50,5 +70,30 @@ exclude:
   - intro.md
   - usage.md
 
-# Custom settings
-show_excerpts: false
+# --- Include (force processing) ---
+include:
+  - _headers
+
+# --- Feed ---
+feed:
+  path: feed.xml
+  limit: 20
+
+# --- SEO ---
+social:
+  name: Austin
+  links:
+    - https://github.com/pengyanai
+
+# --- Feature flags & CDN (referenced by templates as site.cdn.xxx) ---
+cdn:
+  mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"
+  mathjax_fonts: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/output/chtml/fonts/woff-v2"
+  mermaid: "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.12.0/mermaid.min.js"
+  fusejs: "https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"
+
+features:
+  mathjax: true
+  mermaid: true
+  search: true
+  reading_progress: true
