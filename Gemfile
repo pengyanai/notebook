@@ -10,6 +10,7 @@ gem "jekyll", "~> 3.9"
 # GitHub Pages plugins
 gem "jekyll-feed", "~> 0.15"
 gem "jekyll-seo-tag", "~> 2.8"
+gem "jekyll-sitemap", "~> 1.4"
 
 # Markdown parser
 gem "kramdown-parser-gfm"
