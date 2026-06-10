@@ -500,7 +500,7 @@ body {
   }
 
   .page-content .wrapper > ul:first-of-type li:active {
-    background: var(--accent);
+    background: hsl(221, 83%, 95%);
   }
 
   /* Hide index numbers on mobile */
@@ -851,6 +851,21 @@ body {
   border-bottom: 1px solid var(--border);
   font-size: 0.8125rem;
   color: var(--muted-foreground);
+  transition: background 0.15s ease, padding-left 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.page-content .wrapper > ul:first-of-type li:hover {
+  background: hsl(221, 83%, 97%);
+  border-left-color: hsl(221, 83%, 53%);
+  padding-left: calc(1rem - 3px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-content .wrapper > ul:first-of-type li:hover {
+    background: hsl(221, 40%, 12%);
+    border-left-color: hsl(221, 83%, 60%);
+  }
 }
 
 .page-content .wrapper > ul:first-of-type li:last-child {
@@ -877,7 +892,7 @@ body {
 }
 
 .page-content .wrapper > ul:first-of-type li a:hover {
-  color: var(--foreground);
+  color: hsl(221, 83%, 53%);
   text-decoration: none;
 }
 
@@ -886,7 +901,7 @@ body {
     color: hsl(0, 0%, 72%);
   }
   .page-content .wrapper > ul:first-of-type li a:hover {
-    color: hsl(0, 0%, 90%);
+    color: hsl(221, 91%, 70%);
   }
 }
 
@@ -916,14 +931,18 @@ article {
 .post-title,
 article h1 {
   font-size: 1.875rem;
-  font-weight: 600;
+  font-weight: 500;
   margin-top: 0;
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
-  color: var(--foreground);
+  color: hsl(0, 0%, 15%);
   letter-spacing: -0.025em;
   line-height: 1.3;
+}
+
+@media (prefers-color-scheme: dark) {
+  .post-title, article h1 { color: hsl(0, 0%, 85%); }
 }
 
 /* Post metadata */
@@ -997,20 +1016,25 @@ article h1 {
 
 article h2 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 500;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
-  color: var(--foreground);
+  color: hsl(0, 0%, 20%);
 }
 
 article h3 {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 500;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
-  color: var(--foreground);
+  color: hsl(0, 0%, 25%);
+}
+
+@media (prefers-color-scheme: dark) {
+  article h2 { color: hsl(0, 0%, 80%); }
+  article h3 { color: hsl(0, 0%, 75%); }
 }
 
 article p {
@@ -1249,8 +1273,9 @@ a:hover {
 
 .post-content a:hover {
   color: var(--link-hover);
-  background-color: hsl(221, 83%, 95%);
+  background-color: hsl(221, 83%, 92%);
   text-decoration-color: var(--link-hover);
+  box-shadow: 0 1px 0 0 var(--link);
 }
 
 .post-content a:visited {
@@ -1266,6 +1291,7 @@ a:hover {
 @media (prefers-color-scheme: dark) {
   .post-content a:hover {
     background-color: hsl(221, 60%, 18%);
+    box-shadow: 0 1px 0 0 var(--link);
   }
   .post-content a:visited:hover {
     background-color: hsl(221, 60%, 18%);
