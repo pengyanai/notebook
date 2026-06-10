@@ -37,7 +37,7 @@ date: 2026-06-10
 ---
 ```
 
-`layout: post` and `author: Austin` auto-applied via `defaults:` in `_config.yml`. Optional: `categories`, `tags`, `mermaid: true`.
+`layout: post` and `author: Joseph` auto-applied via `defaults:` in `_config.yml`. Optional: `categories`, `tags`, `mermaid: true`.
 
 Internal cross-references use permalink format: `[text](/2026/06/10/slug.html)` — NOT `/posts/slug.html`.
 

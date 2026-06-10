@@ -1,6 +1,6 @@
 # Joseph's Notebook
 
-> Personal technical blog by Austin. LLM training/inference engineering, systems optimization, tooling. 142 articles, 2023–2026.
+> Personal technical blog by Joseph. LLM training/inference engineering, systems optimization, tooling. 142 articles, 2023–2026.
 
 ## About
 

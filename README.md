@@ -28,7 +28,7 @@ Add `YYYY-MM-DD-slug.md` to `_posts/` with front matter:
 layout: post
 title: "Your Title"
 date: 2026-06-10
-author: Austin
+author: Joseph
 ---
 ```
 
