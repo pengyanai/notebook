@@ -1,3 +1,10 @@
+---
+layout: post
+title: "Design Spec — 训推加速系列：看懂 Qwen3 + Fusion 识别 + Triton 实战"
+date: 2026-05-07
+author: Austin
+---
+
 # Design Spec — 训推加速系列：看懂 Qwen3 + Fusion 识别 + Triton 实战
 
 - 作者：Austin
