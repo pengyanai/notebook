@@ -2,7 +2,7 @@
 
 Personal technical blog — LLM training/inference, systems engineering, tooling.
 
-**Live**: [pengyanai.github.io](https://pengyanai.github.io) · [GitLab Pages](https://11088830.gitlab.example.com/notebook/)
+**Live**: [pengyanai.github.io](https://pengyanai.github.io) · [GitLab Pages](https://11088830.pages.example.com/notebook/)
 
 ## Stack
 
