@@ -391,7 +391,7 @@ netstat -tlnp 2>/dev/null | grep ":23 " && echo "[FAIL] Telnet is ON" || echo "[
 
 echo "=== 2. SSH Ports ==="
 SSH_PORTS=$(netstat -tlnp 2>/dev/null | grep "sshd" | grep -c LISTEN)
-[ "$SSH_PORTS" -le 2 ] && echo "[PASS] SSH single port" || echo "[FAIL] SSH on $SSH_PORTS ports"
+[ "$SSH_PORTS" -le 2 ] && echo "[PASS] SSH single port" \|\| echo "[FAIL] SSH on $SSH_PORTS ports"
 
 echo "=== 3. SSH Config ==="
 grep -q "^PermitRootLogin no" /etc/ssh/sshd_config && echo "[PASS] Root login disabled" || echo "[FAIL]"

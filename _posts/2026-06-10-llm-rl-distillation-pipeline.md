@@ -185,7 +185,7 @@ $$\text{clip}(\rho_t, 1-\varepsilon_{\text{low}}, 1+\varepsilon_{\text{high}})$$
 训练完成后，不是直接用 RL checkpoint，而是：
 
 1. 计算 RL model 与 base model 的参数差 $\Delta = \theta_{\text{RL}} - \theta_{\text{base}}$
-2. 只保留 top-25% 最大的 $|\Delta|$
+2. 只保留 top-25% 最大的 $\|\Delta\|$
 3. 乘以衰减系数 0.7
 4. Merge 回 base：$\theta_{\text{final}} = \theta_{\text{base}} + 0.7 \cdot \text{top25\%}(\Delta)$
 

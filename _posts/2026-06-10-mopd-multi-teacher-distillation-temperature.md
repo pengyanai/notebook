@@ -145,7 +145,7 @@ Reverse KL（$\text{KL}(q_S \| p_T)$）让 student 选择性地 mode-seek，只�
 
 > On-policy distillation 的梯度 $\equiv$ KL-constrained RL 的 policy gradient。
 
-具体地，teacher log-probability $\log p_T(y|x)$ 可以视为 reward function，而蒸馏过程等价于：
+具体地，teacher log-probability $\log p_T(y\|x)$ 可以视为 reward function，而蒸馏过程等价于：
 
 $$\max_\theta \; \mathbb{E}_{y \sim q_\theta} [\log p_T(y|x)] - \beta \cdot \text{KL}(q_\theta \| q_{\text{ref}})$$
 

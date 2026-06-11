@@ -19,7 +19,7 @@ RL 训练（无论 PPO、GRPO 还是 REINFORCE）每个 step 分两个阶段：
 1. **Rollout**：用当前策略生成 trajectory（推理模式，追求速度）
 2. **Gradient Update**：在这些 trajectory 上计算 loss 并反向传播（训练模式，追求精度）
 
-核心假设：梯度更新阶段对 trajectory 的评估，必须与 rollout 阶段生成 trajectory 时的策略**完全一致**。否则 importance sampling ratio $\rho = \pi_\text{new}(a|s) / \pi_\text{old}(a|s)$ 的分母就是错的，梯度方向被污染。
+核心假设：梯度更新阶段对 trajectory 的评估，必须与 rollout 阶段生成 trajectory 时的策略**完全一致**。否则 importance sampling ratio $\rho = \pi_\text{new}(a\|s) / \pi_\text{old}(a\|s)$ 的分母就是错的，梯度方向被污染。
 
 对 Dense 模型，这个假设自然成立——同样的权重、同样的输入，前向传播结果相同（数值噪声只影响连续值，不改变决策边界）。
 

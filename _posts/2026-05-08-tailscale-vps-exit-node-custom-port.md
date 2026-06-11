@@ -192,14 +192,14 @@ See https://tailscale.com/s/ethtool-config-udp-gro
 **一次性应用**：
 
 ```bash
-IFACE=$(ip -o route get 8.8.8.8 | awk '{print $5}')
+IFACE=$(ip -o route get 8.8.8.8 \| awk '{print $5}')
 sudo ethtool -K $IFACE rx-udp-gro-forwarding on rx-gro-list off
 ```
 
 **持久化**（重启后也生效）—— 用 networkd-dispatcher 在接口 routable 时自动触发：
 
 ```bash
-IFACE=$(ip -o route get 8.8.8.8 | awk '{print $5}')
+IFACE=$(ip -o route get 8.8.8.8 \| awk '{print $5}')
 sudo tee /etc/networkd-dispatcher/routable.d/50-tailscale-gro >/dev/null <<EOF
 #!/bin/sh
 ethtool -K ${IFACE} rx-udp-gro-forwarding on rx-gro-list off 2>/dev/null || true

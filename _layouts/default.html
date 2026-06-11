@@ -67,15 +67,22 @@
         tex: {
           inlineMath: [['$', '$'], ['\\(', '\\)']],
           displayMath: [['$$', '$$'], ['\\[', '\\]']],
-          processEscapes: true
+          processEscapes: true,
+          processEnvironments: true
         },
         options: {
-          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+          ignoreHtmlClass: 'tex2jax_ignore',
+          processHtmlClass: 'tex2jax_process'
         },
-        chtml: {
-          fontURL: '{{ site.cdn.mathjax_fonts }}',
-          adaptiveCSS: true,
-          matchFontHeight: true
+        svg: {
+          fontCache: 'global'
+        },
+        startup: {
+          ready: function() {
+            MathJax.startup.defaultReady();
+            MathJax.typesetPromise();
+          }
         }
       };
     </script>

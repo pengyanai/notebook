@@ -164,7 +164,7 @@ $$
 \mathcal{L}^\text{PPO}(\theta) = \mathbb{E}\left[\min\left(r_t(\theta) \hat{A}_t, \mathrm{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t\right)\right]
 $$
 
-- $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_\text{old}}(a_t|s_t)}$：重要性采样比
+- $r_t(\theta) = \frac{\pi_\theta(a_t\|s_t)}{\pi_{\theta_\text{old}}(a_t\|s_t)}$：重要性采样比
 - $\hat{A}_t$：GAE 计算的 advantage
 - **需要 Critic 模型**估计 value function
 

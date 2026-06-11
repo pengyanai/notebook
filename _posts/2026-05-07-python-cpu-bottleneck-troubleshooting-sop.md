@@ -601,7 +601,7 @@ gantt
 
 ```bash
 # 1. 看 worker CPU 是否吃满（应该接近 100% 单核）
-pidstat -p $(pgrep -f 'train.py' | tr '\n' ',' | sed 's/,$//') -r -u 1
+pidstat -p $(pgrep -f 'train.py' \| tr '\n' ',' \| sed 's/,$//') -r -u 1
 
 # 2. 看是否等 IO
 iostat -xm 1                  # %util 高 = IO bound

@@ -304,7 +304,7 @@ claude auth logout
 cc() {
   local profile="${1:-personal}"
   local f="$HOME/.config/claude/$profile.json"
-  [[ -f "$f" ]] || { echo "no profile: $profile"; return 1; }
+  [[ -f "$f" ]] \|\| { echo "no profile: $profile"; return 1; }
   shift
   claude --settings "$f" "$@"
 }

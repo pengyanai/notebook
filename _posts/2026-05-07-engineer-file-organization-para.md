@@ -313,7 +313,7 @@ EOF
 ```bash
 find . -maxdepth 1 -type f \( -name "*.pptx" -o -name "*.docx" -o -name "*.xlsx" \) | \
   while read f; do
-    file -b "$f" | grep -qE 'Zip archive|Microsoft' && echo "DECRYPTED: $f"
+    file -b "$f" \| grep -qE 'Zip archive\|Microsoft' && echo "DECRYPTED: $f"
   done
 ```
 
