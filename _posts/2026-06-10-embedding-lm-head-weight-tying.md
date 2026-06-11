@@ -104,7 +104,7 @@ PLE (Per-Layer Embedding) 是 2025 年提出的一个看似"反直觉"的方案�
 
 具体做法：对第 $l$ 层，增加一个 $W_E^{(l)} \in \mathbb{R}^{V \times d_{\text{gate}}}$，其中 $d_{\text{gate}} \ll d$。前向时：
 
-$$g^{(l)} = W_E^{(l)}[\text{token\_ids},:] \quad \text{(纯 lookup，无 matmul)}$$
+$$g^{(l)} = W_E^{(l)}[\text{token_ids},:] \quad \text{(纯 lookup，无 matmul)}$$
 $$h^{(l)} = h^{(l-1)} + g^{(l)} \odot \text{FFN}(h^{(l-1)})$$
 
 ### 3.2 参数暴涨但 FLOPs 几乎不变
@@ -225,7 +225,7 @@ graph TD
 
 对于 3B 模型在 auto-regressive 解码时，每生成一个 token 需要：
 
-$$\text{lm\_head FLOPs} = 2 \times d \times V = 2 \times 2560 \times 100096 = 512{,}491{,}520 \approx 512\text{M FLOPs}$$
+$$\text{lm_head FLOPs} = 2 \times d \times V = 2 \times 2560 \times 100096 = 512{,}491{,}520 \approx 512\text{M FLOPs}$$
 
 对比单层 transformer (attention + FFN)：
 

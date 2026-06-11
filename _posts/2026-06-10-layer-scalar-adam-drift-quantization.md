@@ -167,7 +167,7 @@ decay_params.append(v_layer_scalar_L31)
 
 weight_decay 会把参数往 0 拉（不是往 1.0 拉）。平衡时：
 
-$$\text{drift\_force} = \text{wd} \times lr \times \theta_{eq}$$
+$$\text{drift_force} = \text{wd} \times lr \times \theta_{eq}$$
 $$0.0007 = 0.1 \times 0.00085 \times \theta_{eq}$$
 $$\theta_{eq} \approx 8.2$$
 

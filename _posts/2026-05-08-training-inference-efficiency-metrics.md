@@ -202,7 +202,7 @@ x 轴单位 `秒.毫秒`（例如 `0.200s` = 200ms，`4.825s` = 4825ms）。
 **定义**：从用户发请求到收到**第一个输出 token** 的时间。
 
 $$
-\text{TTFT} = T_\text{first\_token} - T_\text{request\_arrival}
+\text{TTFT} = T_\text{first_token} - T_\text{request_arrival}
 $$
 
 包含：请求排队 + 前处理 + prefill 计算 + 网络回传。
@@ -216,7 +216,7 @@ $$
 **定义**：decode 阶段每个 token 的平均时间。
 
 $$
-\text{TPOT} = \frac{T_\text{completion} - T_\text{first\_token}}{N_\text{output\_tokens} - 1}
+\text{TPOT} = \frac{T_\text{completion} - T_\text{first_token}}{N_\text{output_tokens} - 1}
 $$
 
 **Qwen3-8B 参考**：H100 batch=1 约 20~30 ms/token；batched 到 batch=16 降到 ~15 ms/token。
@@ -234,7 +234,7 @@ $$
 ### 3.4 E2E Latency
 
 $$
-\text{E2E} = T_\text{completion} - T_\text{request\_arrival} = \text{TTFT} + \text{TPOT} \times (N_\text{output} - 1)
+\text{E2E} = T_\text{completion} - T_\text{request_arrival} = \text{TTFT} + \text{TPOT} \times (N_\text{output} - 1)
 $$
 
 对**非流式 API** 最重要（用户看不到中间 token）。
@@ -349,7 +349,7 @@ $$
 ### 5.3 KV Cache 大小（推理）
 
 $$
-\text{KV} = 2 \times N_\text{layers} \times N_\text{kv\_heads} \times d_\text{head} \times \text{seqlen} \times \text{batch} \times \text{dtype\_bytes}
+\text{KV} = 2 \times N_\text{layers} \times N_\text{kv_heads} \times d_\text{head} \times \text{seqlen} \times \text{batch} \times \text{dtype_bytes}
 $$
 
 Qwen3-8B（36 层，GQA kv_heads=8，head_dim=128）：
@@ -400,7 +400,7 @@ $$
 ### 7.2 SLO Attainment Rate
 
 $$
-\text{SLO Rate} = \frac{N_\text{within\_SLO}}{N_\text{total}}
+\text{SLO Rate} = \frac{N_\text{within_SLO}}{N_\text{total}}
 $$
 
 业界通常要求 **≥ 99%**（P99 < SLO）。
@@ -424,7 +424,7 @@ $$
 | 吞吐 | tokens/sec | $N_\text{tokens} / T$ | tokens/s |
 | 吞吐 | **TGS** | $N_\text{tokens} / (N_\text{GPUs} \cdot T)$ | tokens/GPU/s |
 | 吞吐 | QPS | $N_\text{requests} / T$ | req/s |
-| 延迟 | TTFT | $T_\text{first\_token} - T_\text{start}$ | s |
+| 延迟 | TTFT | $T_\text{first_token} - T_\text{start}$ | s |
 | 延迟 | TPOT | $(T_\text{end} - T_\text{first}) / (N_\text{out} - 1)$ | s/token |
 | 延迟 | E2E | TTFT $+$ TPOT $\cdot (N-1)$ | s |
 | 利用率 | MFU | ${\text{Model FLOPs}}/({\text{PeakFLOPS} \cdot T_\text{step}})$ | % |

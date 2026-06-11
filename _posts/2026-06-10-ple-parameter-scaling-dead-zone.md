@@ -36,7 +36,7 @@ graph LR
 
 每层的注入公式：
 
-$$h_l = h_l + \text{gate}_l \cdot \text{proj}_l(\text{PLE}_l[\text{token\_id}])$$
+$$h_l = h_l + \text{gate}_l \cdot \text{proj}_l(\text{PLE}_l[\text{token_id}])$$
 
 其中 gate 是 learned scalar/vector，proj 是 dP→H 的线性映射。
 

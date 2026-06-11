@@ -66,7 +66,7 @@ graph LR
 clip threshold 的选择逻辑其实很清晰：
 
 $$
-\text{clip\_threshold} = k \times \mathbb{E}[\|g\|_2], \quad k \in [3, 10]
+\text{clip_threshold} = k \times \mathbb{E}[\|g\|_2], \quad k \in [3, 10]
 $$
 
 我们的情况：$\mathbb{E}[\|g\|_2] \approx 0.21$，clip=1.0 意味着 $k \approx 4.8$。这是一个合理的安全系数——允许正常的梯度波动，但截断真正的异常值。

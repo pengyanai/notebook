@@ -59,7 +59,7 @@ BFD 的朴素实现对每个文档要遍历所有 bin 找 best-fit，复杂度�
 
 OBFD（Optimized BFD）的关键 insight：token 长度是整数，且范围有限——$[1, L]$，而 $L$ 通常只有 2048 或 8192，远小于文档数 $N$。
 
-做法：用一棵有 $L$ 个叶节点的 segment tree，每个叶节点 $i$ 存储"剩余容量恰好为 $i$ 的 bin 集合"。查询 best-fit 变成：在 $[\text{chunk\_len}, L]$ 区间内找最小值对应的 bin，复杂度 $O(\log L)$。
+做法：用一棵有 $L$ 个叶节点的 segment tree，每个叶节点 $i$ 存储"剩余容量恰好为 $i$ 的 bin 集合"。查询 best-fit 变成：在 $[\text{chunk_len}, L]$ 区间内找最小值对应的 bin，复杂度 $O(\log L)$。
 
 | 文档规模 | BFD 耗时 | OBFD 耗时 | 加速比 |
 |---------|---------|----------|-------|

@@ -19,10 +19,10 @@ tags: [attention-residual, Triton, kernel-optimization, training-efficiency, arc
 Block Attention Residual 的想法很简单：把连续 4 层组成一个 block，让 layer i 的 pre-softmax logits 作为 layer i+1 的 additive bias 传递下去。公式上：
 
 $$
-A_i = \text{softmax}\left(\frac{Q_i K_i^T}{\sqrt{d}} + \text{logit\_residual}_{i-1}\right)
+A_i = \text{softmax}\left(\frac{Q_i K_i^T}{\sqrt{d}} + \text{logit_residual}_{i-1}\right)
 $$
 
-其中 $\text{logit\_residual}_{i-1}$ 就是上一层 softmax 之前的 raw attention scores。后一层在计算 attention 时能"看到"前一层关注了什么位置，而不需要额外的 cross-attention 模块或可学习参数。
+其中 $\text{logit_residual}_{i-1}$ 就是上一层 softmax 之前的 raw attention scores。后一层在计算 attention 时能"看到"前一层关注了什么位置，而不需要额外的 cross-attention 模块或可学习参数。
 
 ```mermaid
 graph TD
@@ -79,7 +79,7 @@ FlashAttention 的核心优势是**不 materialize 完整的 attention matrix**�
 Block Attention Residual 要求把 pre-softmax logits 传给下一层。在 PyTorch 层面实现，你被迫：
 
 1. **禁用 FlashAttention**，改用标准 attention 实现（否则拿不到中间 logits）
-2. **Materialize 完整 attention matrix**：$(\text{seq\_len} \times \text{seq\_len})$ per head，对 3B 模型（20 Q heads）这是巨大的显存开销
+2. **Materialize 完整 attention matrix**：$(\text{seq_len} \times \text{seq_len})$ per head，对 3B 模型（20 Q heads）这是巨大的显存开销
 3. **额外的 memory allocation + HBM 读写**：每层多一次 full attention matrix 的 store 和 load
 
 结果：forward pass 时间接近翻倍，整体训练 +90%。一个"免费"的 loss 收益变成了天价的计算开销。

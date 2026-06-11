@@ -43,7 +43,7 @@ LLM 推理分两个阶段：
 Decode 的数学刻画：
 
 $$
-\text{TPOT} \approx \frac{N_\text{params} \times \text{bytes\_per\_param}}{\text{HBM bandwidth}}
+\text{TPOT} \approx \frac{N_\text{params} \times \text{bytes_per_param}}{\text{HBM bandwidth}}
 $$
 
 Qwen3-8B + bf16 + H100（HBM3 ~3TB/s）：

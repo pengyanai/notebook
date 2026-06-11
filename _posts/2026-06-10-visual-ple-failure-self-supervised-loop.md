@@ -54,7 +54,7 @@ Text PLE 的工作流程：
 
 我们计算不同 cluster_id 对应的 PLE embedding 之间的 cosine similarity：
 
-$$\text{cos\_sim} \approx 0.000$$
+$$\text{cos_sim} \approx 0.000$$
 
 不同 cluster 的 embedding 之间几乎**零可区分结构**。作为对比，text PLE 的 embedding 在同样步数下已经形成了明确的语义聚类（high-frequency token 和 low-frequency token 的 embedding 呈现清晰分化）。
 
@@ -147,7 +147,7 @@ VQ-VAE / LFQ / BSQ 除了共享上述闭环断裂的根本问题，还额外叠�
 
 Vision encoder 已经提供了 rich continuous features。从信息论角度：
 
-$$H(\text{continuous vision features}) \gg H(\text{discrete cluster\_id})$$
+$$H(\text{continuous vision features}) \gg H(\text{discrete cluster_id})$$
 
 离散 cluster_id 是连续特征的有损压缩。当连续通道已经传递了完整信息时，模型没有任何理由去利用 PLE 提供的窄带离散通道。
 
@@ -155,7 +155,7 @@ $$H(\text{continuous vision features}) \gg H(\text{discrete cluster\_id})$$
 
 从 NTP loss 到 visual PLE table 的梯度路径：
 
-$$\text{NTP loss} \rightarrow \text{lm\_head} \rightarrow \text{text hidden states} \rightarrow \text{cross-attention} \rightarrow \text{visual hidden states} \rightarrow \text{PLE table}$$
+$$\text{NTP loss} \rightarrow \text{lm_head} \rightarrow \text{text hidden states} \rightarrow \text{cross-attention} \rightarrow \text{visual hidden states} \rightarrow \text{PLE table}$$
 
 每经过一层 attention + FFN，梯度量级至少衰减一个数量级。经过数十层的传播，到达 PLE table 时梯度已经严重稀释。
 

@@ -106,7 +106,7 @@ graph LR
 ### 1.5 时间占比的核心定律
 
 $$
-T_\text{RL step} = T_\text{①rollout} + T_\text{②old\_lp} + T_\text{③ref\_lp} + T_\text{④reward} + T_\text{⑤⑥update}
+T_\text{RL step} = T_\text{①rollout} + T_\text{②old_lp} + T_\text{③ref_lp} + T_\text{④reward} + T_\text{⑤⑥update}
 $$
 
 **Rollout 是瓶颈**——这就是为什么 **vLLM / SGLang 成为 RL 训练的核心组件**。没有它们，Rollout 阶段的吞吐会掉到 transformers naive 推理的 1/10~1/50。

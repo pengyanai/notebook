@@ -73,7 +73,7 @@ KV head 数量选择有三个约束：
 
 单个 token 在单层的 KV Cache 占用：
 
-$$\text{KV\_per\_token\_per\_layer} = \text{num\_kv\_heads} \times \text{head\_dim} \times 2_{(K+V)} \times \text{bytes}$$
+$$\text{KV_per_token_per_layer} = \text{num_kv_heads} \times \text{head_dim} \times 2_{(K+V)} \times \text{bytes}$$
 
 $$= 4 \times 128 \times 2 \times 2\text{B (FP16)} = 2048 \text{ bytes}$$
 

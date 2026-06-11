@@ -35,7 +35,7 @@ $$P_{emb} = V \times d_{model}$$
 
 其中 $V$ 是词表大小，$d_{model}$ 是隐藏维度。如果 input embedding 和 output lm_head 不共享权重（untied），这个代价翻倍：
 
-$$P_{emb+lm\_head} = 2 \times V \times d_{model}$$
+$$P_{emb+lm_head} = 2 \times V \times d_{model}$$
 
 对于这个 3B 模型：
 

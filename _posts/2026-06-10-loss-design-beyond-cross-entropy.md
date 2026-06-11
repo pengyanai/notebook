@@ -168,7 +168,7 @@ LR 几乎相同（差异 <0.3%，可忽略），但 **micro_batch_size 从 4 降
 
 在 per-token loss 下，一条多模态样本的 loss：
 
-$$\mathcal{L} = \frac{1}{T_{\text{total}}} \sum_{t \in \text{text\_response}} \ell_t$$
+$$\mathcal{L} = \frac{1}{T_{\text{total}}} \sum_{t \in \text{text_response}} \ell_t$$
 
 （visual tokens 通常不参与 loss 计算，只有文本 response 部分算 loss）
 
@@ -187,9 +187,9 @@ $$\text{稀释倍数} \approx \frac{1}{0.16} \times \frac{1}{4} \times 4 = \frac
 
 但真正的问题来自 **micro_batch_size 的差异**：纯文本用 micro_batch=4，多模态用 micro_batch=1。在 global batch size 相同的情况下，多模态需要 4x 的 gradient accumulation steps。结合 per-token 归一化：
 
-$$\text{总稀释} = \frac{\text{纯文本每步有效 tokens}}{\text{多模态每步有效 tokens}} = \frac{4 \times T_{\text{text\_eff}}}{1 \times T_{\text{mm\_eff}}}$$
+$$\text{总稀释} = \frac{\text{纯文本每步有效 tokens}}{\text{多模态每步有效 tokens}} = \frac{4 \times T_{\text{text_eff}}}{1 \times T_{\text{mm_eff}}}$$
 
-取 $T_{\text{text\_eff}} \approx 4096$（纯文本 packing 后几乎全是有效 token），$T_{\text{mm\_eff}} \approx 655$（多模态 response 部分）：
+取 $T_{\text{text_eff}} \approx 4096$（纯文本 packing 后几乎全是有效 token），$T_{\text{mm_eff}} \approx 655$（多模态 response 部分）：
 
 $$\text{稀释} = \frac{4 \times 4096}{1 \times 655} \approx 25x$$
 

@@ -124,7 +124,7 @@ graph TD
 |------|------|-----------|---------|
 | Top-p (nucleus) | $\sum_{v \in S} P(v) \geq p$ | 极高 | 对话、写作 |
 | Top-k | 保留概率前 k 个 token | 极高 | 简单截断 |
-| Min-p | $P(v) \geq \text{min\_p} \cdot P_{\max}$ | 极高 | 精细控制 |
+| Min-p | $P(v) \geq \text{min_p} \cdot P_{\max}$ | 极高 | 精细控制 |
 | Temperature | $P(v) \propto \exp(z_v / \tau)$ | 极高 | 与其他策略叠加 |
 | Greedy | $\arg\max$ | 极高 | 结构化输出 |
 | Beam search | 维护 k 条序列 | **极低** | 翻译（离线） |
