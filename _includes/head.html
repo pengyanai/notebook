@@ -2,20 +2,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {%- seo -%}
-  {%- comment -%} Preconnect to external domains used in posts (GitHub, user-images) and CDNs {%- endcomment -%}
+
+  {%- comment -%} DNS prefetch + preconnect to CDN {%- endcomment -%}
+  <link rel="dns-prefetch" href="https://fastly.jsdelivr.net">
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://github.com" crossorigin>
   <link rel="preconnect" href="https://user-images.githubusercontent.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-  {%- comment -%} Single CSS: style.scss already imports minima theme, main.css is redundant {%- endcomment -%}
+
+  {%- comment -%} CSS — render-blocking, preload {%- endcomment -%}
   <link rel="preload" href="{{ "/assets/css/style.css" | relative_url }}" as="style">
   <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
-  {%- comment -%} Preload search assets for instant search open {%- endcomment -%}
+
+  {%- comment -%} Search index — preload during idle for instant search {%- endcomment -%}
   <link rel="preload" href="{{ "/search.json" | relative_url }}" as="fetch" crossorigin>
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  {%- comment -%} MathJax — preload script (not executed until <script> tag) {%- endcomment -%}
+  <link rel="preload" href="{{ site.cdn.mathjax }}" as="script">
+
+  {%- comment -%} MathJax CHTML — preload primary font to avoid FOUT on math pages {%- endcomment -%}
+  <link rel="preload" href="{{ site.cdn.mathjax_fonts }}/TeXMath-Regular.woff" as="font" type="font/woff" crossorigin>
+
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
   {%- endif -%}
-  {%- comment -%} MathJax will be conditionally loaded only when math formulas are detected {%- endcomment -%}
 </head>

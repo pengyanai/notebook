@@ -61,32 +61,31 @@
       </div>
     </main>
 
-    {%- comment -%} MathJax for math formula rendering {%- endcomment -%}
+    {%- comment -%} MathJax — conditional load, only on pages with math {%- endcomment -%}
     <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']],
-          displayMath: [['$$', '$$'], ['\\[', '\\]']],
-          processEscapes: true,
-          processEnvironments: true
-        },
-        options: {
-          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-          ignoreHtmlClass: 'tex2jax_ignore',
-          processHtmlClass: 'tex2jax_process'
-        },
-        svg: {
-          fontCache: 'global'
-        },
-        startup: {
-          ready: function() {
-            MathJax.startup.defaultReady();
-            MathJax.typesetPromise();
+      (function() {
+        var body = document.body.textContent || '';
+        var hasMath = /\\\[/ .test(body) || /\$\$/.test(body) || /[^$]\$[^$]/.test(body);
+        if (!hasMath) return;
+        window.MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+          },
+          chtml: { fontURL: '{{ site.cdn.mathjax_fonts }}' },
+          startup: {
+            ready: function() {
+              MathJax.startup.defaultReady();
+            }
           }
-        }
-      };
+        };
+        var s = document.createElement('script');
+        s.src = '{{ site.cdn.mathjax }}';
+        s.async = true;
+        document.head.appendChild(s);
+      })();
     </script>
-    <script id="MathJax-script" async src="{{ site.cdn.mathjax }}"></script>
 
     {%- comment -%} Mermaid.js for flowchart, sequence diagram, etc. - lazy loaded {%- endcomment -%}
     <script>
