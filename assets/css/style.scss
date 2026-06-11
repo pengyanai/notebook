@@ -154,7 +154,7 @@ body {
 .nav-link {
   font-size: 0.9375rem;
   font-weight: 400;
-  color: hsl(0, 0%, 45%);
+  color: var(--muted-foreground);
   text-decoration: none;
   padding: 0.375rem 0.75rem;
   border-radius: var(--radius);
@@ -184,11 +184,8 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  .nav-link {
-    color: hsl(0, 0%, 55%);
-  }
   .nav-link:hover {
-    color: hsl(0, 0%, 90%);
+    color: var(--foreground);
   }
 }
 
@@ -715,8 +712,10 @@ body {
   font-size: 0.9375rem;
   color: var(--foreground);
   text-decoration: none;
-  transition: background 0.1s;
+  transition: background 0.1s, border-left-color 0.1s;
   border-bottom: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  padding-left: calc(1rem - 3px);
 }
 
 .search-result-item:last-child {
@@ -734,30 +733,20 @@ body {
   background: var(--accent);
   color: var(--foreground);
   text-decoration: none;
-  border-left: 3px solid var(--primary);
-  margin-left: 0;
-  padding-left: calc(1rem - 3px);
+  border-left-color: var(--primary);
 }
 
 .search-result-title {
   font-weight: 600;
   margin-bottom: 0.25rem;
   line-height: 1.4;
-  color: hsl(0, 0%, 20%);
-  transition: color 0.15s;
+  color: var(--foreground);
+  opacity: 0.8;
+  transition: opacity 0.15s;
 }
 
 .search-result-item:hover .search-result-title {
-  color: hsl(0, 0%, 3.9%);
-}
-
-@media (prefers-color-scheme: dark) {
-  .search-result-title {
-    color: hsl(0, 0%, 85%);
-  }
-  .search-result-item:hover .search-result-title {
-    color: hsl(0, 0%, 98%);
-  }
+  opacity: 1;
 }
 
 .search-result-snippet {
@@ -782,7 +771,6 @@ body {
 
 @media (prefers-color-scheme: dark) {
   .search-highlight {
-    background: hsl(45, 93%, 47%);
     color: hsl(0, 0%, 9%);
   }
 }
@@ -796,7 +784,6 @@ body {
 
 .search-hint {
   padding: 1.25rem 1.25rem 1rem;
-  border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 1.125rem;
@@ -913,23 +900,14 @@ body {
 .page-content .wrapper > ul:first-of-type li {
   margin: 0;
   padding: 0.5rem 0;
-  border-bottom: 1px solid hsl(0, 0%, 92%);
+  border-bottom: 1px solid var(--border);
   font-size: 0.8125rem;
   color: var(--muted-foreground);
   transition: background 0.1s;
 }
 
 .page-content .wrapper > ul:first-of-type li:hover {
-  background: hsl(0, 0%, 97%);
-}
-
-@media (prefers-color-scheme: dark) {
-  .page-content .wrapper > ul:first-of-type li {
-    border-bottom-color: hsl(0, 0%, 18%);
-  }
-  .page-content .wrapper > ul:first-of-type li:hover {
-    background: hsl(0, 0%, 10%);
-  }
+  background: var(--accent);
 }
 
 .page-content .wrapper > ul:first-of-type li:last-child {
@@ -1148,7 +1126,7 @@ article blockquote p:last-child {
 .page-content .highlighter-rouge code {
   font-size: 0.875em;
   padding: 0.2em 0.4em;
-  background: hsl(0, 0%, 96.1%) !important; /* shadcn muted bg */
+  background: var(--muted) !important;
   color: var(--foreground);
   border-radius: calc(var(--radius) - 2px);
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
@@ -1421,19 +1399,8 @@ a:hover {
   line-height: 1.7;
 }
 
-/* Dark mode support */
+/* Dark mode: slightly boost SVG contrast */
 @media (prefers-color-scheme: dark) {
-  .post-content .MathJax {
-    background: var(--muted);
-    color: var(--foreground);
-  }
-  
-  .post-content .MathJax_Display {
-    background: var(--muted);
-    border-color: var(--border);
-  }
-  
-  /* Enhanced contrast for dark mode */
   .post-content .MathJax svg,
   .post-content .MathJax_Display svg {
     filter: contrast(1.05);
