@@ -171,7 +171,9 @@
       }, 50);
     });
     if (index && fuse) {
-      renderResults(index);
+      resultsEl.innerHTML = '';
+      emptyEl.classList.add('hidden');
+      hintEl.classList.remove('hidden');
     } else {
       resultsEl.innerHTML = '';
       emptyEl.classList.add('hidden');
@@ -685,7 +687,9 @@
     var q = (input.value || '').trim();
     if (!index || !fuse) return;
     if (q.length === 0) {
-      renderResults(index);
+      resultsEl.innerHTML = '';
+      emptyEl.classList.add('hidden');
+      hintEl.classList.remove('hidden');
       return;
     }
     
