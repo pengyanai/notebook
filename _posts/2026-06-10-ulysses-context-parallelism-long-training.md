@@ -364,10 +364,10 @@ graph TD
 
 ## References
 
-1. Jacobs et al., "DeepSpeed Ulysses: System Optimizations for Enabling Training of Extreme Long Sequence Transformer Models", arXiv:2309.14509, 2023.
-2. Liu et al., "Ring Attention with Blockwise Transformers for Near-Infinite Context", arXiv:2310.01889, 2023.
+1. Jacobs et al., "DeepSpeed Ulysses: System Optimizations for Enabling Training of Extreme Long Sequence Transformer Models", [arXiv:2309.14509](https://arxiv.org/abs/2309.14509), 2023.
+2. Liu et al., "Ring Attention with Blockwise Transformers for Near-Infinite Context", [arXiv:2310.01889](https://arxiv.org/abs/2310.01889), 2023.
 3. Microsoft, "MAI-Thinking-1 Technical Report", 2026.
-4. AI2, "OLMo 3: The Next Generation of Open Language Models", arXiv:2512.13961, 2025.
-5. DeepSeek-AI, "DeepSeek-V3 Technical Report", arXiv:2412.19437, 2024.
-6. OpenBMB, "MiniCPM4 Technical Report", arXiv:2506.07900, 2025.
+4. AI2, "OLMo 3: The Next Generation of Open Language Models", [arXiv:2512.13961](https://arxiv.org/abs/2512.13961), 2025.
+5. DeepSeek-AI, "DeepSeek-V3 Technical Report", [arXiv:2412.19437](https://arxiv.org/abs/2412.19437), 2024.
+6. OpenBMB, "MiniCPM4 Technical Report", [arXiv:2506.07900](https://arxiv.org/abs/2506.07900), 2025.
 7. NVIDIA, "Megatron-LM Context Parallelism Documentation", 2024.

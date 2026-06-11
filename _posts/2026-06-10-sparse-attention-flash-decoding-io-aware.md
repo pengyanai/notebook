@@ -361,11 +361,11 @@ flowchart TD
 
 ## 参考文献
 
-- [1] Dao, T. et al. "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness." arXiv:2205.14135
-- [2] Dao, T. "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning." arXiv:2307.08691
+- [1] Dao, T. et al. "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness." [arXiv:2205.14135](https://arxiv.org/abs/2205.14135)
+- [2] Dao, T. "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning." [arXiv:2307.08691](https://arxiv.org/abs/2307.08691)
 - [3] Dao, T. "Flash-Decoding for long-context inference." Blog post, 2023.
-- [4] MiniCPM4 Technical Report (InfLLM v2). arXiv:2506.07900
+- [4] MiniCPM4 Technical Report (InfLLM v2). [arXiv:2506.07900](https://arxiv.org/abs/2506.07900)
 - [5] MAI-Thinking-1. Microsoft Technical Report, 2025.
 - [6] DeepSeek-V4 (CSA). Technical Report, 2026.
 - [7] Shi, H. et al. "Fewer Truncations Improve Language Modeling." ICML 2024.
-- [8] TST (Token Superposition Training). arXiv:2605.06546
+- [8] TST (Token Superposition Training). [arXiv:2605.06546](https://arxiv.org/abs/2605.06546)

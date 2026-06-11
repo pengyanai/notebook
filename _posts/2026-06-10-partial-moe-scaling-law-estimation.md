@@ -123,5 +123,5 @@ flowchart TD
 ## References
 
 1. Clark, A., et al. (2022). Unified Scaling Laws for Routed Language Models. *ICML 2022*.
-2. Krajewski, J., et al. (2024). Scaling Laws for Fine-Grained Mixture of Experts. *arXiv:2402.07871*.
+2. Krajewski, J., et al. (2024). Scaling Laws for Fine-Grained Mixture of Experts. *[arXiv:2402.07871](https://arxiv.org/abs/2402.07871)*.
 3. Hoffmann, J., et al. (2022). Training Compute-Optimal Large Language Models (Chinchilla). *NeurIPS 2022*.

@@ -372,7 +372,7 @@ Attention 机制的演进不是线性的"一代比一代好"，而是多个正�
 - [8] Gemma 3 Technical Report, Google, 2025
 - [9] Ye et al. "Differential Transformer", Microsoft, 2024
 - [10] Kimi Attention Residuals, Moonshot AI, 2024
-- [11] MiniCPM4, OpenBMB, arXiv:2506.07900 — InfLLM v2 训练时稀疏
+- [11] MiniCPM4, OpenBMB, [arXiv:2506.07900](https://arxiv.org/abs/2506.07900) — InfLLM v2 训练时稀疏
 - [12] Su et al. "RoFormer: Enhanced Transformer with Rotary Position Embedding", 2022
 
 ---

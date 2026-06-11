@@ -155,6 +155,6 @@ Flat minima 使模型对这些操作天然鲁棒。具体收益：
 
 ## 9. References
 
-- Hägele et al., "Scaling Laws for the Geometry of Pretraining", ICML 2026. arXiv:2605.02105
+- Hägele et al., "Scaling Laws for the Geometry of Pretraining", ICML 2026. [arXiv:2605.02105](https://arxiv.org/abs/2605.02105)
 - Foret et al., "Sharpness-Aware Minimization for Efficiently Improving Generalization", ICLR 2021
 - Cohen et al., "Gradient Descent on Neural Networks Typically Occurs at the Edge of Stability", ICLR 2022

@@ -328,9 +328,9 @@ MuonClip 的贡献在于认识到 router 和 expert 有**完全不同的优化�
 
 ## References
 
-- [1] Kimi K2 Technical Report (MuonClip), arXiv:2507.20534
-- [2] Expert Upcycling: Scaling MoE Models Efficiently, arXiv:2604.19835
+- [1] Kimi K2 Technical Report (MuonClip), [arXiv:2507.20534](https://arxiv.org/abs/2507.20534)
+- [2] Expert Upcycling: Scaling MoE Models Efficiently, [arXiv:2604.19835](https://arxiv.org/abs/2604.19835)
 - [3] MAI-Thinking-1 Technical Report, microsoft.ai, 2025
-- [4] DeepSeekMoE: Towards Ultimate Expert Specialization, arXiv:2401.06066
-- [5] Muon: An Optimizer for Hidden Layers, arXiv:2502.16982
+- [4] DeepSeekMoE: Towards Ultimate Expert Specialization, [arXiv:2401.06066](https://arxiv.org/abs/2401.06066)
+- [5] Muon: An Optimizer for Hidden Layers, [arXiv:2502.16982](https://arxiv.org/abs/2502.16982)
 - [6] DeepSeek-V4 Technical Report, 2026

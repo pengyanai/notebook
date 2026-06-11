@@ -172,4 +172,4 @@ L5 层级（Cognitive Completion）的消融揭示了一个重要约束：
 
 ## 参考文献
 
-- daVinci-LLM: Data Processing Depth and Curriculum Learning for Pretraining. arXiv:2603.27164
+- daVinci-LLM: Data Processing Depth and Curriculum Learning for Pretraining. [arXiv:2603.27164](https://arxiv.org/abs/2603.27164)

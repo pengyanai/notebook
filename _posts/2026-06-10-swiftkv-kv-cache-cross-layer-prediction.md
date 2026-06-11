@@ -176,8 +176,8 @@ gantt
 
 ## References
 
-1. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation (arXiv:2410.03960)
-2. CLA: Reducing KV Cache with Cross-Layer Attention (arXiv:2405.12981)
-3. YOCO: You Only Cache Once (arXiv:2405.05254)
-4. MLA (Multi-head Latent Attention) — DeepSeek-V2 Technical Report (arXiv:2405.04434)
-5. Layer-Condensed KV Cache for Efficient Inference of Large Language Models (arXiv:2405.10637)
+1. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation ([arXiv:2410.03960](https://arxiv.org/abs/2410.03960))
+2. CLA: Reducing KV Cache with Cross-Layer Attention ([arXiv:2405.12981](https://arxiv.org/abs/2405.12981))
+3. YOCO: You Only Cache Once ([arXiv:2405.05254](https://arxiv.org/abs/2405.05254))
+4. MLA (Multi-head Latent Attention) — DeepSeek-V2 Technical Report ([arXiv:2405.04434](https://arxiv.org/abs/2405.04434))
+5. Layer-Condensed KV Cache for Efficient Inference of Large Language Models ([arXiv:2405.10637](https://arxiv.org/abs/2405.10637))

@@ -127,6 +127,6 @@ graph TD
 1. Gemma 2 Technical Report — Layer Scalar 设计
 2. Mistral 7B — Sliding Window Attention 原始提出
 3. Chinchilla Scaling Laws (Hoffmann et al., 2022)
-4. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation (arXiv:2410.03960)
+4. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation ([arXiv:2410.03960](https://arxiv.org/abs/2410.03960))
 5. Per-Layer Embedding — 内部技术报告
 6. Gated Linear Attention — 门控注意力机制系列工作

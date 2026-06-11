@@ -276,8 +276,8 @@ flowchart TD
 
 ## 参考文献
 
-1. YaRN: Efficient Context Window Extension of Large Language Models. arXiv:2309.00071
-2. RoFormer: Enhanced Transformer with Rotary Position Embedding. arXiv:2104.09864
-3. Extending Context Window of Large Language Models via Positional Interpolation. arXiv:2306.15595
-4. LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens. arXiv:2402.13753
-5. Ring Attention with Blockwise Transformers for Near-Infinite Context. arXiv:2310.01889
+1. YaRN: Efficient Context Window Extension of Large Language Models. [arXiv:2309.00071](https://arxiv.org/abs/2309.00071)
+2. RoFormer: Enhanced Transformer with Rotary Position Embedding. [arXiv:2104.09864](https://arxiv.org/abs/2104.09864)
+3. Extending Context Window of Large Language Models via Positional Interpolation. [arXiv:2306.15595](https://arxiv.org/abs/2306.15595)
+4. LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens. [arXiv:2402.13753](https://arxiv.org/abs/2402.13753)
+5. Ring Attention with Blockwise Transformers for Near-Infinite Context. [arXiv:2310.01889](https://arxiv.org/abs/2310.01889)

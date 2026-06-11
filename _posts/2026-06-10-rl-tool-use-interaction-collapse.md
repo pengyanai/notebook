@@ -253,11 +253,11 @@ Tool Use RL 不是"把纯推理 RL 的 reward 改一改"就能工作的。它面
 
 ## References
 
-- [1] ASTER: Natural Code-Integrated Reasoning, arXiv:2602.01204
-- [2] GTPO: Group Relative Policy Optimization with Turn-Level Reward, arXiv:2511.14846
-- [3] StepPO: Step-Level Policy Optimization, arXiv:2604.18401
-- [4] GEAR: Granularity-Adaptive Reward, arXiv:2605.11853
-- [5] CTPO: Cumulative Token-Level Policy Optimization, arXiv:2605.07331
-- [6] On the Limitations of GRPO, arXiv:2512.04220
-- [7] Teaching Tool-Integrated Reasoning, arXiv:2605.06326
-- [8] Tool-R0: Tool-Augmented Reasoning, arXiv:2602.21320
+- [1] ASTER: Natural Code-Integrated Reasoning, [arXiv:2602.01204](https://arxiv.org/abs/2602.01204)
+- [2] GTPO: Group Relative Policy Optimization with Turn-Level Reward, [arXiv:2511.14846](https://arxiv.org/abs/2511.14846)
+- [3] StepPO: Step-Level Policy Optimization, [arXiv:2604.18401](https://arxiv.org/abs/2604.18401)
+- [4] GEAR: Granularity-Adaptive Reward, [arXiv:2605.11853](https://arxiv.org/abs/2605.11853)
+- [5] CTPO: Cumulative Token-Level Policy Optimization, [arXiv:2605.07331](https://arxiv.org/abs/2605.07331)
+- [6] On the Limitations of GRPO, [arXiv:2512.04220](https://arxiv.org/abs/2512.04220)
+- [7] Teaching Tool-Integrated Reasoning, [arXiv:2605.06326](https://arxiv.org/abs/2605.06326)
+- [8] Tool-R0: Tool-Augmented Reasoning, [arXiv:2602.21320](https://arxiv.org/abs/2602.21320)

@@ -233,7 +233,7 @@ Token 频率遵循 Zipf 分布。在典型的大规模预训练中：
 
 ### FFN Lipschitz Bound 的结构性限制
 
-TIDE（arXiv:2605.06216）指出了一个比更新频率差异更深层的问题：**FFN 的 Lipschitz bound 限制了稀有 token 的可区分性**。
+TIDE（[arXiv:2605.06216](https://arxiv.org/abs/2605.06216)）指出了一个比更新频率差异更深层的问题：**FFN 的 Lipschitz bound 限制了稀有 token 的可区分性**。
 
 具体来说，对于 FFN 层 $f$：
 
@@ -372,7 +372,7 @@ graph TD
 
 ### 理论框架
 
-Gradient noise scale（GNS）定义为（McCandlish et al., arXiv:1812.06162）：
+Gradient noise scale（GNS）定义为（McCandlish et al., [arXiv:1812.06162](https://arxiv.org/abs/1812.06162)）：
 
 $$
 B_{\text{noise}} = \frac{\text{tr}(\Sigma)}{\|G\|^2}

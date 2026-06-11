@@ -94,7 +94,7 @@ flowchart LR
 
 ### 核心数学
 
-Muon（Momentum Orthogonalized Update, arXiv:2502.16982）的设计哲学：与其用启发式的逐元素缩放来适应梯度幅度分布，不如直接将幅度信息丢掉，只保留方向。
+Muon（Momentum Orthogonalized Update, [arXiv:2502.16982](https://arxiv.org/abs/2502.16982)）的设计哲学：与其用启发式的逐元素缩放来适应梯度幅度分布，不如直接将幅度信息丢掉，只保留方向。
 
 对权重矩阵 $W \in \mathbb{R}^{m \times n}$，更新三步走：
 
@@ -135,7 +135,7 @@ $$X_0 = \frac{M_t}{\|M_t\|_F}, \quad X_{k+1} = X_k \cdot \frac{3I - X_k^T X_k}{2
 
 ## MuonClip：让 Muon 跑通万亿参数 MoE
 
-某 1T 参数 MoE 模型（arXiv:2507.20534）在训练中面临三大 MoE 特有挑战，催生了 MuonClip 方案。
+某 1T 参数 MoE 模型（[arXiv:2507.20534](https://arxiv.org/abs/2507.20534)）在训练中面临三大 MoE 特有挑战，催生了 MuonClip 方案。
 
 ### MoE 训练的三重困境
 
@@ -196,7 +196,7 @@ flowchart TD
 
 ## 某头部开源系列的 Muon 实践
 
-某头部开源系列（arXiv:2412.19437）最新一代模型（Flash 和 Pro 两个版本）同时使用了 Muon 和 AdamW 的混合策略：
+某头部开源系列（[arXiv:2412.19437](https://arxiv.org/abs/2412.19437)）最新一代模型（Flash 和 Pro 两个版本）同时使用了 Muon 和 AdamW 的混合策略：
 
 ```yaml
 # 2D 权重矩阵（Attention/FFN projections）
@@ -226,7 +226,7 @@ epsilon: 1e-20  # ← 极小值，几乎不做截断
 
 ### Frobenius-Sphere + Muon 的天然契合
 
-HyperP（arXiv:2603.28743）提出 Frobenius-sphere 参数化：
+HyperP（[arXiv:2603.28743](https://arxiv.org/abs/2603.28743)）提出 Frobenius-sphere 参数化：
 
 $$W = \gamma \cdot \frac{\hat{W}}{\|\hat{W}\|_F}$$
 
@@ -329,7 +329,7 @@ flowchart LR
 
 ## References
 
-1. Jordan, K. et al. "Muon: An optimizer for hidden layers in neural networks." arXiv:2502.16982 (2025).
-2. Kimi Team. "Kimi K2 Technical Report." arXiv:2507.20534 (2025).
-3. Yang, G. et al. "HyperP: Hyperparameter Transfer across Model Scales with Frobenius-Sphere Parametrization." arXiv:2603.28743 (2026).
-4. DeepSeek-AI. "DeepSeek-V3 Technical Report." arXiv:2412.19437 (2024).
+1. Jordan, K. et al. "Muon: An optimizer for hidden layers in neural networks." [arXiv:2502.16982](https://arxiv.org/abs/2502.16982) (2025).
+2. Kimi Team. "Kimi K2 Technical Report." [arXiv:2507.20534](https://arxiv.org/abs/2507.20534) (2025).
+3. Yang, G. et al. "HyperP: Hyperparameter Transfer across Model Scales with Frobenius-Sphere Parametrization." [arXiv:2603.28743](https://arxiv.org/abs/2603.28743) (2026).
+4. DeepSeek-AI. "DeepSeek-V3 Technical Report." [arXiv:2412.19437](https://arxiv.org/abs/2412.19437) (2024).

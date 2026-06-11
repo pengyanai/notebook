@@ -195,7 +195,7 @@ Activation recomputation 的 "计算换内存，对训练无影响" 是一个**�
 
 ## References
 
-1. Chen, T. et al. "Training Deep Nets with Sublinear Memory Cost." arXiv:1604.06174, 2016.
+1. Chen, T. et al. "Training Deep Nets with Sublinear Memory Cost." [arXiv:1604.06174](https://arxiv.org/abs/1604.06174), 2016.
 2. Korthikanti, V. et al. "Reducing Activation Recomputation in Large Transformer Models." MLSys 2023.
 3. Dao, T. et al. "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness." NeurIPS 2022.
 4. Megatron-LM documentation: `--recompute-num-layers`, `--recompute-method` flags.

@@ -14,7 +14,7 @@ CoLA 论文声称参数减 45% 不掉点。我们在某 3B 模型的 FFN 上实�
 
 ## CoLA 是什么，为什么我们要试
 
-CoLA (Compute-Efficient Pre-Training via Low-Rank Activation, arXiv:2502.10940) 的核心思路很简单：将 Transformer 中的全秩线性层替换为低秩分解 $W = AB$，其中 $A \in \mathbb{R}^{d_{out} \times r}$, $B \in \mathbb{R}^{r \times d_{in}}$, $r \ll \min(d_{in}, d_{out})$。论文在 350M 和 1B 模型上验证，rank 取 $d/4$ 时参数量减少约 45%，训练 loss 与 full-rank baseline 无显著差异。
+CoLA (Compute-Efficient Pre-Training via Low-Rank Activation, [arXiv:2502.10940](https://arxiv.org/abs/2502.10940)) 的核心思路很简单：将 Transformer 中的全秩线性层替换为低秩分解 $W = AB$，其中 $A \in \mathbb{R}^{d_{out} \times r}$, $B \in \mathbb{R}^{r \times d_{in}}$, $r \ll \min(d_{in}, d_{out})$。论文在 350M 和 1B 模型上验证，rank 取 $d/4$ 时参数量减少约 45%，训练 loss 与 full-rank baseline 无显著差异。
 
 对于一个 3B on-device 模型来说，FFN 占了总参数的约 2/3。如果能把 FFN 的三个 projection (gate_proj, up_proj, down_proj) 全部低秩化且不掉点，推理 latency 能减少 30%+。这个诱惑足够大，值得花几百 GPU-hours 验证。
 
@@ -155,4 +155,4 @@ CoLA 是一篇扎实的论文，在其验证范围内结论成立。但"参数�
 
 ## References
 
-- [CoLA: Compute-Efficient Pre-Training via Low-Rank Activation](https://arxiv.org/abs/2502.10940) (arXiv:2502.10940)
+- [CoLA: Compute-Efficient Pre-Training via Low-Rank Activation](https://arxiv.org/abs/2502.10940) ([arXiv:2502.10940](https://arxiv.org/abs/2502.10940))

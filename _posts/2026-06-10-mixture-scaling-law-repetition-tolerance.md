@@ -134,5 +134,5 @@ $r^*$ 随预算增长是 sublinear 的——大致是对数关系。这意味着
 
 ## References
 
-1. Scaling Laws for Mixture Pretraining Under Data Constraints. arXiv:2605.12715, 2026.
-2. Muennighoff et al. Scaling Data-Constrained Language Models. arXiv:2305.16264, 2023.
+1. Scaling Laws for Mixture Pretraining Under Data Constraints. [arXiv:2605.12715](https://arxiv.org/abs/2605.12715), 2026.
+2. Muennighoff et al. Scaling Data-Constrained Language Models. [arXiv:2305.16264](https://arxiv.org/abs/2305.16264), 2023.

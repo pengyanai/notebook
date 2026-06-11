@@ -318,10 +318,10 @@ flowchart TD
 
 ## References
 
-- [1] DeepSeek-V3 Technical Report. *arXiv:2412.19437*
-- [2] Li et al. "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty." *arXiv:2401.15077*
-- [3] Li et al. "EAGLE-2: Faster Inference of Language Models with Dynamic Draft Trees." *arXiv:2406.16858*
-- [4] Li et al. "EAGLE-3: Scaling up Speculative Decoding against Distributional Shift by Training Consistency." *arXiv:2503.01840*
-- [5] Leviathan et al. "Fast Inference from Transformers via Speculative Decoding." *arXiv:2211.17192*
-- [6] Cai et al. "Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads." *arXiv:2401.10774*
-- [7] MiniCPM4 Technical Report. *arXiv:2506.07900*
+- [1] DeepSeek-V3 Technical Report. *[arXiv:2412.19437](https://arxiv.org/abs/2412.19437)*
+- [2] Li et al. "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty." *[arXiv:2401.15077](https://arxiv.org/abs/2401.15077)*
+- [3] Li et al. "EAGLE-2: Faster Inference of Language Models with Dynamic Draft Trees." *[arXiv:2406.16858](https://arxiv.org/abs/2406.16858)*
+- [4] Li et al. "EAGLE-3: Scaling up Speculative Decoding against Distributional Shift by Training Consistency." *[arXiv:2503.01840](https://arxiv.org/abs/2503.01840)*
+- [5] Leviathan et al. "Fast Inference from Transformers via Speculative Decoding." *[arXiv:2211.17192](https://arxiv.org/abs/2211.17192)*
+- [6] Cai et al. "Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads." *[arXiv:2401.10774](https://arxiv.org/abs/2401.10774)*
+- [7] MiniCPM4 Technical Report. *[arXiv:2506.07900](https://arxiv.org/abs/2506.07900)*

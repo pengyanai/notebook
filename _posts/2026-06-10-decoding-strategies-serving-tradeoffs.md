@@ -332,8 +332,8 @@ MTP head 因为与主模型联合训练、共享表征空间，所以天然适�
 
 ## References
 
-1. Leviathan et al., "Fast Inference from Transformers via Speculative Decoding", arXiv:2211.17192, 2022.
-2. Li et al., "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty", arXiv:2401.15077, 2024.
-3. DeepSeek-AI, "DeepSeek-V3 Technical Report", arXiv:2412.19437, 2024.
-4. OpenBMB, "MiniCPM4 Technical Report", arXiv:2506.07900, 2025.
-5. Singhal et al., "DLER: Doing Length Penalty Right in Large Language Models", arXiv:2510.15110, 2025.
+1. Leviathan et al., "Fast Inference from Transformers via Speculative Decoding", [arXiv:2211.17192](https://arxiv.org/abs/2211.17192), 2022.
+2. Li et al., "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty", [arXiv:2401.15077](https://arxiv.org/abs/2401.15077), 2024.
+3. DeepSeek-AI, "DeepSeek-V3 Technical Report", [arXiv:2412.19437](https://arxiv.org/abs/2412.19437), 2024.
+4. OpenBMB, "MiniCPM4 Technical Report", [arXiv:2506.07900](https://arxiv.org/abs/2506.07900), 2025.
+5. Singhal et al., "DLER: Doing Length Penalty Right in Large Language Models", [arXiv:2510.15110](https://arxiv.org/abs/2510.15110), 2025.

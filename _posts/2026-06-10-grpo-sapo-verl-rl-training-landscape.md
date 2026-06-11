@@ -303,13 +303,13 @@ graph LR
 
 ## References
 
-- [1] CoRT: Chain of Reasoning with Tools, arXiv:2510.20342 (NeurIPS 2025)
-- [2] DeepSeek-R1: Incentivizing Reasoning in LLMs via RL (GRPO), arXiv:2501.12948
-- [3] DLER: Efficient Length-Controlled Generation via RL, NVIDIA, arXiv:2510.15110
-- [4] OpenWebRL: Training LLM Web Agents via Online RL, arXiv:2606.02031
+- [1] CoRT: Chain of Reasoning with Tools, [arXiv:2510.20342](https://arxiv.org/abs/2510.20342) (NeurIPS 2025)
+- [2] DeepSeek-R1: Incentivizing Reasoning in LLMs via RL (GRPO), [arXiv:2501.12948](https://arxiv.org/abs/2501.12948)
+- [3] DLER: Efficient Length-Controlled Generation via RL, NVIDIA, [arXiv:2510.15110](https://arxiv.org/abs/2510.15110)
+- [4] OpenWebRL: Training LLM Web Agents via Online RL, [arXiv:2606.02031](https://arxiv.org/abs/2606.02031)
 - [5] veRL / SLIME: Scalable RL Training Framework for LLMs
-- [6] Tool-R0: Zero-Data Self-Play RL for Tool Calling, arXiv:2602.21320
-- [7] ICRL: In-Context Reinforcement Learning for Tool Use, arXiv:2603.08068
-- [8] Environment Tuning: LLM Tool Calling via Environment Learning, arXiv:2510.10197
-- [9] MiniCPM4: Ultra-Efficient LLM with Chunk-wise Rollout, arXiv:2506.07900
-- [10] Qwen3 Technical Report, arXiv:2505.09388
+- [6] Tool-R0: Zero-Data Self-Play RL for Tool Calling, [arXiv:2602.21320](https://arxiv.org/abs/2602.21320)
+- [7] ICRL: In-Context Reinforcement Learning for Tool Use, [arXiv:2603.08068](https://arxiv.org/abs/2603.08068)
+- [8] Environment Tuning: LLM Tool Calling via Environment Learning, [arXiv:2510.10197](https://arxiv.org/abs/2510.10197)
+- [9] MiniCPM4: Ultra-Efficient LLM with Chunk-wise Rollout, [arXiv:2506.07900](https://arxiv.org/abs/2506.07900)
+- [10] Qwen3 Technical Report, [arXiv:2505.09388](https://arxiv.org/abs/2505.09388)

@@ -133,4 +133,4 @@ InfoLaw 的实用价值在于它的 calibration cost 极低：
 
 ## References
 
-- InfoLaw: An Information-Theoretic Framework for Training Data Attribution in Language Models. arXiv:2605.02364, CMU, 2026.
+- InfoLaw: An Information-Theoretic Framework for Training Data Attribution in Language Models. [arXiv:2605.02364](https://arxiv.org/abs/2605.02364), CMU, 2026.

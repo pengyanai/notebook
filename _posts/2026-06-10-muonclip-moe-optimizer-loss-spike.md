@@ -204,5 +204,5 @@ AdamW 对 dense model 的成功不能无条件迁移到 MoE。不同的参数角
 
 ## References
 
-1. Kimi K2 Technical Report, arXiv:2507.20534
-2. Muon: Momentum Orthogonalized Update, arXiv:2502.16982
+1. Kimi K2 Technical Report, [arXiv:2507.20534](https://arxiv.org/abs/2507.20534)
+2. Muon: Momentum Orthogonalized Update, [arXiv:2502.16982](https://arxiv.org/abs/2502.16982)

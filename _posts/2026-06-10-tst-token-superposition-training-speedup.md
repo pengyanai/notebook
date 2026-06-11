@@ -145,4 +145,4 @@ r 太小：superposition phase 太短，没来得及建立有意义的 coarse re
 
 ## References
 
-- Token Superposition Training (arXiv:2605.06546)
+- Token Superposition Training ([arXiv:2605.06546](https://arxiv.org/abs/2605.06546))

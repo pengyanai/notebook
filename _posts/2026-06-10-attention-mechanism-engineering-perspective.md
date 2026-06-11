@@ -141,7 +141,7 @@ $$\text{output} = g \odot \text{LocalAttn}(Q, K_{\text{window}}, V_{\text{window
 
 ## 4. Sparse Attention 的实战数据：81% 稀疏度只丢 0.48 分
 
-在更大模型和更长上下文的场景中，InfLLM v2 方案给出了令人信服的稀疏 attention 实战数据（arXiv:2506.07900）。
+在更大模型和更长上下文的场景中，InfLLM v2 方案给出了令人信服的稀疏 attention 实战数据（[arXiv:2506.07900](https://arxiv.org/abs/2506.07900)）。
 
 ### 核心思路：Query-Level Top-K Block Selection
 

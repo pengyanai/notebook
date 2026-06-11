@@ -155,9 +155,9 @@ graph LR
 
 ## References
 
-- Sliding Window Attention: Beltagy et al., "Longformer: The Long-Document Transformer", arXiv:2004.05150
+- Sliding Window Attention: Beltagy et al., "Longformer: The Long-Document Transformer", [arXiv:2004.05150](https://arxiv.org/abs/2004.05150)
 - Gated Attention: Hua et al., "Transformer Quality in Linear Time", ICML 2022
 - SwiftKV: Reducing KV Cache for Efficient LLM Inference (internal)
 - PLE: Per-Layer Embedding for parameter-efficient scaling (internal)
-- NoPE: No Positional Encoding approach, Kazemnejad et al., arXiv:2305.19466
-- Gemma Scalar: Gemma Team, "Gemma: Open Models Based on Gemini Research", arXiv:2403.08295
+- NoPE: No Positional Encoding approach, Kazemnejad et al., [arXiv:2305.19466](https://arxiv.org/abs/2305.19466)
+- Gemma Scalar: Gemma Team, "Gemma: Open Models Based on Gemini Research", [arXiv:2403.08295](https://arxiv.org/abs/2403.08295)

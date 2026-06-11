@@ -343,7 +343,7 @@ graph TD
 
 从 CE loss 的本质出发：$\mathcal{L}_{\text{CE}} = -\log p_{\text{target}}$。优化器会不断推高 target logit 的绝对值来降低 loss。当 logit 幅值增长到数百甚至上千时，softmax 数值不稳定，梯度出现 spike。
 
-Z-loss（arXiv:2204.02311）的做法：
+Z-loss（[arXiv:2204.02311](https://arxiv.org/abs/2204.02311)）的做法：
 
 $$\mathcal{L}_z = c \cdot \log^2\left(\sum_i e^{z_i}\right), \quad c \sim 10^{-4}$$
 
@@ -404,7 +404,7 @@ Loss 不只是一个数学公式——它是你与优化器之间的通信协议
 
 ## References
 
-1. DeepSeek-AI, *DeepSeek-V3 Technical Report*, arXiv:2412.19437 — MTP sequential module 设计与消融实验
-2. MiniCPM4 Team, *MiniCPM4: Ultra-Efficient LLM*, arXiv:2506.07900 — 小模型 MTP 实践与多模态训练策略
-3. Liu et al., *Dr. GRPO: Removing Estimation Bias from Group Relative Policy Optimization*, arXiv:2503.20783 — per-token vs per-sample loss 在 RL 阶段的影响
-4. Chowdhery et al., *PaLM: Scaling Language Modeling with Pathways*, arXiv:2204.02311 — Z-loss 设计（Section 5）
+1. DeepSeek-AI, *DeepSeek-V3 Technical Report*, [arXiv:2412.19437](https://arxiv.org/abs/2412.19437) — MTP sequential module 设计与消融实验
+2. MiniCPM4 Team, *MiniCPM4: Ultra-Efficient LLM*, [arXiv:2506.07900](https://arxiv.org/abs/2506.07900) — 小模型 MTP 实践与多模态训练策略
+3. Liu et al., *Dr. GRPO: Removing Estimation Bias from Group Relative Policy Optimization*, [arXiv:2503.20783](https://arxiv.org/abs/2503.20783) — per-token vs per-sample loss 在 RL 阶段的影响
+4. Chowdhery et al., *PaLM: Scaling Language Modeling with Pathways*, [arXiv:2204.02311](https://arxiv.org/abs/2204.02311) — Z-loss 设计（Section 5）

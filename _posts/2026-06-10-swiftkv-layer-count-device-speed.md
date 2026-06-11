@@ -165,6 +165,6 @@ KV sharing 改善 loss 这件事本身就是信号——它说明这个模型规
 
 ## References
 
-1. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation. arXiv:2410.03960
-2. GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints. arXiv:2305.13245
-3. Cross-Layer Attention (CLA): Sharing Key-Value Heads Across Layers. arXiv:2405.12981
+1. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation. [arXiv:2410.03960](https://arxiv.org/abs/2410.03960)
+2. GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints. [arXiv:2305.13245](https://arxiv.org/abs/2305.13245)
+3. Cross-Layer Attention (CLA): Sharing Key-Value Heads Across Layers. [arXiv:2405.12981](https://arxiv.org/abs/2405.12981)

@@ -145,6 +145,6 @@ Layer Scalar 本质上和 weight 一样——它是乘性的，放大整个残�
 
 1. Loshchilov, I. & Hutter, F. (2019). *Decoupled Weight Decay Regularization*. ICLR 2019.
 2. Karpathy, A. *nanoGPT*. GitHub. Parameter group splitting logic.
-3. Touvron, H. et al. (2023). *LLaMA: Open and Efficient Foundation Language Models*. arXiv:2302.13971.
+3. Touvron, H. et al. (2023). *LLaMA: Open and Efficient Foundation Language Models*. [arXiv:2302.13971](https://arxiv.org/abs/2302.13971).
 4. Zhang, B. & Sennrich, R. (2019). *Root Mean Square Layer Normalization*. NeurIPS 2019.
-5. Chowdhery, A. et al. (2022). *PaLM: Scaling Language Modeling with Pathways*. arXiv:2204.02311.
+5. Chowdhery, A. et al. (2022). *PaLM: Scaling Language Modeling with Pathways*. [arXiv:2204.02311](https://arxiv.org/abs/2204.02311).

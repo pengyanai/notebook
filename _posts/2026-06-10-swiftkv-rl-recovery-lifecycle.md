@@ -149,6 +149,6 @@ graph LR
 
 ## References
 
-1. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation. arXiv:2410.03960
-2. DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. arXiv:2501.12948
-3. MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies. arXiv:2404.06395
+1. SwiftKV: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation. [arXiv:2410.03960](https://arxiv.org/abs/2410.03960)
+2. DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948)
+3. MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies. [arXiv:2404.06395](https://arxiv.org/abs/2404.06395)

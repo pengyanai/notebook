@@ -59,7 +59,7 @@ $$h_{\text{out}} = \text{LayerNorm}(W_E[i,:]) \Rightarrow \|h_{\text{out}}\|_2 \
 
 ### 2.1 Press & Wolf (2016) 的原始论证
 
-Weight tying 的理论基础很简洁（arXiv:1608.05859）：令 $W_H = W_E$，则预测 token $i$ 的 logit 为：
+Weight tying 的理论基础很简洁（[arXiv:1608.05859](https://arxiv.org/abs/1608.05859)）：令 $W_H = W_E$，则预测 token $i$ 的 logit 为：
 
 $$\text{logit}_i = h^T \cdot W_E[i,:]$$
 
@@ -100,7 +100,7 @@ graph TD
 
 ### 3.1 从 Gemma 3n/4 的 Per-Layer Embedding 说起
 
-PLE (Per-Layer Embedding) 是 2025 年提出的一个看似"反直觉"的方案（arXiv:2503.19786）：给每一层 transformer layer 分配独立的 token-indexed embedding，作为 gating signal 调制该层的行为。
+PLE (Per-Layer Embedding) 是 2025 年提出的一个看似"反直觉"的方案（[arXiv:2503.19786](https://arxiv.org/abs/2503.19786)）：给每一层 transformer layer 分配独立的 token-indexed embedding，作为 gating signal 调制该层的行为。
 
 具体做法：对第 $l$ 层，增加一个 $W_E^{(l)} \in \mathbb{R}^{V \times d_{\text{gate}}}$，其中 $d_{\text{gate}} \ll d$。前向时：
 
@@ -166,7 +166,7 @@ PLE 的 410M 参数全部是 memory-bound 操作。在推理时，这些权重�
 
 ### 4.2 5x 学习率补偿
 
-Engram（arXiv:2601.07372）的关键实验发现：**对 embedding table 使用 5 倍学习率**可以显著改善模型质量。
+Engram（[arXiv:2601.07372](https://arxiv.org/abs/2601.07372)）的关键实验发现：**对 embedding table 使用 5 倍学习率**可以显著改善模型质量。
 
 直觉推导：
 
@@ -244,7 +244,7 @@ $$\text{Layer FLOPs} \approx 2 \times (4d^2 + 2 \times \frac{8}{3}d^2) \approx 2
 
 ### 6.1 维度利用率的实证
 
-Over-Encoding 问题（arXiv:2501.16975）揭示了一个结构性浪费：当 embedding dimension = hidden_dim = 2560 时，embedding 矩阵的大部分维度对语义编码的贡献很小。
+Over-Encoding 问题（[arXiv:2501.16975](https://arxiv.org/abs/2501.16975)）揭示了一个结构性浪费：当 embedding dimension = hidden_dim = 2560 时，embedding 矩阵的大部分维度对语义编码的贡献很小。
 
 对 3B 模型的 embedding matrix 做 SVD：
 
@@ -315,7 +315,7 @@ vocab_size = 100096 是一个精心选择的数字：100096 = 128 × 782 + 0 = 6
 
 ## 8. TIDE：动态词表扩展的新思路
 
-TIDE (arXiv:2605.06216) 针对的是一个具体工程场景：训练中途需要新增 token（如新语言、新 domain 术语）。
+TIDE ([arXiv:2605.06216](https://arxiv.org/abs/2605.06216)) 针对的是一个具体工程场景：训练中途需要新增 token（如新语言、新 domain 术语）。
 
 ### 8.1 传统做法的问题
 

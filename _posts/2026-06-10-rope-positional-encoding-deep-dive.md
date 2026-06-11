@@ -94,14 +94,14 @@ graph LR
 
 从公开的技术报告中，可以看到三种截然不同的长上下文训练路径：
 
-**某头部开源系列 V3** (arXiv:2412.19437)：
+**某头部开源系列 V3** ([arXiv:2412.19437](https://arxiv.org/abs/2412.19437))：
 - 2-stage YaRN 扩展
 - Stage 1: 4K → 32K，continued pretraining 1000 steps
 - Stage 2: 32K → 128K，continued pretraining 1000 steps
 - YaRN 只作用于 decoupled shared key $k_t^R$（MLA 架构下的 RoPE key）
 - 关键细节：content key $k_t^C$ 不带位置信息，保持 latent 压缩的兼容性
 
-**某端侧模型** (arXiv:2506.07900)：
+**某端侧模型** ([arXiv:2506.07900](https://arxiv.org/abs/2506.07900))：
 - 3-stage 逐步扩展
 - RoPE (base=10000, 4K) → LongRoPE (32K) → YaRN (128K)
 - 每个阶段都有 continued pretraining
@@ -149,7 +149,7 @@ $\alpha = L'/L$。效果是低频维度被大幅拉伸，高频维度几乎不�
 
 ### YaRN：分段 + 温度补偿
 
-YaRN (arXiv:2309.00071) 在 NTK 基础上增加两个关键改进：
+YaRN ([arXiv:2309.00071](https://arxiv.org/abs/2309.00071)) 在 NTK 基础上增加两个关键改进：
 
 1. **三段式处理**：
    - 高频区（有效波长 < 原始训练长度）：完全不动
@@ -166,7 +166,7 @@ YaRN (arXiv:2309.00071) 在 NTK 基础上增加两个关键改进：
 
 ### LongRoPE：搜索式最优 scaling
 
-LongRoPE (arXiv:2402.13753) 放弃公式化方案，直接搜索每个维度的最优 scaling factor：
+LongRoPE ([arXiv:2402.13753](https://arxiv.org/abs/2402.13753)) 放弃公式化方案，直接搜索每个维度的最优 scaling factor：
 
 1. 用 evolutionary search 在 validation set 上找 per-dimension 最优 scaling
 2. 两阶段扩展：先到 256K fine-tune，再搜索 2048K 的 scaling
@@ -336,10 +336,10 @@ graph TD
 
 ## References
 
-1. Su, J. et al. "RoFormer: Enhanced Transformer with Rotary Position Embedding." arXiv:2104.09864, 2021.
-2. Ding, Y. et al. "LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens." arXiv:2402.13753, 2024.
-3. Peng, B. et al. "YaRN: Efficient Context Window Extension of Large Language Models." arXiv:2309.00071, 2023.
-4. DeepSeek-AI. "DeepSeek-V3 Technical Report." arXiv:2412.19437, 2024.
-5. OpenBMB. "MiniCPM4: Ultra-Efficient LLM on Your Phone." arXiv:2506.07900, 2025.
+1. Su, J. et al. "RoFormer: Enhanced Transformer with Rotary Position Embedding." [arXiv:2104.09864](https://arxiv.org/abs/2104.09864), 2021.
+2. Ding, Y. et al. "LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens." [arXiv:2402.13753](https://arxiv.org/abs/2402.13753), 2024.
+3. Peng, B. et al. "YaRN: Efficient Context Window Extension of Large Language Models." [arXiv:2309.00071](https://arxiv.org/abs/2309.00071), 2023.
+4. DeepSeek-AI. "DeepSeek-V3 Technical Report." [arXiv:2412.19437](https://arxiv.org/abs/2412.19437), 2024.
+5. OpenBMB. "MiniCPM4: Ultra-Efficient LLM on Your Phone." [arXiv:2506.07900](https://arxiv.org/abs/2506.07900), 2025.
 6. bloc97. "NTK-Aware Scaled RoPE." Reddit/LocalLLaMA, 2023.
-7. Chen, S. et al. "Extending Context Window of Large Language Models via Positional Interpolation." arXiv:2306.15595, 2023.
+7. Chen, S. et al. "Extending Context Window of Large Language Models via Positional Interpolation." [arXiv:2306.15595](https://arxiv.org/abs/2306.15595), 2023.

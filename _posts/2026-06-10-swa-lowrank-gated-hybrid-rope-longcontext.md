@@ -171,7 +171,7 @@ Loss 排序与下游评测完全一致。这说明这些组件的增益不是"�
 
 ## 9. References
 
-1. Beltagy et al., "Longformer: The Long-Document Transformer," arXiv:2004.05150 — SWA 的经典实现
-2. Su et al., "RoFormer: Enhanced Transformer with Rotary Position Embedding," arXiv:2104.09864 — RoPE 原始论文
-3. Child et al., "Generating Long Sequences with Sparse Transformers," arXiv:1904.10509 — local + global attention pattern
-4. Press et al., "Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation," arXiv:2108.12409 — position encoding 对长度外推的影响
+1. Beltagy et al., "Longformer: The Long-Document Transformer," [arXiv:2004.05150](https://arxiv.org/abs/2004.05150) — SWA 的经典实现
+2. Su et al., "RoFormer: Enhanced Transformer with Rotary Position Embedding," [arXiv:2104.09864](https://arxiv.org/abs/2104.09864) — RoPE 原始论文
+3. Child et al., "Generating Long Sequences with Sparse Transformers," [arXiv:1904.10509](https://arxiv.org/abs/1904.10509) — local + global attention pattern
+4. Press et al., "Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation," [arXiv:2108.12409](https://arxiv.org/abs/2108.12409) — position encoding 对长度外推的影响

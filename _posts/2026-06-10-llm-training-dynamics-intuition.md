@@ -183,10 +183,10 @@ Unified tokenizer 模型（vision VQ tokens 直接参与 loss 计算）面临相
 
 ## 参考文献
 
-1. Qwen3-VL, "Qwen3-VL Technical Report", arXiv:2511.21631. [arxiv](https://arxiv.org/abs/2511.21631) — "we move from a per-sample loss to a square-root-normalized per-token loss, which better balances the contributions of text and multimodal data during training"
-2. Qwen2-VL, "Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution", arXiv:2409.12191. [arxiv](https://arxiv.org/abs/2409.12191) — per-sequence loss 的早期实践
-3. Qwen2.5-VL, "Qwen2.5-VL Technical Report", arXiv:2502.13923. [arxiv](https://arxiv.org/abs/2502.13923) — 多模态 loss 演进
-4. XLM, "Cross-lingual Language Model Pretraining", arXiv:1901.07291. [arxiv](https://arxiv.org/abs/1901.07291) — 多语言预训练中的 per-sample loss 设计
-5. Dr. GRPO, "Dr. GRPO: Removing Bias from Group Relative Policy Optimization", arXiv:2503.20783. [arxiv](https://arxiv.org/abs/2503.20783) — token-level vs sequence-level loss 的讨论
+1. Qwen3-VL, "Qwen3-VL Technical Report", [arXiv:2511.21631](https://arxiv.org/abs/2511.21631).  — "we move from a per-sample loss to a square-root-normalized per-token loss, which better balances the contributions of text and multimodal data during training"
+2. Qwen2-VL, "Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution", [arXiv:2409.12191](https://arxiv.org/abs/2409.12191).  — per-sequence loss 的早期实践
+3. Qwen2.5-VL, "Qwen2.5-VL Technical Report", [arXiv:2502.13923](https://arxiv.org/abs/2502.13923).  — 多模态 loss 演进
+4. XLM, "Cross-lingual Language Model Pretraining", [arXiv:1901.07291](https://arxiv.org/abs/1901.07291).  — 多语言预训练中的 per-sample loss 设计
+5. Dr. GRPO, "Dr. GRPO: Removing Bias from Group Relative Policy Optimization", [arXiv:2503.20783](https://arxiv.org/abs/2503.20783).  — token-level vs sequence-level loss 的讨论
 6. Hinton et al. (2015), "Distilling the Knowledge in Neural Networks" — "the magnitudes of the gradients produced by the soft targets scale as 1/T², it is important to multiply them by T²"
 7. GradNorm (Chen et al., ICML 2018), "GradNorm: Gradient Normalization for Adaptive Loss Balancing in Deep Multitask Networks" — 多任务梯度平衡
