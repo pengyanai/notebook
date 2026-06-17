@@ -36,4 +36,4 @@ AI/ML engineer focused on large language model training and inference accelerati
 
 - GitHub: https://github.com/pengyanai
 - Blog: https://pengyanai.github.io
-- GitLab Pages: https://11088830.pages.example.com/notebook/
+- GitLab Pages: (internal)

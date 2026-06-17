@@ -52,7 +52,7 @@ Internal cross-references use permalink format: `[text](/2026/06/10/slug.html)` 
 
 ## Deployment
 
-- **GitLab Pages:** `.gitlab-ci.yml` builds on push to `main`, deploys with `--baseurl "/notebook"`. URL: `https://11088830.pages.example.com/notebook/`
+- **GitLab Pages:** `.gitlab-ci.yml` builds on push to `main`, deploys with `--baseurl "/notebook"`.
 - **GitHub Pages:** `.github/workflows/deploy.yml` builds on push, deploys to `pengyanai.github.io`.
 - **Feed:** `/feed.xml` (Atom) via `jekyll-feed`. Auto-discovery `<link>` in head.
 - **Sitemap:** `/sitemap.xml` via `jekyll-sitemap`. Referenced in `robots.txt`.
