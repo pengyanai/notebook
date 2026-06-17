@@ -628,7 +628,7 @@ gantt
 | GPU 状态 | `nvidia-smi --query-gpu=... --format=csv` | `nvitop` / `nvtop` / `htop` | TUI 全部不可用 |
 | 进程状态 | `ps -eo pid,etime,cmd \| rg ...` | `htop` / `btop` / `procs` | 同上 |
 | 磁盘占用 | `du -sh * \| sort -h` | `dust` / `duf` | dust 输出对齐用特殊字符，解析不稳 |
-| Docker | `docker ps --format '{{json .}}'` | `lazydocker` | 非交互 + JSON 输出最友好 |
+| Docker | `{% raw %}docker ps --format '{{json .}}'{% endraw %}` | `lazydocker` | 非交互 + JSON 输出最友好 |
 | Git 操作 | `git status --porcelain` / `git log --oneline -n 20` | `lazygit` / `tig` | 同上 |
 | Python profile | `py-spy dump --pid $PID`（一次性输出） | `py-spy top` / `scalene` | `dump` 非交互，`top` 是 TUI |
 | Python 调试 | `python -c "..."` / 读 stack trace | `pdb.set_trace()` | 交互 REPL 会阻塞 agent |

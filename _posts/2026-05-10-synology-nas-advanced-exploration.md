@@ -69,7 +69,7 @@ HDD×2 29TB → volume2 (LINEAR, 5.9TB used)
 ### 2.1 运行中的容器
 
 ```bash
-$ /usr/local/bin/docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"
+{% raw %}$ /usr/local/bin/docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"{% endraw %}
 ```
 
 | 容器 | 镜像 | 端口映射 | 用途 |
@@ -84,7 +84,7 @@ Gitea + OpenGist 构成了完整的代码托管 + 片段分享工作流，Open-W
 ### 2.2 已下载未运行的镜像
 
 ```bash
-$ /usr/local/bin/docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+{% raw %}$ /usr/local/bin/docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"{% endraw %}
 ```
 
 | 镜像 | 用途 | 可能方向 |
