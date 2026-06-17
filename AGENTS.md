@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code when working with this repository.
 
+## ⚠️ 安全警告
+
+**绝对不能**在仓库中暴露 `vmic.xyz` 等内部域名！这是公开仓库。
+
 ## Git Branch Strategy
 
 - **GitHub** (`origin`): 使用 `gh-pages` 分支
