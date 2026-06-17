@@ -433,21 +433,24 @@ Link: <https://api.github.com/search/repositories?q=python&page=2>; rel="next",
 
 ## 参考
 
+### 官方文档
 - [GitHub Search Documentation](https://docs.github.com/en/search-github)
 - [GitHub REST API - Search](https://docs.github.com/en/rest/search)
-- [GitHub Code Search GA (2023)](https://github.blog/changelog/2023-02-06-code-search-is-generally-available/)
-- [GitHub Blog - 5 Tips for Code Search](https://github.blog/2023-11-15-five-tips-for-using-github-code-search/)
-- [GitHub Community: Advanced Search Tips](https://github.com/orgs/community/discussions/159014)
-- [GitHub Advanced Search UI](https://github.com/search/advanced)
-- [FreeCodeCamp: How to Use GitHub Search Like a Pro](https://www.freecodecamp.org/news/how-to-use-github-search-like-a-pro/)
-- [GitHub Gist: Advanced Search Examples](https://gist.github.com/dohsimpson/f6b495b7fcfbb80f60021a1359d8121a)
-- [GitHub Community: Search Discussion](https://github.com/orgs/community/discussions/181489)
-- [Dev.to: My Use Cases for Advanced GitHub Search](https://dev.to/ondrejsevcik/my-use-cases-for-advanced-github-search-pd7)
-- [GitHub: Advanced Search Docs](https://github.com/ohsusannamarie/GitHub-advanced-search/tree/main/docs)
-- [GitHub Community: Search Discussion](https://github.com/orgs/community/discussions/131132)
-- [YouTube: GitHub Advanced Search](https://www.youtube.com/watch?v=_FYISoR1ek8)
-- [Medium: Finding Examples Using GitHub Search](https://freedium-mirror.cfd/https://medium.com/@isiah_lloyd/quick-tip-finding-examples-using-github-search-116708a52f7)
-- [GitHub Docs: Code Search Syntax](https://github.com/github/docs/blob/main/content/search-github/github-code-search/understanding-github-code-search-syntax.md)
+- [GitHub Code Search Syntax](https://github.com/github/docs/blob/main/content/search-github/github-code-search/understanding-github-code-search-syntax.md)
 - [GitHub Docs: Search GitHub](https://github.com/github/docs/tree/main/content/search-github)
+
+### 社区讨论
+- [Advanced GitHub Search Techniques (Week 1)](https://github.com/orgs/community/discussions/159014) - 搜索操作符练习和答案
+- [How to Improve Code Search Accuracy](https://github.com/orgs/community/discussions/181489) - symbol:、path:、language: 等高级技巧
+- [Exact String Search Issues](https://github.com/orgs/community/discussions/131132) - 搜索限制和已知问题
+
+### 实战教程
+- [FreeCodeCamp: How to Use GitHub Search Like a Pro](https://www.freecodecamp.org/news/how-to-use-github-search-like-a-pro/) - 完整的搜索限定符指南
+- [Dev.to: My Use Cases for Advanced GitHub Search](https://dev.to/ondrejsevcik/my-use-cases-for-advanced-github-search-pd7) - 实际工作场景应用
+- [GitHub Gist: Advanced Search Examples](https://gist.github.com/dohsimpson/f6b495b7fcfbb80f60021a1359d8121a)
+
+### 工具和资源
+- [GitHub Advanced Search UI](https://github.com/search/advanced)
 - [GitHub Docs: Code Search](https://github.com/github/docs/tree/main/content/search-github/github-code-search)
+- [YouTube: GitHub Advanced Search](https://www.youtube.com/watch?v=_FYISoR1ek8)
 - [AI Engineering From Scratch](https://aiengineeringfromscratch.com/)
