@@ -903,11 +903,6 @@ body {
   border-bottom: 1px solid var(--border);
   font-size: 0.8125rem;
   color: var(--muted-foreground);
-  transition: background 0.1s;
-}
-
-.page-content .wrapper > ul:first-of-type li:hover {
-  background: var(--accent);
 }
 
 .page-content .wrapper > ul:first-of-type li:last-child {
@@ -916,6 +911,11 @@ body {
 
 .post-list-date {
   margin-right: 0.625rem;
+  transition: color 0.15s ease;
+}
+
+.page-content .wrapper > ul:first-of-type li:hover .post-list-date {
+  color: var(--foreground);
 }
 
 .post-list-num {
@@ -924,7 +924,7 @@ body {
 
 .page-content .wrapper > ul:first-of-type li a {
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--foreground);
   text-decoration: none;
   white-space: nowrap;
@@ -933,9 +933,22 @@ body {
   display: block;
 }
 
-.page-content .wrapper > ul:first-of-type li a:hover {
-  color: var(--foreground);
-  text-decoration: none;
+.post-list-title {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: color 0.08s ease-out, background-size 0.12s ease-out;
+}
+
+.page-content .wrapper > ul:first-of-type li a:hover .post-list-title {
+  color: var(--link);
+  background-size: 100% 1px;
+}
+
+.page-content .wrapper > ul:first-of-type li a:active .post-list-title {
+  color: var(--link-hover);
+  transition-duration: 0.02s;
 }
 
 @media (prefers-color-scheme: dark) {
