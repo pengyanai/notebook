@@ -3,8 +3,11 @@ layout: default
 ---
 <ul class="post-list">
 {% for post in site.posts %}
+  {% assign ep = site.posts.size | minus: forloop.index | plus: 1 %}
+  {% if ep < 10 %}{% assign ep = "00" | append: ep %}{% elsif ep < 100 %}{% assign ep = "0" | append: ep %}{% endif %}
   <li>
     <span class="post-list-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+    <span class="post-list-num">EP{{ ep }}</span>
     <a class="post-list-link" href="{{ post.url | relative_url }}"><span class="post-list-title">{{ post.title | escape }}</span></a>
   </li>
 {% endfor %}

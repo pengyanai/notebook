@@ -919,7 +919,22 @@ body {
 }
 
 .post-list-num {
-  display: none !important;
+  display: inline-block;
+  margin-right: 0.625rem;
+  padding: 0.0625rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  transition: color 0.15s ease;
+}
+
+.page-content .wrapper > ul:first-of-type li:hover .post-list-num {
+  color: var(--accent-foreground);
 }
 
 .page-content .wrapper > ul:first-of-type li a {
