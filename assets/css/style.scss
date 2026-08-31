@@ -598,11 +598,10 @@ body {
   .page-content .highlight pre,
   .page-content .highlighter-rouge .highlight,
   .page-content .highlight {
-    padding: 0.875rem 1rem;
+    padding: 0.5rem 0.5rem;
+    margin-bottom: 0.3rem;
     font-size: 0.8125rem;
     border-radius: var(--radius);
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
   }
 
   /* Mermaid diagrams: full width */
@@ -1168,12 +1167,12 @@ article blockquote p:last-child {
 .page-content .highlight pre,
 .page-content .highlighter-rouge .highlight,
 .page-content .highlight {
-  padding: 1rem 1.25rem;
+  padding: 0.5rem 0.5rem;
   background: hsl(0, 0%, 98%) !important; /* shadcn minimal light bg */
   border: none !important;
   border-radius: var(--radius);
   overflow-x: auto;
-  margin: 1rem 0;
+  margin-bottom: 0.3rem;
   font-size: 0.875rem;
   line-height: 1.6;
 }
@@ -1398,6 +1397,16 @@ a:hover {
   display: block;
   font-size: 1.1em;
   line-height: 1.8;
+}
+
+/* MathJax v3 display formulas - background and padding */
+mjx-container[jax="CHTML"][display="true"] {
+  padding: 1rem 0;
+  background: var(--muted);
+  border-radius: var(--radius);
+  margin: 1rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* MathJax rendered elements - typography improvements */
